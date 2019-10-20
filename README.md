@@ -7,7 +7,7 @@ SE Project - Inventory management for County Durham Foodbank
 - Helped 18.5k people in need around Durham area
 
 # Key Points
-- Require a stock management systems
+- Require a stock management system
 - No intake control so must allocate storage space dynamically, including relocating bulk items
 - Rapid data collection for stock volume at any time and location: inform stock movement decisions
 - Reconcilliation between donations received and orders from distribution centres fulfilled
