@@ -16,9 +16,9 @@ SE Project - Inventory management for County Durham Foodbank
 - Configurable for other foodbanks locally and nationally: adoptable by neighbouring foodbanks to share stock info
 - Usability: diverse volunteer workforce
 - Resilient: backup and restore functionality
-- Offline: able to collect data without the requirement for WiFi and point of entry
+- Offline: able to collect data without the requirement for WiFi at point of data entry
 - Data validation
-- Store data with date time info
+- Store data with date/time info
 - Archive facility may be necessary
 - Reports must be clear and unambiguous: highlight exceptions
 - Essential reports: Quantity by category, Location Understock/Overstock warnings, Shortage lists to inform data collection points, usage rates by food category, order history/re-order predictions by distribution centre, search/query facility to drill into archived data useful for generating trend reports
