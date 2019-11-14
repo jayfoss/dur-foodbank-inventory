@@ -1,7 +1,7 @@
 # dur-foodbank-inventory
 SE Project - Inventory management for County Durham Foodbank
 
-# ***Before pushing to a branch, please read the Git Branch Guidelines***
+***Before pushing to a branch, please read the Git Branch Guidelines***
 
 # Git Branch Guidelines
 - The **master** branch must be production-ready at all times
