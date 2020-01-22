@@ -1,4 +1,4 @@
-require('Validator.js');
+const Validator = require('Validator');
 
 class Model {
 	constructor(){
