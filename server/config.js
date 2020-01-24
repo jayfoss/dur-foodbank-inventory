@@ -8,7 +8,8 @@ const development = {
 	},
 	auth: {
 		jwtSecret: '123',
-		secureCookie: false
+		secureCookie: false,
+		maxAge: 3600
 	},
 	db: {
 		host: 'localhost',

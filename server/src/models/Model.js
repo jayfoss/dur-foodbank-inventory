@@ -18,4 +18,23 @@ class Model {
 		}
 		return !this.validator.hasErrors();
 	}
+	
+	buildFields(fields) {
+		let obj = {};
+		fields.forEach(i => obj[i] = null);
+		return obj;
+	}
+	
+	booleanify(fields) {
+		fields.forEach(field => {
+			Object.defineProperty(this.fields, field, {
+				set: (value) => {
+					if(!this.validator.isBooleanNN(field, value)) return false;
+					this.fields[field] = value;
+					return this;
+				},
+				enumerable: true
+			});
+		});
+	}
 }

@@ -6,9 +6,13 @@ const apiRouter = express.Router();
 const config = require('../config');
 const AppError = require('./errors/AppError');
 const appError = new AppError();
+const AuthController = require('./controllers/AuthController');
+const authController = new AuthController();
 app.use(express.json());
 
 apiRouter.use(require('cookie-parser')());
+
+apiRouter.post('/login', authController.login);
 
 apiRouter.use(function(req, resp, next) {
 	let token = req.cookies._id;
