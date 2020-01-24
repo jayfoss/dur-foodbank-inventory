@@ -1,0 +1,71 @@
+html{
+	font-family: sans-serif;
+}
+
+.button
+{
+	height:50px;
+	width:150px;
+	background-color:#f6f6f6;
+	margin-left:50px;
+	margin-top:50px;
+	font-size:15px;
+	border: 1px solid;
+}
+
+.button:hover{
+	background-color:#d7d7d7;
+}
+.report
+{
+	margin-left:50px;
+	margin-top:50px;
+	border-collapse: collapse;
+	float: left;
+	text-align:left;
+}
+
+.report th{
+	background-color:#a8d26e;
+}
+.report td, th {
+	border:1px solid #615b57;
+	padding:8px;
+}
+
+.separator{
+	margin-left:50px;
+	margin-top:50px;
+	float:left;
+}
+
+.setup{
+	margin-left:10px;
+	height:44px;
+	width:150px;
+	text-align:center;
+	font-size:15px;
+}
+
+.zone_input{
+	margin-left:50px;
+	margin-top:10px;
+	height:50px;
+	text-align:center;
+	font-size:15px;
+
+}
+
+.info_display{
+	margin-left:50px;
+	margin-top:50px;
+	margin-right:10px;
+	font-size:30px;
+	text-align:center;
+	vertical-align:center;
+	width: 100px;
+	height:50px;
+	float:left;
+}	
+
+	

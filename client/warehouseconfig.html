@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shelfie Cloud</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel='stylesheet' type = 'text/css' href='style.css'>
+</head>
+<body>
+	<div id = 'newZone'>
+		<div>
+			<input v-model='zone_name' placeholder='Zone' class = 'zone_input'></input>
+		</div>
+		<div>
+			<div class='info_display'>Bays:{{bays}}</div>
+				<button v-on:click='bays++' class = 'button'>Add bay</button>
+				<button v-on:click='bays--' v-if='bays>0' class = 'button'>Remove bay</button>
+		</div>
+		<div>
+			<div class='info_display'>Columns:{{columns}}</div>
+				<button v-on:click='columns++' class = 'button'>Add column</button>
+				<button v-on:click='columns--' v-if='columns>0' class = 'button'>Remove column</button>
+		</div>
+		<div>
+			<div class='info_display'>Rows:{{rows}}</div>
+				<button v-on:click='rows++' class = 'button'>Add row</button>
+				<button v-on:click='rows--' v-if='rows>0' class = 'button'>Remove row</button>
+		</div>
+		<div>
+			<button class ='button'>Submit zone</button>
+		</div>
+	</div>
+<script src='./src/main.js'></script>
+</body>
+</html>
