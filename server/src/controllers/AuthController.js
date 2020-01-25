@@ -5,7 +5,10 @@ const AppError = require('../errors/AppError');
 const appError = new AppError();
 
 class AuthController {
-	
+	constructor(){
+
+	}
+
 	login(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
@@ -39,7 +42,7 @@ class AuthController {
 		return token;
 	}
 	
-	createPassword(resp, password) {
+	async createPassword(resp, password) {
 		try {
 			return await argon2.hash(password, {type: argon2.argon2id});
 		}
@@ -48,7 +51,7 @@ class AuthController {
 		}
 	}
 	
-	passwordMatches(resp, password, hash) {
+	async passwordMatches(resp, password, hash) {
 		try {
 			return await argon2.verify(hash, password);
 		} catch (err) {
