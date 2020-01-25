@@ -10,9 +10,16 @@ class AuthController {
 		req.accepts('json');
 		resp.set('etag', false);
 		const user = {};
-		resp.cookie('_id', createAuth(user), {expires: new Date(Date.now() + config.auth.maxAge), httpOnly: true, secure: config.auth.secureCookie});
-		resp.status(201);
-		resp.send(user);
+		const pwdMatch = this.passwordMatches(resp, req.body.password, user.field.password);
+		if(pwdMatch === null) return;
+		if(pwdMatch) {
+			resp.cookie('_id', createAuth(user), {expires: new Date(Date.now() + config.auth.maxAge), httpOnly: true, secure: config.auth.secureCookie});
+			resp.status(201);
+			resp.send(user);
+		}
+		else {
+			return appError.unauthorized(resp, 'Invalid username or password');
+		}
 	}
 	
 	logout(req, resp) {
@@ -34,7 +41,7 @@ class AuthController {
 	
 	createPassword(resp, password) {
 		try {
-			return await argon2.hash(password);
+			return await argon2.hash(password, {type: argon2.argon2id});
 		}
 		catch(err) {
 			return appError.internalServerError(resp, 'Hashing password failed', err);

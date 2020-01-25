@@ -22,13 +22,21 @@ class Model {
 	
 	buildFields(fields) {
 		let obj = {};
-		fields.forEach(i => obj[i] = null);
+		fields.forEach(field => {
+			obj[field] = null;
+			Object.defineProperty(this, field, {
+				get: () => {
+					return this.fields[field];
+				},
+				enumerable: true
+			});				
+		});
 		return obj;
 	}
 	
 	booleanify(fields) {
 		fields.forEach(field => {
-			Object.defineProperty(this.fields, field, {
+			Object.defineProperty(this, field, {
 				set: (value) => {
 					if(!this.validator.isBooleanNN(field, value)) return false;
 					this.fields[field] = value;
