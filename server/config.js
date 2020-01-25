@@ -13,7 +13,7 @@ const development = {
 	},
 	db: {
 		host: 'localhost',
-		port: 8090,
+		port: 27017,
 		username: 'test',
 		password: 'test'
 	}
