@@ -6,17 +6,17 @@ class TrayController extends DatabaseController {
         super();
     }
 
-    async getTray(zone, bay, shelf, row, column){
+    async getTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber){
         const connection = await this.createConnection();
         if(!connection) return;
 
         let tray = {};
-        const query = "{\"" + zone + "." + bay + "." + shelf + "." + row + "." + column + "\" : {$exists: true}}";
+        const query = "{\"" + zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + "\" : {$exists: true}}";
 
         try {
             let cursor = await this.queryDatabase(connection, "warehouse", query);
             await cursor.forEach(function(result){
-                tray = result[zone][bay][shelf][row][column];
+                tray = result[zoneName][bayName][shelfNumber][rowNumber][columnNumber];
             });
         } catch (err){
             console.log(err);
@@ -27,29 +27,29 @@ class TrayController extends DatabaseController {
         return tray;
     }
 
-    async setTrayCategory(zone, bay, shelf, row, column, newCategory) {
+    async setTrayCategory(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newCategory) {
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".category";
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: newCategory } };
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
 
-    async setTrayWeight(zone, bay, shelf, row, column, newWeight) {
+    async setTrayWeight(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newWeight) {
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".weight";
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: newWeight } };
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
 
-    async setTrayExpiryYear(zone, bay, shelf, row, column, newExpiryYearStart, newExpiryYearEnd) {
-        let expiryYear = {"start":newExpiryYearStart, "end":newExpiryMonthEnd};
+    async setTrayExpiryYear(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newExpiryYearStart, newExpiryYearEnd) {
+        let expiryYear = {"start":newExpiryYearStart, "end":newExpiryYearEnd};
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".expiryYear";
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: expiryYear } };
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
 
-    async setTrayExpiryMonth(zone, bay, shelf, row, column, newExpiryMonthStart, newExpiryMonthEnd) {
+    async setTrayExpiryMonth(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newExpiryMonthStart, newExpiryMonthEnd) {
         let expiryMonth = {"start":newExpiryMonthStart, "end":newExpiryMonthEnd};
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".expiryMonth";
         let filter = {[insertStringLeft]: { $exists: true }};
@@ -57,14 +57,14 @@ class TrayController extends DatabaseController {
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
 
-    async setTrayLastUpdated(zone, bay, shelf, row, column, newLastUpdated) {
+    async setTrayLastUpdated(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newLastUpdated) {
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".lastUpdated";
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: newLastUpdated } };
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
 
-    async setTrayNote(zone, bay, shelf, row, column, newNote) {
+    async setTrayNote(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newNote) {
         let insertStringLeft =  zoneName + "." + bayName + "." + shelfNumber + "." + rowNumber + "." + columnNumber + ".userNote";
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: newNote } };
