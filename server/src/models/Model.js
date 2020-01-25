@@ -5,6 +5,7 @@ class Model {
 		this.fields = {};
 		this.settableFields = [];
 		this.validator = new Validator();
+		this.protectedFields = [];
 	}
 	
 	/**
@@ -36,5 +37,15 @@ class Model {
 				enumerable: true
 			});
 		});
+	}
+	
+	toJSON() {
+		let obj = {};
+		Object.keys(this.fields).forEach((key, value) => {
+			if(!this.protectedFields.includes(key)){
+				obj[key] = value;
+			}
+		});
+		return obj;
 	}
 }
