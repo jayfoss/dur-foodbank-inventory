@@ -6,6 +6,18 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
+  <div id = 'user-data'>
+  <table class = 'report'>
+	<tr>
+		<th>User ID</th>
+		<th>Permission Level</th>
+	</tr>
+	<tr v-for='user in users'>
+		<td>{{user.userid}}</td>
+		<td>{{user.permission}}</td>
+	</tr>
+  </table>
+  </div>
 <script src='./src/main.js'></script>
 </body>
 </html>
