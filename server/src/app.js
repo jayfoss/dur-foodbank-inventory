@@ -8,6 +8,21 @@ const AppError = require('./errors/AppError');
 const appError = new AppError();
 const AuthController = require('./controllers/AuthController');
 const authController = new AuthController();
+
+// Database stuff
+const ZoneController = require('./controllers/ZoneController');
+const zoneController = new ZoneController();
+const BayController = require('./controllers/BayController');
+const bayController = new BayController();
+const ShelfController = require('./controllers/ShelfController');
+const shelfController = new ShelfController();
+const RowController = require('./controllers/RowController');
+const rowController = new RowController();
+const ColumnController = require('./controllers/ColumnController');
+const columnController = new ColumnController();
+const TrayController = require('./controllers/TrayController');
+const trayController = new TrayController();
+
 app.use(express.json());
 
 apiRouter.use(require('cookie-parser')());
@@ -31,5 +46,14 @@ apiRouter.use(function(req, resp, next) {
 });
 
 app.use('/api/v1', apiRouter);
+
+/* DATABASE CONTROLLER QUERY EXAMPLES
+zoneController.getZones();
+bayController.getBays("yellow");
+shelfController.getShelves("yellow", "A");
+rowController.getRows("yellow", "A", 1);
+columnController.getColumns("yellow", "A", 1, 1);
+trayController.getTray("yellow", "A", 1, 1, 1);
+*/
 
 module.exports = {app};

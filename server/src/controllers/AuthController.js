@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config');
 
 class AuthController {
-	
+	constructor(){
+
+	}
+
 	login(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
@@ -21,3 +24,5 @@ class AuthController {
 		return token;
 	}
 }
+
+module.exports = AuthController;
