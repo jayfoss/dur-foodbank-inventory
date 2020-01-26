@@ -6,8 +6,8 @@ const appError = new AppError();
 const UserModel = require('../models/UserModel');
 
 class AuthController {
-	constructor(){
-
+	constructor(db){
+		this.db = db;
 	}
 
 	login(req, resp) {
@@ -68,13 +68,12 @@ class AuthController {
 		}
 	}
 
-	async insertUser(connection, userObj){
-		if(!connection) return;
+	async insertUser(userObj){
+		const connection = await this.db.getConnection();
 
 		try {
-			const db = connection.db("foodbank");
-			const collection = db.collection("users");
-			console.log("1");
+			const db = connection.db('foodbank');
+			const collection = db.collection('users');
 			await collection.insertOne(userObj);
 		} catch (err){
 			console.log(err);

@@ -6,8 +6,6 @@ const apiRouter = express.Router();
 const config = require('../config');
 const AppError = require('./errors/AppError');
 const appError = new AppError();
-const AuthController = require('./controllers/AuthController');
-const authController = new AuthController();
 
 // Database stuff
 const Database = require('./services/Database');
@@ -18,7 +16,8 @@ async function init() {
 }
 
 init();
-
+const AuthController = require('./controllers/AuthController');
+const authController = new AuthController(db);
 const ZoneController = require('./controllers/ZoneController');
 const zoneController = new ZoneController(db);
 const BayController = require('./controllers/BayController');

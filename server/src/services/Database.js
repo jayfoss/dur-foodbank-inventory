@@ -11,13 +11,13 @@ class DatabaseController {
 
     createConnection(){
 		return new Promise((resolve, reject) => {
-			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, function(err, db){
+			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, (err, db) => {
 				if(err) {
 					reject(err);
 					return;
 				}
 				this.connection = db;
-			})
+			});
 		});
     }
 	
