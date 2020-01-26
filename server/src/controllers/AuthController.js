@@ -108,8 +108,21 @@ class AuthController {
 			console.log(updateObj);
 			await collection.updateOne({"email": userEmail}, {$set:updateObj});
 		} catch(err) {
-
+			console.log(err);
 		} finally {
+			connection.close();
+		}
+	}
+
+	async deleteUser(connection, userEmail){
+		if(!connection) return;
+		try{
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			collection.deleteOne({"email": userEmail});
+		} catch (err){
+			console.log(err);
+		} finally{
 			connection.close();
 		}
 	}
