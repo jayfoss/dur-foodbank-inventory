@@ -1,10 +1,53 @@
+const AppError = require('../errors/AppError');
+const appError = new AppError();
+const ZoneModel = require('../models/ZoneModel');
+
 class ZoneController {
 
     constructor(db){
         this.db = db;
     }
 
-    async getZones(){
+	getZones(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const zones = getZonesFromDb();
+		resp.status(200);
+		resp.send(zones);		
+	}
+	
+	createZone(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const zone = new ZoneModel();
+		if(!zone.map(req.body)) return;
+		this.insertZone(zone.name);
+		resp.status(201);
+		resp.send(zone.fields);
+	}
+	
+	modifyZone(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const zone = new ZoneModel();
+		if(!zone.map(req.body)) return;
+		this.changeZoneName(req.params.zoneId, zone.name);
+		resp.status(200);
+		resp.send(zone.fields);
+	}
+	
+	deleteZone(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		this.deleteZoneFromDb(req.params.zoneId);
+		resp.sendStatus(204);
+	}
+	
+    async getZonesFromDb(){
         const connection = await this.db.getConnection();
         if(!connection) return;
 
@@ -36,7 +79,7 @@ class ZoneController {
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
-    async deleteZone(zoneName) {
+    async deleteZoneFromDb(zoneName) {
         let filter = {};
         let updateQuery =  { $unset : { [zoneName]:''} };
         await this.db.updateDatabase('warehouse', filter, updateQuery);

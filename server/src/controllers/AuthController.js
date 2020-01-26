@@ -3,6 +3,7 @@ const config = require('../../config');
 const argon2 = require('argon2');
 const AppError = require('../errors/AppError');
 const appError = new AppError();
+const UserModel = require('../models/UserModel');
 
 class AuthController {
 	constructor(){
@@ -33,8 +34,10 @@ class AuthController {
 	
 	createAuth(user){
 		const payload = {
-			id:user.id,
-			access:user.access
+			id: user._id,
+			canViewData: user.canViewData,
+			canEditData: user.canEditData,
+			canModifyWarehouse: user.canModifyWarehouse
 		};
 		let token = jwt.sign(payload, config.auth.jwtSecret, {
 			expiresIn: config.auth.maxAge

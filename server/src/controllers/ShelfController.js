@@ -1,10 +1,53 @@
+const AppError = require('../errors/AppError');
+const appError = new AppError();
+const ShelfModel = require('../models/ShelfModel');
+
 class ShelfController {
 
     constructor(db){
         this.db = db;
     }
 
-    async getShelves(zone, bay){
+	getShelves(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const shelves = getShelvesFromDb(req.params.zoneId, req.params.bayId);
+		resp.status(200);
+		resp.send(shelves);
+	}
+	
+	createShelf(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const shelf = new ShelfModel();
+		if(!shelf.map(req.body)) return;
+		this.insertShelf(req.params.zoneId, req.params.bayId, shelf.number);
+		resp.status(201);
+		resp.send(shelf.fields);
+	}
+	
+	modifyShelf(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const shelf = new ShelfModel();
+		if(!shelf.map(req.body)) return;
+		this.changeShelfName(req.params.zoneId, req.params.bayId, req.params.shelfId, shelf.number);
+		resp.status(200);
+		resp.send(shelf.fields);
+	}
+	
+	deleteShelf(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		this.deleteShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		resp.sendStatus(204);
+	}
+
+    async getShelvesFromDb(zone, bay){
         const connection = await this.db.getConnection();
         if(!connection) return;
 
@@ -49,7 +92,7 @@ class ShelfController {
         }
     }
 
-    async deleteShelf(zoneName, bayName, shelfNumber){
+    async deleteShelfFromDb(zoneName, bayName, shelfNumber){
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
