@@ -1,4 +1,4 @@
-const DatabaseController = require("./DatabaseController");
+const DatabaseController = require('./DatabaseController');
 
 class BayController extends DatabaseController {
 
@@ -13,7 +13,7 @@ class BayController extends DatabaseController {
         let bays = [];
 
         try {
-            let cursor = await this.queryDatabase(connection, "warehouse", {});
+            let cursor = await this.queryDatabase(connection, 'warehouse', {});
             await cursor.forEach(function(result){
                 for(let key in result[zone]){
                     bays.push(key);
@@ -30,25 +30,25 @@ class BayController extends DatabaseController {
 
     async changeBayName(zoneName, oldBayName, newBayName) {
         let filter = {};
-        let renameStringLeft = zoneName + "." + oldBayName;
-        let renameStringRight = zoneName + "." + newBayName;
+        let renameStringLeft = zoneName + '.' + oldBayName;
+        let renameStringRight = zoneName + '.' + newBayName;
         let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.updateDatabase("warehouse", filter, updateQuery);
+        await this.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertBay(zoneName, newBayName){
         
-        let insertStringLeft = zoneName + "." + newBayName;
+        let insertStringLeft = zoneName + '.' + newBayName;
         let filter = {[insertStringLeft]: { $exists: false }};
         let updateQuery = { $set: { [insertStringLeft]: {} } };
-        await this.updateDatabase("warehouse", filter, updateQuery);
+        await this.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteBay(zoneName, bayName){
-        let deleteStringLeft = zoneName + "." + bayName;
+        let deleteStringLeft = zoneName + '.' + bayName;
         let filter = {};
-        let updateQuery = { $unset: { [deleteStringLeft]: "" } };
-        await this.updateDatabase("warehouse", filter, updateQuery);
+        let updateQuery = { $unset: { [deleteStringLeft]: '' } };
+        await this.updateDatabase('warehouse', filter, updateQuery);
     }
 }
 

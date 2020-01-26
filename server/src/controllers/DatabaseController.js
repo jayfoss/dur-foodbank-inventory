@@ -1,11 +1,11 @@
 const config = require('../../config');
-const mongo = require("mongodb");
+const mongo = require('mongodb');
 const mongoClient = mongo.MongoClient;
 
 class DatabaseController {
     constructor(){
-        this.databseName = "foodbank";
-        this.databaseURL = "mongodb://" + config.db.host + ":" + config.db.port;
+        this.databseName = 'foodbank';
+        this.databaseURL = 'mongodb://' + config.db.host + ':' + config.db.port;
     }
 
     async createConnection(){
