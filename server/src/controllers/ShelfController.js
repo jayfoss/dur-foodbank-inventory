@@ -1,13 +1,11 @@
-const DatabaseController = require('./DatabaseController');
+class ShelfController {
 
-class ShelfController extends DatabaseController {
-
-    constructor(){
-        super();
+    constructor(db){
+        this.db = db;
     }
 
     async getShelves(zone, bay){
-        const connection = await this.createConnection();
+        const connection = await this.db.getConnection();
         if(!connection) return;
 
         let shelves = [];
@@ -22,10 +20,7 @@ class ShelfController extends DatabaseController {
             });
         } catch (err){
             console.log(err);
-        } finally {
-            connection.close();
         }
-        console.log(shelves);
         return shelves;
     }
 
@@ -34,7 +29,7 @@ class ShelfController extends DatabaseController {
         let renameStringLeft = zoneName + '.' + bayName + '.' + oldShelfName;
         let renameStringRight = zoneName + '.' + bayName + '.' + newShelfName;
         let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertShelf(zoneName, bayName, shelfNumber){
@@ -42,15 +37,15 @@ class ShelfController extends DatabaseController {
         let insertStringLeft = zoneName + '.' + bayName + '.' + shelfNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
         let updateQuery = { $set: { [insertStringLeft]: {} } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertShelves(zoneName, bayName, shelfNumberMax){
-        for(var shelf = 1; shelf <= shelfNumberMax; shelf++){
+        for(let shelf = 1; shelf <= shelfNumberMax; shelf++){
             let toSet = zoneName + '.' + bayName + '.' + shelf;
             let filter = {[toSet]:{$exists: false}};
             let updateQuery = {$set : { [toSet]: {}}};
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 
@@ -58,7 +53,7 @@ class ShelfController extends DatabaseController {
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteShelves(zoneName, bayName, shelfNumberStart, shelfNumberEnd){
@@ -66,7 +61,7 @@ class ShelfController extends DatabaseController {
             let deleteStringLeft = zoneName + '.' + bayName + '.' + shelf;
             let filter = {};
             let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 }

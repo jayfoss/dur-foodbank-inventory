@@ -1,13 +1,11 @@
-const DatabaseController = require('./DatabaseController');
+class BayController {
 
-class BayController extends DatabaseController {
-
-    constructor(){
-        super();
+    constructor(db){
+        this.db = db;
     }
 
     async getBays(zone){
-        const connection = await this.createConnection();
+        const connection = await this.db.getConnection();
         if(!connection) return;
 
         let bays = [];
@@ -21,10 +19,7 @@ class BayController extends DatabaseController {
             });
         } catch (err){
             console.log(err);
-        } finally {
-            connection.close();
         }
-        console.log(bays);
         return bays;
     }
 
@@ -33,22 +28,21 @@ class BayController extends DatabaseController {
         let renameStringLeft = zoneName + '.' + oldBayName;
         let renameStringRight = zoneName + '.' + newBayName;
         let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertBay(zoneName, newBayName){
-        
         let insertStringLeft = zoneName + '.' + newBayName;
         let filter = {[insertStringLeft]: { $exists: false }};
         let updateQuery = { $set: { [insertStringLeft]: {} } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteBay(zoneName, bayName){
         let deleteStringLeft = zoneName + '.' + bayName;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 }
 

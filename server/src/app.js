@@ -10,18 +10,20 @@ const AuthController = require('./controllers/AuthController');
 const authController = new AuthController();
 
 // Database stuff
+const Database = require('./services/Database');
+const db = new Database();
 const ZoneController = require('./controllers/ZoneController');
-const zoneController = new ZoneController();
+const zoneController = new ZoneController(db);
 const BayController = require('./controllers/BayController');
-const bayController = new BayController();
+const bayController = new BayController(db);
 const ShelfController = require('./controllers/ShelfController');
-const shelfController = new ShelfController();
+const shelfController = new ShelfController(db);
 const RowController = require('./controllers/RowController');
-const rowController = new RowController();
+const rowController = new RowController(db);
 const ColumnController = require('./controllers/ColumnController');
-const columnController = new ColumnController();
+const columnController = new ColumnController(db);
 const TrayController = require('./controllers/TrayController');
-const trayController = new TrayController();
+const trayController = new TrayController(db);
 
 app.use(express.json());
 

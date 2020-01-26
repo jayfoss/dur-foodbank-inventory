@@ -1,13 +1,11 @@
-const DatabaseController = require('./DatabaseController');
+class ColumnController {
 
-class ColumnController extends DatabaseController {
-
-    constructor(){
-        super();
+    constructor(db){
+        this.db = db;
     }
 
     async getColumns(zone, bay, shelf, row){
-        const connection = await this.createConnection();
+        const connection = await this.db.getConnection();
         if(!connection) return;
 
         let columns = [];
@@ -22,10 +20,7 @@ class ColumnController extends DatabaseController {
             });
         } catch (err){
             console.log(err);
-        } finally {
-            connection.close();
         }
-        console.log(columns);
         return columns;
     }
 
@@ -34,22 +29,22 @@ class ColumnController extends DatabaseController {
         let renameStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + oldColumnName;
         let renameStringRight = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + newColumnName;
         let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertColumn(zoneName, bayName, shelfNumber, rowNumber, newColumnNumber){
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + newColumnNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
         let updateQuery = { $set: { [insertStringLeft]: {} } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertColumns(zoneName, bayName, shelfNumber, rowNumber, columnNumberMax){
-        for(var column = 1; column <= columnNumberMax; column++){
+        for(let column = 1; column <= columnNumberMax; column++){
             let toSet = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + column;
             let filter = {[toSet]:{$exists: false}};
             let updateQuery = {$set : { [toSet]: {}}};
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 
@@ -57,15 +52,15 @@ class ColumnController extends DatabaseController {
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteColumns(zoneName, bayName, shelfNumber, rowNumber, columnNumberStart, columnNumberEnd){
-        for(var column = columnNumberStart; column <= columnNumberEnd; column++){
+        for(let column = columnNumberStart; column <= columnNumberEnd; column++){
             let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + column;
             let filter = {};
             let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 }

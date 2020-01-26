@@ -1,13 +1,11 @@
-const DatabaseController = require('./DatabaseController');
+class RowController {
 
-class RowController extends DatabaseController {
-
-    constructor(){
-        super();
+    constructor(db){
+        this.db = db;
     }
 
     async getRows(zone, bay, shelf){
-        const connection = await this.createConnection();
+        const connection = await this.db.getConnection();
         if(!connection) return;
 
         let rows = [];
@@ -22,10 +20,7 @@ class RowController extends DatabaseController {
             });
         } catch (err){
             console.log(err);
-        } finally {
-            connection.close();
         }
-        console.log(rows);
         return rows;
     }
 
@@ -34,22 +29,22 @@ class RowController extends DatabaseController {
         let renameStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + oldRowName;
         let renameStringRight = zoneName + '.' + bayName + '.' + shelfNumber + '.' + newRowName;
         let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertRow(zoneName, bayName, shelfNumber, newRowNumber){
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + newRowNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
         let updateQuery = { $set: { [insertStringLeft]: {} } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async insertRows(zoneName, bayName, shelfNumber, rowNumberMax){
-        for(var row = 1; row <= rowNumberMax; row++){
+        for(let row = 1; row <= rowNumberMax; row++){
             let toSet = zoneName + '.' + bayName + '.' + shelfNumber + '.' + row;
             let filter = {[toSet]:{$exists: false}};
             let updateQuery = {$set : { [toSet]: {}}};
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 
@@ -57,15 +52,15 @@ class RowController extends DatabaseController {
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteRows(zoneName, bayName, shelfNumber, rowNumberStart, rowNumberEnd){
-        for(var row = rowNumberStart; row <= rowNumberEnd; row++){
+        for(let row = rowNumberStart; row <= rowNumberEnd; row++){
             let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + row;
             let filter = {};
             let updateQuery = { $unset: { [deleteStringLeft]: '' } };
-            await this.updateDatabase('warehouse', filter, updateQuery);
+            await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
 }

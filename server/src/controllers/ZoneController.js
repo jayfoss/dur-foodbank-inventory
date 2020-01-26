@@ -1,13 +1,11 @@
-const DatabaseController = require('./DatabaseController');
+class ZoneController {
 
-class ZoneController extends DatabaseController {
-
-    constructor(){
-        super();
+    constructor(db){
+        this.db = db;
     }
 
     async getZones(){
-        const connection = await this.createConnection();
+        const connection = await this.db.getConnection();
         if(!connection) return;
 
         let zones = [];
@@ -22,8 +20,6 @@ class ZoneController extends DatabaseController {
             });
         } catch (err){
             console.log(err);
-        } finally {
-            connection.close();
         }
         return zones;
     }
@@ -31,19 +27,19 @@ class ZoneController extends DatabaseController {
     async insertZone(zoneName) {
         let filter = {[zoneName]: { $exists: false }};
         let updateQuery = { $set: { [zoneName]: {} } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async changeZoneName(oldZoneName, newZoneName) {
         let filter = {};
         let updateQuery = { $rename: { [oldZoneName]:newZoneName } };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
     async deleteZone(zoneName) {
         let filter = {};
         let updateQuery =  { $unset : { [zoneName]:''} };
-        await this.updateDatabase('warehouse', filter, updateQuery);
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 }
 
