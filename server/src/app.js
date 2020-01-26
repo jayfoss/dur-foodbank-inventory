@@ -21,7 +21,9 @@ const rowController = new RowController();
 const ColumnController = require('./controllers/ColumnController');
 const columnController = new ColumnController();
 const TrayController = require('./controllers/TrayController');
-const trayController = new TrayController();
+const trayController = new TrayController(db);
+const mongo = require("mongodb");
+const mongoClient = mongo.MongoClient;
 
 app.use(express.json());
 
@@ -46,14 +48,5 @@ apiRouter.use(function(req, resp, next) {
 });
 
 app.use('/api/v1', apiRouter);
-
-/* DATABASE CONTROLLER QUERY EXAMPLES
-zoneController.getZones();
-bayController.getBays("yellow");
-shelfController.getShelves("yellow", "A");
-rowController.getRows("yellow", "A", 1);
-columnController.getColumns("yellow", "A", 1, 1);
-trayController.getTray("yellow", "A", 1, 1, 1);
-*/
 
 module.exports = {app};

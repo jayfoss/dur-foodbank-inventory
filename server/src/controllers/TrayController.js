@@ -84,6 +84,17 @@ class TrayController extends DatabaseController {
         let updateQuery = { $set: { [insertStringLeft]: {}} };
         await this.updateDatabase("warehouse", filter, updateQuery);
     }
+
+    async updateTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber, updatedTrayObj){
+        let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber;
+        let filter = {[insertStringLeft]:{$exists: true}};
+        let setObj = {}
+        for(let key in updatedTrayObj){
+            setObj[insertStringLeft + "." + key] = updatedTrayObj[key];
+        }
+        let updateQuery = {$set:setObj };
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
+    }
 }
 
 module.exports = TrayController;
