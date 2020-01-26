@@ -71,10 +71,42 @@ class AuthController {
 		try {
 			const db = connection.db("foodbank");
 			const collection = db.collection("users");
-			console.log("1");
+
+			let doesUserExist = await collection.findOne({"email" : userObj["email"]});
+			if(doesUserExist) return; // THE USER ALREADY EXISTS WITH THAT EMAIL
 			await collection.insertOne(userObj);
 		} catch (err){
 			console.log(err);
+		} finally {
+			connection.close();
+		}
+	}
+
+	async getUser(connection, userEmail) {
+		if(!connection) return;
+		let user = null;
+		try {
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			user = await collection.findOne({"email": userEmail});
+			
+		} catch (err) {
+			console.log(err);
+		} finally {
+			connection.close();
+		}
+		return user
+	}
+
+	async updateUser(connection, userEmail, updateObj) {
+		if(!connection) return;
+		try {
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			console.log(updateObj);
+			await collection.updateOne({"email": userEmail}, {$set:updateObj});
+		} catch(err) {
+
 		} finally {
 			connection.close();
 		}
