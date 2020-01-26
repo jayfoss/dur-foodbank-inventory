@@ -10,8 +10,8 @@ class Database {
     }
 
     createConnection(){
+		dbc = this;
 		return new Promise((resolve, reject) => {
-			dbc = this;
 			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, (err, db) => {
 				if(err) {
 					reject(err);
