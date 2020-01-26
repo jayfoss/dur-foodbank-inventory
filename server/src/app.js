@@ -25,8 +25,6 @@ const ColumnController = require('./controllers/ColumnController');
 const columnController = new ColumnController(db);
 const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController();
-const mongo = require("mongodb");
-const mongoClient = mongo.MongoClient;
 const trayController = new TrayController(db);
 
 app.use(express.json());
@@ -77,23 +75,5 @@ apiRouter.use(function(req, resp, next) {
 });
 
 app.use('/api/v1', apiRouter);
-
-/* DATABASE CONTROLLER QUERY EXAMPLES
-zoneController.getZones();
-bayController.getBays("yellow");
-shelfController.getShelves("yellow", "A");
-rowController.getRows("yellow", "A", 1);
-columnController.getColumns("yellow", "A", 1, 1);
-trayController.getTray("yellow", "A", 1, 1, 1);
-*/
-
-async function temp(){
-	let connection =await mongoClient.connect("mongodb://localhost:27017", {useUnifiedTopology: true})
-	.catch(err => console.log(err));
-	console.log(connection)
-	authController.insertUser(connection, {"username": "anotheruser", "password":"pasfsdafass"});
-}
-temp();
-
 
 module.exports = {app};
