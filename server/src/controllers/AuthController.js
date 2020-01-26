@@ -42,6 +42,11 @@ class AuthController {
 		return token;
 	}
 	
+	createUser(req, resp) {
+		const user = new UserModel();
+		if(!user.map(req.body)) return;
+	}
+	
 	async createPassword(resp, password) {
 		try {
 			return await argon2.hash(password, {type: argon2.argon2id});

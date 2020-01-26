@@ -27,7 +27,12 @@ app.use(express.json());
 
 apiRouter.use(require('cookie-parser')());
 
-apiRouter.post('/login', authController.login);
+apiRouter.post('/auth', authController.login);
+apiRouter.delete('/auth', authController.logout);
+
+apiRouter.get('/users', authController.getUsers);
+apiRouter.post('/users', authController.createUser);
+apiRouter.delete('/users/:userId', authController.deleteUser);
 
 apiRouter.use(function(req, resp, next) {
 	let token = req.cookies._id;

@@ -25,7 +25,6 @@ class ZoneController extends DatabaseController {
         } finally {
             connection.close();
         }
-        console.log(zones);
         return zones;
     }
 

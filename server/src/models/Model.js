@@ -57,3 +57,5 @@ class Model {
 		return obj;
 	}
 }
+
+module.exports = Model;
