@@ -10,10 +10,11 @@ class Database {
     }
 
     createConnection(){
-		dbc = this;
+		const dbc = this;
 		return new Promise((resolve, reject) => {
 			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, (err, db) => {
 				if(err) {
+					console.log('The database setup failed initially');
 					reject(err);
 					return;
 				}
@@ -22,7 +23,7 @@ class Database {
 		});
     }
 	
-	async getConnection() {
+	getConnection() {
 		if(this.connection === null) {
 			throw new Error('Database connection hasn\'t been created');
 		}
