@@ -4,7 +4,7 @@ const Validator = require('Validator');
 class UserModel extends Model {
 	constructor() {
 		this.fields = this.buildFields([
-			'id',
+			'_id',
 			'email',
 			'password',
 			'firstName',
@@ -54,3 +54,5 @@ class UserModel extends Model {
 		return this;
 	}
 }
+
+module.exports = UserModel;
