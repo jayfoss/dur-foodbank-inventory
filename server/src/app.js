@@ -12,7 +12,13 @@ const authController = new AuthController();
 // Database stuff
 const Database = require('./services/Database');
 const db = new Database();
-db.createConnection();
+
+async function init() {
+	await db.createConnection();
+}
+
+init();
+
 const ZoneController = require('./controllers/ZoneController');
 const zoneController = new ZoneController(db);
 const BayController = require('./controllers/BayController');
