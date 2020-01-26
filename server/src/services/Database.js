@@ -18,6 +18,7 @@ class Database {
 					reject(err);
 					return;
 				}
+				resolve(db);
 				dbc.connection = db;
 			});
 		});
