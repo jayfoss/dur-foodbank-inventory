@@ -2,7 +2,7 @@ const config = require('../../config');
 const mongo = require('mongodb');
 const mongoClient = mongo.MongoClient;
 
-class DatabaseController {
+class Database {
     constructor(){
         this.databaseName = 'foodbank';
         this.databaseURL = 'mongodb://' + config.db.host + ':' + config.db.port;
@@ -11,12 +11,13 @@ class DatabaseController {
 
     createConnection(){
 		return new Promise((resolve, reject) => {
+			dbc = this;
 			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, (err, db) => {
 				if(err) {
 					reject(err);
 					return;
 				}
-				this.connection = db;
+				dbc.connection = db;
 			});
 		});
     }
@@ -58,4 +59,4 @@ class DatabaseController {
     }
 }
 
-module.exports = DatabaseController;
+module.exports = Database;
