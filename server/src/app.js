@@ -30,7 +30,6 @@ const rowController = new RowController(db);
 const ColumnController = require('./controllers/ColumnController');
 const columnController = new ColumnController(db);
 const TrayController = require('./controllers/TrayController');
-const trayController = new TrayController();
 const trayController = new TrayController(db);
 
 app.use(express.json());
