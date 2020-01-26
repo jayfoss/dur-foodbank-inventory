@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div id="report-generate" style="width: 100%; height: 100%;">
+        <p>
+            <h2>Please select the report element</h2>
+        </p>
+        <p>
+            <div class="ex1"><input type="checkbox" value="Food Type" id="foodtype" v-model="checked_elements">
+                <label for="foodtype">Food Type</label></div>
+            <div class="ex2"><input type="checkbox" value="Zone" id="zone" v-model="checked_elements">
+                <label for="zone">Zone</label></div>
+            <br />
+            <br />
+            <div class="ex1"><input type="checkbox" value="Count of contents" id="countofcontents" v-model="checked_elements">
+                <label for="countofcontents">Count of contents</label></div>
+            <div class="ex2"><input type="checkbox" value="Level" id="level" v-model="checked_elements">
+                <label for="level">Level</label></div>
+            <br />
+            <br />
+            <div class="ex1"><input type="checkbox" value="Sum of Weight" id="sumofweight" v-model="checked_elements">
+                <label for="sumofweight">Sum of Weight</label></div>
+            <div class="ex2"><input type="checkbox" value="Bay" id="bay" v-model="checked_elements">
+                <label for="bay">Bay</label></div>
+            <br />
+            <br />
+        </p>
+        <p>
+            <h2>Please select the corresponding zone</h2>
+        </p>
+        <p>
+            <div class="ex1"><input type="checkbox" id="checkbox" v-model="checked" @change="changeAllChecked()">
+                <label for="checkbox">All</label></div>
+            <br />
+            <br />
+            <div class="ex1"><input type="checkbox" value="Green" id="green" v-model="checked_zone">
+                <label for="green">Green</label></div>
+            <div class="ex2"><input type="checkbox" value="Yellow" id="yellow" v-model="checked_zone">
+                <label for="yellow">Yellow</label></div>
+            <br />
+            <br />
+            <div class="ex1"><input type="checkbox" value="Blue" id="blue" v-model="checked_zone">
+                <label for="blue">Blue</label></div>
+            <div class="ex2"><input type="checkbox" value="Pink" id="pink" v-model="checked_zone">
+                <label for="pink">Pink</label></div>
+        </p>
+        <p>
+            <br />
+            <div class="ex1"><input type="submit" value="Generate"></div>
+        </p>
+    </div>
+
+
+
+</body>
+
+<script src="./script.js"></script>
+
+</html>
