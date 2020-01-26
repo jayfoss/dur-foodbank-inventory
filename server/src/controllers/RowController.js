@@ -1,10 +1,34 @@
+const AppError = require('../errors/AppError');
+const appError = new AppError();
+const RowModel = require('../models/RowModel');
+
 class RowController {
 
     constructor(db){
         this.db = db;
     }
+	
+	getRows(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const rows = getRowsFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		resp.status(200);
+		resp.send(rows);
+	}
+	
+	createRow(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		this.insertShelf(req.params.zoneId, req.params.bayId, req.params.shelfId, row.row);
+		resp.status(201);
+		resp.send(row.fields);
+	}
 
-    async getRows(zone, bay, shelf){
+    async getRowsFromDb(zone, bay, shelf){
         const connection = await this.db.getConnection();
         if(!connection) return;
 
@@ -48,7 +72,7 @@ class RowController {
         }
     }
 
-    async deleteRow(zoneName, bayName, shelfNumber, rowNumber){
+    async deleteRowFromDb(zoneName, bayName, shelfNumber, rowNumber){
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
