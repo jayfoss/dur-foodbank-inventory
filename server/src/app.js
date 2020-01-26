@@ -22,12 +22,14 @@ const ColumnController = require('./controllers/ColumnController');
 const columnController = new ColumnController();
 const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController();
+const mongo = require("mongodb");
+const mongoClient = mongo.MongoClient;
 
 app.use(express.json());
 
 apiRouter.use(require('cookie-parser')());
 
-apiRouter.post('/login', authController.login);
+//apiRouter.post('/login', authController.login);
 
 apiRouter.use(function(req, resp, next) {
 	let token = req.cookies._id;
@@ -55,5 +57,14 @@ rowController.getRows("yellow", "A", 1);
 columnController.getColumns("yellow", "A", 1, 1);
 trayController.getTray("yellow", "A", 1, 1, 1);
 */
+
+async function temp(){
+	let connection =await mongoClient.connect("mongodb://localhost:27017", {useUnifiedTopology: true})
+	.catch(err => console.log(err));
+	console.log(connection)
+	authController.insertUser(connection, {"username": "anotheruser", "password":"pasfsdafass"});
+}
+temp();
+
 
 module.exports = {app};

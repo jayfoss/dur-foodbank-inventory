@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
-const argon2 = require('argon2');
+//const argon2 = require('argon2');
 const AppError = require('../errors/AppError');
 const appError = new AppError();
 
@@ -44,7 +44,7 @@ class AuthController {
 	
 	async createPassword(resp, password) {
 		try {
-			return await argon2.hash(password, {type: argon2.argon2id});
+			//return await argon2.hash(password, {type: argon2.argon2id});
 		}
 		catch(err) {
 			return appError.internalServerError(resp, 'Hashing password failed', err);
@@ -53,10 +53,27 @@ class AuthController {
 	
 	async passwordMatches(resp, password, hash) {
 		try {
-			return await argon2.verify(hash, password);
+			//return await argon2.verify(hash, password);
 		} catch (err) {
 			appError.internalServerError(resp, 'Failed to verify password', err);
 			return null;
 		}
 	}
+
+	async insertUser(connection, userObj){
+		if(!connection) return;
+
+		try {
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			console.log("1");
+			await collection.insertOne(userObj);
+		} catch (err){
+			console.log(err);
+		} finally {
+			connection.close();
+		}
+	}
 }
+
+module.exports = AuthController;

@@ -1,0 +1,303 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery-3.4.1.min.js"></script>
+    <script src="script.js"></script>
+
+</head>
+
+<body>
+    <nav id="nav" class="sidebar">
+        <ul>
+            <img width="80%" src="trussell-trust-logo-500px-TRANSPARENT.png">
+            <li>Tab 1</li>
+            <li>Data View</li>
+            <li>Tab 3</li>
+            <li>Tab 4</li>
+        </ul>
+    </nav>
+
+    <div id="main" class="main-content">
+        <div class="topbar">
+            <section id="hamburger-bars" onclick="toggleSidebar()" class="hamburger">
+                <section></section>
+                <section></section>
+                <section></section>
+            </section>
+        </div>
+        <section style="margin: 20px; padding: 20px;">
+            <form>
+                <input type="text" placeholder="  Search for food type...">
+            </form>
+            <br />
+            <br />
+            <table id="main-table" align="center" width="100%" border="1" cellpadding="10px" cellspacing="0">
+                <tr style="border:none">
+                    <th><select>
+                        <option>Zone</option>
+                        <option>Green</option>
+                        <option>Yellow</option>
+                        <option>Blue</option> 
+                        <option>Pink</option>
+                    </select></th>
+                    <th><select>
+                        <option>Bay</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option> 
+                        <option>D</option>
+                    </select></th>
+                    <th><select>
+                        <option>Level</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option> 
+                        <option>D</option>
+                    </select></th>
+                    <th><select>
+                        <option>Food Type</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option> 
+                        <option>D</option>
+                    </select></th>
+                    <th><select>
+                        <option>Expiry Date</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option> 
+                        <option>D</option>
+                    </select></th>
+                    <th><select>
+                        <option>Stock Taken Date</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option> 
+                        <option>D</option>
+                    </select></th>
+                    <td align="center"> Weight (kg) </td>
+                </tr>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+                <tr>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                    <td align="center">-</td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</body>
+
+</html>
