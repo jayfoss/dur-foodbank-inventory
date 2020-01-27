@@ -16,11 +16,25 @@
 </head>
 <body>
   <div style="width: 100%; height: 100%;" id="shelfie-app">
-    <div v-bind:class="{active: !isLoggedIn}" class="login">
+        <div style="width: 100%; height: 100%;" class="login" v-bind:class="{active: !isLoggedIn}">
+            <p>
+                <h2>Welcome! Please Login</h2>
+            </p>
+            <div class = "container">
+                <label for = "uname"><b>Username</b></label>
+                <input id="username-input" type = "text" placeholder="Enter Username/Email" name="uname" required>
 
-    </div>
-    <div v-bind:class="{active: isLoggedIn}" >
-        <nav class="sidebar">
+                <label for="psw"><b>Password</b></label>
+                <input id="passwd-input"type="password" placeholder="Enter Password" name="psw" required>
+            
+                <button onclick="login()" type="submit">Login</button>
+                <label>
+                  <input type="checkbox" checked="checked" name="remember"> Remember me
+                </label>
+            </div>
+        </div>
+        <div  class="app-container" v-bind:class="{active: isLoggedIn}">
+        <nav class="sidebar" v-bind:class="{active: isSidebarActive}">
         <ul class="button-list">
             <img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
             <li v-on:click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
@@ -45,7 +59,34 @@
             <div class="data-entry-form">
                 <div class= "container">
                     <div class="row">
-                        <div class="col-md-3 col-sm-4">
+                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
+                            <label for="select_zone">Zone</label>
+                            <select name = "select_zone" id="select_zone" v-model= "select_zone">
+                                <option v-for="zoneName in inventoryZones">{{ zoneName }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
+                            <label for="select_bay">Bay</label>
+                            <select id="select_bay" v-model="select_bay" >
+                                <option>A</option>
+                                <option>B</option>
+                                <option>C</option>
+                                <option>D</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
+                            <label for="select_level">Level</label>
+                            <select name = "select_level" id="select_level" v-model="select_level" >
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 col-sm-4" style="padding: 25px; margin: auto;">
                             <label for="select_year">Expiry Year</label>
                             <select name = "select_year" id="select_year" v-model="select_year" >
                                 <option>2023</option>
@@ -55,7 +96,7 @@
                                 <option>2019</option>
                             </select>
                         </div>
-                        <div class="col-md-3 col-sm-4">
+                        <div class="col-md-3 col-sm-4"  style="padding: 25px; margin: auto;">
                             <label for="select_month">Expiry Month</label>
                             <select name = "select_month" id="select_month" v-model="select_month" >
                                 <option>1</option>
@@ -73,43 +114,13 @@
                             </select>
                         </div>
     
-                        <div class="col-md-3 col-sm-4">
+                        <div class="col-md-3 col-sm-4"  style="padding: 25px; margin: auto;">
                         <label for="stock_taken_date">Stock Taken Date</label>
-                        <input type="text" name = "stock_taken_date" v-model= "stock_taken_date" id="datetimepicker">
+                        <input type="text" name = "stock_taken_date" v-model="stock_taken_date" id="datetimepicker">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3 col-sm-3">
-                            <label for="select_zone">Zone</label>
-                            <select name = "select_zone" id="select_zone" v-model= "select_zone" >
-                                <option>Yellow</option>
-                                <option>Green</option>
-                                <option>Blue</option>
-                                <option>Red</option>
-                                <option>Pink</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 col-sm-3">
-                            <label for="select_bay">Bay</label>
-                            <select id="select_bay" v-model="select_bay" >
-                                <option>A</option>
-                                <option>B</option>
-                                <option>C</option>
-                                <option>D</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 col-sm-3">
-                            <label for="select_level">Level</label>
-                            <select name = "select_level" id="select_level" v-model="select_level" >
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-3">
+                        <div class="col-md-3 col-sm-3"  style="padding: 25px; margin: auto;">
                             <label for="enter_weight">Weight</label>
                             <input type='text' name= "enter_weight" v-model="enter_weight">
                             <p></p>
@@ -148,6 +159,11 @@
                     <b>Plase select the tray you would like to update the information to </b>
                     <p>You have selected position: {{tray_position}}</p>
                     <br>
+                    <!---
+                    <table >
+                        <tr v-for="row in rows"><th v-for="column in column"></tr>
+                    </table>-->
+                    <!--
                     <div class="row">
                         <div class="btn-group2">
                             <button class="button"  v-on:click="tray_position='1'">1</button>
@@ -169,7 +185,8 @@
                             <button class="button"  v-on:click="tray_position='...'">...</button id="button">
                             <button class="button"  v-on:click="tray_position='...'">...</button>
                         </div>
-                    </div>   
+                    </div>  
+                    --> 
                 </div>
             </div>       
         </form>
@@ -221,6 +238,7 @@
             <div class="page-control-buttons">
                 <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
                 <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
+                <button onclick="fetchAllTrays()" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
             </div>
             <div class="input-filters">
                 <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
@@ -233,7 +251,9 @@
             </div>
         </div>
         </div>
+    </div>
   </div>
-  <script src='./src/main.js'></script>
+
+  <script src="./src/main.js" ></script>
 </body>
 </html>
