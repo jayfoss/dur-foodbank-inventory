@@ -104,11 +104,28 @@ apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows', (req, resp) =>
 apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows', (req, resp) => {
 	rowController.createRow(req, resp);
 });
-apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
+apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId', (req, resp) => {
 	rowController.modifyRow(req, resp);
 });
-apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId', (req, resp) => {
 	rowController.deleteRow(req, resp);
+});
+
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns', (req, resp) => {
+	columnController.getColumns(req, resp);
+});
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns', (req, resp) => {
+	columnController.createColumn(req, resp);
+});
+apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId', (req, resp) => {
+	columnController.modifyColumn(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId', (req, resp) => {
+	columnController.deleteColumn(req, resp);
+});
+
+apiRouter.get('/trays', (req, resp) => {
+	trayController.getAllTrays(req, resp);
 });
 
 app.use('/api/v1', apiRouter);

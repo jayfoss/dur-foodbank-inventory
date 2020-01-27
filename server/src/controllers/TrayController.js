@@ -4,6 +4,15 @@ class TrayController {
         this.db = db;
     }
 
+	async getAllTrays(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const trays = await this.getTraysFromDb();
+		resp.status(200);
+		resp.send(trays);
+	}
+
     async getTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber){
         let tray = {};
         const query = '{\'' + zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '\' : {$exists: true}}';
@@ -19,7 +28,7 @@ class TrayController {
         return tray;
     }
 
-    async getAllTrays(){
+    async getAllTraysFromDb(){
         let trays = []
 
         try{
@@ -46,8 +55,6 @@ class TrayController {
             });
         }catch(err){
             console.log(err);
-        }finally{
-            connection.close();
         }
         return trays;
     }

@@ -4,7 +4,46 @@ class ColumnController {
         this.db = db;
     }
 
-    async getColumns(zone, bay, shelf, row){
+	async getColumns(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const columns = await this.getColumnsFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId);
+		resp.status(200);
+		resp.send(columns);
+	}
+	
+	async createColumn(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
+		await this.insertColumn(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, column.column);
+		resp.status(201);
+		resp.send(column.fields);
+	}
+	
+	async modifyColumn(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
+		await this.changeColumnName(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, column.column);
+		resp.status(201);
+		resp.send(row.fields);
+	}
+	
+	async deleteColumn(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		await this.deleteColumnFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId);
+		resp.sendStatus(204);
+	}
+
+    async getColumnsFromDb(zone, bay, shelf, row){
         let columns = [];
         const query = '{\'' + zone + '.' + bay + '.' + shelf + '.' + row + '\' : {$exists: true}}';
 
