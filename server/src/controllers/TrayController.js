@@ -20,9 +20,6 @@ class TrayController {
     }
 
     async getAllTrays(){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let trays = []
 
         try{

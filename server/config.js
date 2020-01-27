@@ -14,8 +14,8 @@ const development = {
 	db: {
 		host: 'localhost',
 		port: 27017,
-		username: 'test',
-		password: 'test'
+		username: 'example@example.com',
+		password: 'Test'
 	}
 };
 
