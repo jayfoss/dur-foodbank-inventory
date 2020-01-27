@@ -1,38 +1,12 @@
-var app = new Vue({
-  el: '#test',
-  data: {
-    message: 'Hello Vue.js!'
-  }
-})
-
-var addZone = new Vue({
-	el:'#newZone',
-	data:{
-		zone_name: '',
-		bays: 1,
-		columns:4,
-		rows:3
-	}
-})
-
-var userData = new Vue({
-	el:'#user-data',
-	data:{
-		users:[
-		{userid:'abc123', permission:'admin'},
-		{userid:'dcs0zz', permission:'part timer'},
-		{userid:'abcdefg', permission:'part timer'},
-		{userid:'qwerty', permission:'part timer'},
-		{userid:'poiuy', permission:'part timer'},
-		{userid:'zxcvbn', permission:'part timer'}
-		]
-	}
-})
-
+const url = 'http://localhost:8080/api/v1';
 
 var shelfieApp = new Vue({
 	el: "#shelfie-app",
     data: {
+        /* LOGIN */
+        isLoggedIn: false,
+        /* END OF LOGIN */
+        
         /* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
@@ -67,24 +41,7 @@ var shelfieApp = new Vue({
         columnFilter: "",
         categoryFilter: "",
         weightFilter: "",
-        trays: [
-            { "zone": "blue", "bay":"A", "shelf": 1, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 2, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 3, "row":1, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-03-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-01-06", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 2, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-01", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 5, "row":2, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-09-11", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 2, "row":4, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-12-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 3, "row":3, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-23", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 1, "row":3, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 6, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 4, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 3, "row":4, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 3, "row":3, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 3, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 2, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" }
-        ]
+        trays: 
         /* END OF DATA VIEW */
     },
     methods:{
@@ -163,6 +120,9 @@ var shelfieApp = new Vue({
         },
         prevPage:function() {
             if(this.currentPage > 1) this.currentPage--;
+        },
+        fetchAllTrays: async function(){
+            return await fetch(url + '/trays');
         }
         /* END OF DATA VIEW PAGE */
     },
@@ -230,3 +190,27 @@ $('#button').click(function(e){
     e.preventDefault();
 });
 /* END OF INVENTORY PAGE */
+
+
+/* TRAY TEMPLATE DATA
+
+[
+            { "zone": "blue", "bay":"A", "shelf": 1, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
+            { "zone": "yellow", "bay":"C", "shelf": 2, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
+            { "zone": "purple", "bay":"C", "shelf": 3, "row":1, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-03-06", "userNote": "This is a note" },
+            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-01-06", "userNote": "This is a note" },
+            { "zone": "blue", "bay":"A", "shelf": 2, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-01", "userNote": "This is a note" },
+            { "zone": "yellow", "bay":"C", "shelf": 5, "row":2, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-09-11", "userNote": "This is a note" },
+            { "zone": "purple", "bay":"C", "shelf": 2, "row":4, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-12-06", "userNote": "This is a note" },
+            { "zone": "orange", "bay":"E", "shelf": 3, "row":3, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-23", "userNote": "This is a note" },
+            { "zone": "blue", "bay":"A", "shelf": 1, "row":3, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
+            { "zone": "yellow", "bay":"C", "shelf": 6, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
+            { "zone": "purple", "bay":"C", "shelf": 4, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
+            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
+            { "zone": "blue", "bay":"A", "shelf": 3, "row":4, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
+            { "zone": "yellow", "bay":"C", "shelf": 3, "row":3, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
+            { "zone": "purple", "bay":"C", "shelf": 3, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
+            { "zone": "orange", "bay":"E", "shelf": 2, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" }
+        ]
+
+*/
