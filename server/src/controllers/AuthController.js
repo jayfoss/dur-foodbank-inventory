@@ -121,6 +121,19 @@ class AuthController {
 			console.log(err);
 		}
 	}
+
+	async deleteUser(connection, userEmail){
+		if(!connection) return;
+		try{
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			collection.deleteOne({"email": userEmail});
+		} catch (err){
+			console.log(err);
+		} finally{
+			connection.close();
+		}
+	}
 }
 
 module.exports = AuthController;
