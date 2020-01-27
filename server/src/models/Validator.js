@@ -81,3 +81,5 @@ class Validator {
 		return this.errors.length > 0;
 	}
 }
+
+module.exports = Validator;

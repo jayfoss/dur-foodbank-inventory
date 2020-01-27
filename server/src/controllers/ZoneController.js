@@ -8,56 +8,54 @@ class ZoneController {
         this.db = db;
     }
 
-	getZones(req, resp) {
+	async getZones(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const zones = getZonesFromDb();
+		const zones = await this.getZonesFromDb();
 		resp.status(200);
 		resp.send(zones);		
 	}
 	
-	createZone(req, resp) {
+	async createZone(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const zone = new ZoneModel();
 		if(!zone.map(req.body)) return;
-		this.insertZone(zone.name);
+		await this.insertZone(zone.name);
 		resp.status(201);
 		resp.send(zone.fields);
 	}
 	
-	modifyZone(req, resp) {
+	async modifyZone(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const zone = new ZoneModel();
 		if(!zone.map(req.body)) return;
-		this.changeZoneName(req.params.zoneId, zone.name);
+		await this.changeZoneName(req.params.zoneId, zone.name);
 		resp.status(200);
 		resp.send(zone.fields);
 	}
 	
-	deleteZone(req, resp) {
+	async deleteZone(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-		this.deleteZoneFromDb(req.params.zoneId);
+		await this.deleteZoneFromDb(req.params.zoneId);
 		resp.sendStatus(204);
 	}
 	
     async getZonesFromDb(){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let zones = [];
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', {});
+            let cursor = await this.db.queryDatabase('warehouse', {});
 
             await cursor.forEach(function(result){
                 for(let key in result){
+					if(key === '_id') continue;
                     zones.push(key);
                 }
             });

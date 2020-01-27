@@ -1,5 +1,5 @@
 const Model = require('./Model');
-const Validator = require('Validator');
+const Validator = require('./Validator');
 
 class ShelfModel extends Model {
 	constructor() {
@@ -9,7 +9,6 @@ class ShelfModel extends Model {
 		this.settableFields = ['number'];
 		this.validator = new Validator('Shelf');
 		this.protectedFields = [];
-		this.rows = [];
 	}
 	
 	set number(value) {

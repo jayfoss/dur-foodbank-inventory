@@ -8,54 +8,51 @@ class ShelfController {
         this.db = db;
     }
 
-	getShelves(req, resp) {
+	async getShelves(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const shelves = getShelvesFromDb(req.params.zoneId, req.params.bayId);
+		const shelves = await this.getShelvesFromDb(req.params.zoneId, req.params.bayId);
 		resp.status(200);
 		resp.send(shelves);
 	}
 	
-	createShelf(req, resp) {
+	async createShelf(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const shelf = new ShelfModel();
 		if(!shelf.map(req.body)) return;
-		this.insertShelf(req.params.zoneId, req.params.bayId, shelf.number);
+		await this.insertShelf(req.params.zoneId, req.params.bayId, shelf.number);
 		resp.status(201);
 		resp.send(shelf.fields);
 	}
 	
-	modifyShelf(req, resp) {
+	async modifyShelf(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const shelf = new ShelfModel();
 		if(!shelf.map(req.body)) return;
-		this.changeShelfName(req.params.zoneId, req.params.bayId, req.params.shelfId, shelf.number);
+		await this.changeShelfName(req.params.zoneId, req.params.bayId, req.params.shelfId, shelf.number);
 		resp.status(200);
 		resp.send(shelf.fields);
 	}
 	
-	deleteShelf(req, resp) {
+	async deleteShelf(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-		this.deleteShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		await this.deleteShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
 		resp.sendStatus(204);
 	}
 
     async getShelvesFromDb(zone, bay){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let shelves = [];
         const query = '{\'' + zone + '.' + bay + '\' : {$exists: true}}';
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', query);
+            let cursor = await this.db.queryDatabase('warehouse', query);
             await cursor.forEach(function(result){
                 for(let key in result[zone][bay]){
                     shelves.push(key);

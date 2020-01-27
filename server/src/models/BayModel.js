@@ -1,5 +1,5 @@
 const Model = require('./Model');
-const Validator = require('Validator');
+const Validator = require('./Validator');
 
 class BayModel extends Model {
 	constructor() {
@@ -9,7 +9,6 @@ class BayModel extends Model {
 		this.settableFields = ['name'];
 		this.validator = new Validator('Bay');
 		this.protectedFields = [];
-		this.shelves = [];
 	}
 	
 	set name(value) {

@@ -1,5 +1,5 @@
 const Model = require('./Model');
-const Validator = require('Validator');
+const Validator = require('./Validator');
 
 class ColumnModel extends Model {
 	constructor() {

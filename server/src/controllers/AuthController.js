@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
-//const argon2 = require('argon2');
+const argon2 = require('argon2');
 const AppError = require('../errors/AppError');
 const appError = new AppError();
 const UserModel = require('../models/UserModel');
@@ -10,19 +10,24 @@ class AuthController {
 		this.db = db;
 	}
 
-	login(req, resp) {
+	async login(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
-		const user = {};
-		const pwdMatch = this.passwordMatches(resp, req.body.password, user.field.password);
+		let user = await this.getUser(req.body.email);
+		if(!user) {
+			return appError.unauthorized(resp, 'Invalid email or password');
+		}
+		const pwdMatch = await this.passwordMatches(resp, req.body.password, user.password);
 		if(pwdMatch === null) return;
 		if(pwdMatch) {
-			resp.cookie('_id', createAuth(user), {expires: new Date(Date.now() + config.auth.maxAge), httpOnly: true, secure: config.auth.secureCookie});
+			user.password = '';
+			delete user.password;
+			resp.cookie('_id', this.createAuth(user), {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: true, secure: config.auth.secureCookie});
 			resp.status(201);
 			resp.send(user);
 		}
 		else {
-			return appError.unauthorized(resp, 'Invalid username or password');
+			return appError.unauthorized(resp, 'Invalid email or password');
 		}
 	}
 	
@@ -45,14 +50,22 @@ class AuthController {
 		return token;
 	}
 	
+	getUsers(req, resp) {
+		
+	}
+	
 	createUser(req, resp) {
 		const user = new UserModel();
 		if(!user.map(req.body)) return;
 	}
 	
+	deleteUser(req, resp) {
+		
+	}
+	
 	async createPassword(resp, password) {
 		try {
-			//return await argon2.hash(password, {type: argon2.argon2id});
+			return await argon2.hash(password, {type: argon2.argon2id});
 		}
 		catch(err) {
 			return appError.internalServerError(resp, 'Hashing password failed', err);
@@ -61,7 +74,7 @@ class AuthController {
 	
 	async passwordMatches(resp, password, hash) {
 		try {
-			//return await argon2.verify(hash, password);
+			return await argon2.verify(hash, password);
 		} catch (err) {
 			appError.internalServerError(resp, 'Failed to verify password', err);
 			return null;
@@ -74,7 +87,7 @@ class AuthController {
 		try {
 			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			let doesUserExist = await collection.findOne({"email" : userObj["email"]});
+			let doesUserExist = await collection.findOne({'email' : userObj['email']});
 			if(doesUserExist) return; // THE USER ALREADY EXISTS WITH THAT EMAIL
 			await collection.insertOne(userObj);
 		} catch (err){
@@ -84,33 +97,28 @@ class AuthController {
 		}
 	}
 
-	async getUser(connection, userEmail) {
-		if(!connection) return;
+	async getUser(userEmail) {
+		let connection = this.db.getConnection();
 		let user = null;
 		try {
-			const db = connection.db("foodbank");
-			const collection = db.collection("users");
-			user = await collection.findOne({"email": userEmail});
-			
+			const db = connection.db('foodbank');
+			const collection = db.collection('users');
+			user = await collection.findOne({'email': userEmail});
 		} catch (err) {
 			console.log(err);
-		} finally {
-			connection.close();
 		}
 		return user
 	}
 
-	async updateUser(connection, userEmail, updateObj) {
-		if(!connection) return;
+	async updateUser(userEmail, updateObj) {
+		let connection = this.db.getConnection();
 		try {
-			const db = connection.db("foodbank");
-			const collection = db.collection("users");
+			const db = connection.db('foodbank');
+			const collection = db.collection('users');
 			console.log(updateObj);
-			await collection.updateOne({"email": userEmail}, {$set:updateObj});
+			await collection.updateOne({'email': userEmail}, {$set:updateObj});
 		} catch(err) {
 			console.log(err);
-		} finally {
-			connection.close();
 		}
 	}
 

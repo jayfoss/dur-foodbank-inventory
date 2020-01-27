@@ -5,14 +5,11 @@ class TrayController {
     }
 
     async getTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let tray = {};
         const query = '{\'' + zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '\' : {$exists: true}}';
 
         try {
-            let cursor = await this.db.queryDatabase(connection, 'warehouse', query);
+            let cursor = await this.db.queryDatabase('warehouse', query);
             await cursor.forEach(function(result){
                 tray = result[zoneName][bayName][shelfNumber][rowNumber][columnNumber];
             });

@@ -8,35 +8,51 @@ class RowController {
         this.db = db;
     }
 	
-	getRows(req, resp) {
+	async getRows(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const rows = getRowsFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		const rows = await this.getRowsFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
 		resp.status(200);
 		resp.send(rows);
 	}
 	
-	createRow(req, resp) {
+	async createRow(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const row = new RowModel();
 		if(!row.map(req.body)) return;
-		this.insertShelf(req.params.zoneId, req.params.bayId, req.params.shelfId, row.row);
+		await this.insertRow(req.params.zoneId, req.params.bayId, req.params.shelfId, row.row);
 		resp.status(201);
 		resp.send(row.fields);
 	}
+	
+	async modifyRow(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		await this.changeRowName(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, row.row);
+		resp.status(201);
+		resp.send(row.fields);
+	}
+	
+	async deleteRow(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		await this.deleteRowFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId);
+		resp.sendStatus(204);
+	}
 
     async getRowsFromDb(zone, bay, shelf){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let rows = [];
         const query = '{\'' + zone + '.' + bay + '.' + shelf +'\' : {$exists: true}}';
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', query);
+            let cursor = await this.db.queryDatabase('warehouse', query);
             await cursor.forEach(function(result){
                 for(let key in result[zone][bay][shelf]){
                     rows.push(key);

@@ -55,8 +55,6 @@ class Database {
             await collection.updateOne(filter, updateQuery);
         } catch (err) {
             console.log(err);
-        } finally {
-            connection.close();
         }
     }
 }
