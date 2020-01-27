@@ -19,6 +19,39 @@ class TrayController {
         return tray;
     }
 
+    async getAllTrays(){
+        let trays = []
+
+        try{
+            let cursor = await this.db.queryDatabase('warehouse', {});
+            await cursor.forEach(function(doc){
+                for(let zoneName in doc){
+                    if(zoneName === "_id") continue;
+                    for(let bayName in doc[zoneName]){
+                        for(let shelfNumber in doc[zoneName][bayName]){
+                            for(let rowNumber in doc[zoneName][bayName][shelfNumber]){
+                                for(let columnNumber in doc[zoneName][bayName][shelfNumber][rowNumber]){
+                                    let tray = doc[zoneName][bayName][shelfNumber][rowNumber][columnNumber]
+                                    tray["zone"] = zoneName;
+                                    tray["bay"] = bayName;
+                                    tray["shelf"] = shelfNumber;
+                                    tray["row"] = rowNumber;
+                                    tray["column"] = columnNumber;
+                                    trays.push(tray);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }catch(err){
+            console.log(err);
+        }finally{
+            connection.close();
+        }
+        return trays;
+    }
+
     async setTrayCategory(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newCategory) {
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '.category';
         let filter = {[insertStringLeft]: { $exists: true }};
