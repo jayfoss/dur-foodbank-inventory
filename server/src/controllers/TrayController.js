@@ -12,7 +12,7 @@ class TrayController {
         const query = '{\'' + zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '\' : {$exists: true}}';
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', query);
+            let cursor = await this.db.queryDatabase(connection, 'warehouse', query);
             await cursor.forEach(function(result){
                 tray = result[zoneName][bayName][shelfNumber][rowNumber][columnNumber];
             });
@@ -20,6 +20,42 @@ class TrayController {
             console.log(err);
         }
         return tray;
+    }
+
+    async getAllTrays(){
+        const connection = await this.db.getConnection();
+        if(!connection) return;
+
+        let trays = []
+
+        try{
+            let cursor = await this.db.queryDatabase('warehouse', {});
+            await cursor.forEach(function(doc){
+                for(let zoneName in doc){
+                    if(zoneName === "_id") continue;
+                    for(let bayName in doc[zoneName]){
+                        for(let shelfNumber in doc[zoneName][bayName]){
+                            for(let rowNumber in doc[zoneName][bayName][shelfNumber]){
+                                for(let columnNumber in doc[zoneName][bayName][shelfNumber][rowNumber]){
+                                    let tray = doc[zoneName][bayName][shelfNumber][rowNumber][columnNumber]
+                                    tray["zone"] = zoneName;
+                                    tray["bay"] = bayName;
+                                    tray["shelf"] = shelfNumber;
+                                    tray["row"] = rowNumber;
+                                    tray["column"] = columnNumber;
+                                    trays.push(tray);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }catch(err){
+            console.log(err);
+        }finally{
+            connection.close();
+        }
+        return trays;
     }
 
     async setTrayCategory(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newCategory) {

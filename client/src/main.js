@@ -33,12 +33,28 @@ var userData = new Vue({
 var shelfieApp = new Vue({
 	el: "#shelfie-app",
     data: {
+        /* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
 		isInventoryActive: true,
 		isReportActive: false,
 		isWarehouseConfigActive: false,
-		isUserManagementActive: false,
+        isUserManagementActive: false,
+        /* END OF NAV CONTROL */
+
+        /* INVENTORY */
+        select_year: '',
+        select_month: '',
+        stock_taken_date: '',
+        select_zone:'',
+        select_bay:'',
+        select_level:'',
+        enter_weight:'',
+        tray_category:'',
+        tray_position:'',
+        /* END OF INVENTORY *
+
+        /* DATA VIEW */
         currentSort:'zone',
         currentSortDir:'asc',
         pageSize: 10,
@@ -51,7 +67,7 @@ var shelfieApp = new Vue({
         columnFilter: "",
         categoryFilter: "",
         weightFilter: "",
-        trays: [ // THE TRAY DATA WOULD GO HERE
+        trays: [
             { "zone": "blue", "bay":"A", "shelf": 1, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
             { "zone": "yellow", "bay":"C", "shelf": 2, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
             { "zone": "purple", "bay":"C", "shelf": 3, "row":1, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-03-06", "userNote": "This is a note" },
@@ -69,12 +85,14 @@ var shelfieApp = new Vue({
             { "zone": "purple", "bay":"C", "shelf": 3, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
             { "zone": "orange", "bay":"E", "shelf": 2, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" }
         ]
+        /* END OF DATA VIEW */
     },
     methods:{
         /* NAVIGATION CONTROL */
 		activatePage: function(page){
+            this.isSidebarActive = false;
 			this.isDataViewActive = false;
-			this.isInventoryActive = true;
+			this.isInventoryActive = false;
 			this.isReportActive = false;
 			this.isWarehouseConfigActive = false;
 			this.isUserManagementActive = false;
@@ -88,11 +106,51 @@ var shelfieApp = new Vue({
 				this.isWarehouseConfigActive = true;
 			} else if(page === 'userManagement'){
 				this.isUserManagementActive = true;
-			} else {
-				this.isInventoryActive = true;
 			}
+            console.log(this.isInventoryActive);
         },
         /* END OF NAVIGATION CONTROL */
+
+        /* INVENTORY */
+        checkForm: function (e) {
+            if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_level && this.enter_weight &&this.food_type) {
+                return true;
+              }
+        
+              this.errors = [];
+        
+              if (!this.select_year) {
+                this.errors.push('Expiry Year required.');
+              }
+              if (!this.select_month) {
+                this.errors.push('Expiry Month required.');
+              }
+              if (!this.stock_taken_date) {
+                this.errors.push('Stock taken date required.');
+              }
+              if (!this.select_zone ) {
+                this.errors.push('Zone required.');
+              }
+              if (!this.select_bay ) {
+                this.errors.push('Bay required.');
+              }
+              if (!this.select_level ) {
+                this.errors.push('Level required.');
+              }
+              if (!this.enter_weight ) {
+                this.errors.push('weight required.');
+              }
+              if (!this.tray_category ) {
+                this.errors.push('tray_category required.');
+              }
+              if (!this.tray_position ) {
+                this.errors.push('tray_position required.');
+              }
+        
+            e.preventDefault();
+        },
+        /* END OF INVENTORY */
+
         /* DATA VIEW PAGE */
         sort:function(s) {
             if(s === this.currentSort) {
@@ -109,6 +167,7 @@ var shelfieApp = new Vue({
         /* END OF DATA VIEW PAGE */
     },
     computed:{
+        /* DATA VIEW PAGE */
         sortedTrays:function() {
             this.skippedRows = 0;
             console.log(this.currentPage)
@@ -155,5 +214,19 @@ var shelfieApp = new Vue({
                 }
             });
         }
+        /* END OF DATA VIEW PAGE */
     }
 });
+
+/* INVENTORY PAGE */
+$(function () {
+    $('#datetimepicker').datetimepicker({
+        format: 'd-m-Y',
+        timepicker:false
+    });
+});
+
+$('#button').click(function(e){
+    e.preventDefault();
+});
+/* END OF INVENTORY PAGE */

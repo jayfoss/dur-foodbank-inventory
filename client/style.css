@@ -168,12 +168,11 @@ html{
 /* DATA VIEW PAGE CSS */
 
 .data-view {
-
-	display: flex;
 	align-items: center;
 	flex-direction: column;
 	display: none;
 	padding: 50px;
+	overflow-x: auto;
 }
 
 .data-view.active {
@@ -183,7 +182,7 @@ html{
 .data-view table {
     border-collapse: collapse;
     text-align: center;
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -199,6 +198,10 @@ html{
 
 .data-view table th:hover {
     cursor: pointer;
+}
+
+.data-view .input-filters input {
+	padding: 10px;
 }
 
 .data-view .input-filters label {
@@ -218,3 +221,54 @@ html{
 }
 
 /* END OF DATA VIEW PAGE CSS */
+
+/* INVENTORY PAGE CSS */
+
+.inventory {
+	display: none;
+	overflow-x: auto;
+}
+
+.inventory.active {
+	display: initial;
+}
+
+.btn-group1 .button {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid green;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    width: 170px;
+    display: block;
+  }
+  .btn-group1 .button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+  } 
+  .btn-group1 .button:hover {
+    background-color: #3e8e41;
+  }
+
+.btn-group2 .button {
+    background-color: orange;
+    border: 1px solid green;
+    width: 120px;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+ }
+ .btn-group2 .button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+  } 
+ .btn-group2 .button:hover {
+    background-color: #FF8C00
+  }
+
+
+/* END OF INVENTORY PAGE CSS */
