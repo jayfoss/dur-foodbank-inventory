@@ -5,14 +5,11 @@ class ColumnController {
     }
 
     async getColumns(zone, bay, shelf, row){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let columns = [];
         const query = '{\'' + zone + '.' + bay + '.' + shelf + '.' + row + '\' : {$exists: true}}';
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', query);
+            let cursor = await this.db.queryDatabase('warehouse', query);
             await cursor.forEach(function(result){
                 for(let key in result[zone][bay][shelf][row]){
                     columns.push(key);

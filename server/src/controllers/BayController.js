@@ -8,53 +8,50 @@ class BayController {
         this.db = db;
     }
 
-	getBays(req, resp) {
+	async getBays(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const bays = getBaysFromDb(req.params.zoneId);
+		const bays = await this.getBaysFromDb(req.params.zoneId);
 		resp.status(200);
 		resp.send(bays);
 	}
 	
-	createBay(req, resp) {
+	async createBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const bay = new BayModel();
 		if(!bay.map(req.body)) return;
-		this.insertBay(req.params.zoneId, bay.name);
+		await this.insertBay(req.params.zoneId, bay.name);
 		resp.status(201);
 		resp.send(bay.fields);
 	}
 	
-	modifyBay(req, resp) {
+	async modifyBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const bay = new BayModel();
 		if(!bay.map(req.body)) return;
-		this.changeBayName(req.params.zoneId, req.params.bayId, bay.name);
+		await this.changeBayName(req.params.zoneId, req.params.bayId, bay.name);
 		resp.status(200);
 		resp.send(bay.fields);
 	}
 	
-	deleteBay(req, resp) {
+	async deleteBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-		this.deleteBayFromDb(req.params.zoneId, req.params.bayId);
+		await this.deleteBayFromDb(req.params.zoneId, req.params.bayId);
 		resp.sendStatus(204);
 	}
 
     async getBaysFromDb(zone){
-        const connection = await this.db.getConnection();
-        if(!connection) return;
-
         let bays = [];
 
         try {
-            let cursor = await this.queryDatabase(connection, 'warehouse', {});
+            let cursor = await this.db.queryDatabase('warehouse', {});
             await cursor.forEach(function(result){
                 for(let key in result[zone]){
                     bays.push(key);
