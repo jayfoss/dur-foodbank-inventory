@@ -28,22 +28,10 @@ var userData = new Vue({
 		]
 	}
 })
-/*
-var navApp = new Vue({
-	el: "#nav-app",
-	data: {
-		isSidebarActive: false
-	}, methods: {
-		activatePage: function(page){
-			console.log(page)
-		}
-	}
-});
 
 
-/* RESPONSIBLE FOR THE VIEWING, FILTERING AND SORTING OF TRAY DATA */
-var dataViewApp = new Vue({
-	el: "#nav-app",
+var shelfieApp = new Vue({
+	el: "#shelfie-app",
     data: {
 		isSidebarActive: false,
 		isDataViewActive: false,
@@ -55,6 +43,7 @@ var dataViewApp = new Vue({
         currentSortDir:'asc',
         pageSize: 10,
         currentPage: 1,
+        skippedRows: 0,
         zoneFilter: "",
         bayFilter: "",
         shelfFilter: "",
@@ -82,6 +71,7 @@ var dataViewApp = new Vue({
         ]
     },
     methods:{
+        /* NAVIGATION CONTROL */
 		activatePage: function(page){
 			this.isDataViewActive = false;
 			this.isInventoryActive = true;
@@ -101,7 +91,9 @@ var dataViewApp = new Vue({
 			} else {
 				this.isInventoryActive = true;
 			}
-		},
+        },
+        /* END OF NAVIGATION CONTROL */
+        /* DATA VIEW PAGE */
         sort:function(s) {
             if(s === this.currentSort) {
                 this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
@@ -114,9 +106,12 @@ var dataViewApp = new Vue({
         prevPage:function() {
             if(this.currentPage > 1) this.currentPage--;
         }
+        /* END OF DATA VIEW PAGE */
     },
     computed:{
         sortedTrays:function() {
+            this.skippedRows = 0;
+            console.log(this.currentPage)
             return this.trays.sort((a,b) => {
                 let modifier = 1;
                 if(this.currentSortDir === 'desc') modifier = -1;
@@ -141,7 +136,8 @@ var dataViewApp = new Vue({
             }).filter((object, index) => {
                 let start = (this.currentPage-1)*this.pageSize;
                 let end = this.currentPage*this.pageSize;
-                if(index >= start && index < end) {
+                let tmpIndex = index - this.skippedRows;
+                if(tmpIndex >= start && tmpIndex < end) {
                     if(object.zone.toLowerCase().startsWith(this.zoneFilter.toLowerCase()) &&
                     object.bay.toLowerCase().startsWith(this.bayFilter.toLowerCase()) &&
                     object.shelf.toString().toLowerCase().startsWith(this.shelfFilter.toLowerCase()) &&
@@ -152,6 +148,9 @@ var dataViewApp = new Vue({
                     ){
                         return true;
                     }
+                    this.skippedRows++;
+                    return false;
+                } else {
                     return false;
                 }
             });

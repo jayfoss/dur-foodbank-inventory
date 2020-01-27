@@ -6,7 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-  <div style="width: 100vw; height: 100vh;" id="nav-app">
+  <div style="width: 100vw; height: 100vh;" id="shelfie-app">
     <nav v-bind:class="{active: isSidebarActive}" class="sidebar">
       <ul class="button-list">
         <img width="80%" src="./src./assets/trussell-trust-logo-500px.png">
@@ -72,13 +72,13 @@
             <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
         </div>
         <div class="input-filters">
-            <label>Zone Filter: <input v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
-            <label>Bay Filter: <input v-model="bayFilter" placeholder="Search by bay" type="text" ></label>
-            <label>Shelf Filter: <input v-model="shelfFilter" placeholder="Search by shelf" type="text" ></label>
-            <label>Row Filter: <input v-model="rowFilter" placeholder="Search by row" type="text" ></label>
-            <label>Column Filter: <input v-model="columnFilter" placeholder="Search by column" type="text" ></label>
-            <label>Category Filter: <input v-model="categoryFilter" placeholder="Search by category" type="text" ></label>
-            <label>Weight Filter: <input v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
+            <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
+            <label>Bay Filter: <input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" ></label>
+            <label>Shelf Filter: <input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" ></label>
+            <label>Row Filter: <input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" ></label>
+            <label>Column Filter: <input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" ></label>
+            <label>Category Filter: <input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" ></label>
+            <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
         </div>
       </div>
     </div>
