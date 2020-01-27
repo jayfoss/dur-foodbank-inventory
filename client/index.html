@@ -2,10 +2,234 @@
 <html>
 <head>
   <title>Shelfie Cloud</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="./src/jquery.datetimepicker.min.css" >
   <link rel='stylesheet' type = 'text/css' href='style.css'>
+
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="./src/jquery.datetimepicker.full.js"></script>
 </head>
 <body>
-<script src='./src/main.js'></script>
+  <div style="width: 100%; height: 100%;" id="shelfie-app">
+    <nav v-bind:class="{active: isSidebarActive}" class="sidebar">
+      <ul class="button-list">
+        <img width="80%" src="./src./assets/trussell-trust-logo-500px.png">
+        <li v-on:click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
+        <li v-on:click="activatePage('viewData')">View Data</li>
+        <li v-on:click="activatePage('report')">Report Generator</li>
+        <li v-on:click="activatePage('warehouseConfig')">Warehouse Config</li>
+        <li v-on:click="activatePage('userManagement')">User Management</li>
+    </ul>
+    </nav>
+    <div v-bind:class="{active: isSidebarActive}" class="main">
+      <div class="topbar">
+        <section v-on:click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
+          <section></section>
+          <section></section>
+          <section></section>
+        </section>
+      </div>
+      
+
+      <div v-bind:class="{active: isInventoryActive}" class="inventory">
+        <form role="form" @submit='checkForm' method="post">
+          <div class="data-entry-form">
+              <div class= "container">
+                  <div class="row">
+                      <div class="col-md-3 col-sm-4">
+                          <label for="select_year">Expiry Year</label>
+                          <select name = "select_year" id="select_year" v-model="select_year" >
+                              <option>2023</option>
+                              <option>2022</option>
+                              <option>2021</option>
+                              <option>2020</option>
+                              <option>2019</option>
+                          </select>
+                      </div>
+                      <div class="col-md-3 col-sm-4">
+                          <label for="select_month">Expiry Month</label>
+                          <select name = "select_month" id="select_month" v-model="select_month" >
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                              <option>5</option>
+                              <option>6</option>
+                              <option>7</option>
+                              <option>8</option>
+                              <option>9</option>
+                              <option>10</option>
+                              <option>11</option>
+                              <option>12</option>
+                          </select>
+                      </div>
+  
+                      <div class="col-md-3 col-sm-4">
+                      <label for="stock_taken_date">Stock Taken Date</label>
+                      <input type="text" name = "stock_taken_date" v-model= "stock_taken_date" id="datetimepicker">
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-3 col-sm-3">
+                          <label for="select_zone">Zone</label>
+                          <select name = "select_zone" id="select_zone" v-model= "select_zone" >
+                              <option>Yellow</option>
+                              <option>Green</option>
+                              <option>Blue</option>
+                              <option>Red</option>
+                              <option>Pink</option>
+                          </select>
+                      </div>
+                      <div class="col-md-3 col-sm-3">
+                          <label for="select_bay">Bay</label>
+                          <select id="select_bay" v-model="select_bay" >
+                              <option>A</option>
+                              <option>B</option>
+                              <option>C</option>
+                              <option>D</option>
+                          </select>
+                      </div>
+                      <div class="col-md-3 col-sm-3">
+                          <label for="select_level">Level</label>
+                          <select name = "select_level" id="select_level" v-model="select_level" >
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-3 col-sm-3">
+                          <label for="enter_weight">Weight</label>
+                          <input type='text' name= "enter_weight" v-model="enter_weight">
+                          <p></p>
+                      </div>
+                  </div>
+                  <b>Plase select a tray category</b>
+                  <p>You have selected: {{tray_category}}</p>
+                  <br>
+                  <div class="row">
+                      <div class="btn-group1" >
+                          <button class="button" v-on:click="tray_category='MIXED'">MIXED</button>
+                          <button class="button" v-on:click="tray_category='BEANS'">BEANS</button>
+                          <button class="button" v-on:click="tray_category='CEREAL'">CEREAL</button>
+                          <button class="button" v-on:click="tray_category='POTATOES'">POTATOES</button>    
+                      </div>
+                      <div class="btn-group1">
+                          <button class="button" v-on:click="tray_category='INSTAN MEAL'">INSTAN MEAL</button>
+                          <button class="button" v-on:click="tray_category='JAM'">JAM</button>
+                          <button class="button" v-on:click="tray_category='MISCELL'">MISCELL</button>
+                          <button class="button" v-on:click="tray_category='RICE'">RICE</button>
+                      </div>
+                      <div class="btn-group1">
+                          <button class="button" v-on:click="tray_category='PASTA'" value="PASTA">PASTA</button>
+                          <button class="button" v-on:click="tray_category='BISCUITS'" value="BISCUITS">BISCUITS</button>
+                          <button class="button" v-on:click="tray_category='MILK'" value="MILK">MILK</button>
+                          <button class="button" v-on:click="tray_category='SOUP'" value="SOUP">SOUP</button>
+                      </div>
+                      <div class="btn-group1">
+                          <button class="button" v-on:click="tray_category='...'">...</button>
+                          <button class="button" v-on:click="tray_category='...'">...</button>
+                          <button class="button" v-on:click="tray_category='...'">...</button>
+                          <button class="button" v-on:click="tray_category='...'">...</button>
+                      </div>
+                  </div>
+                  <br>
+                  <b>Plase select the tray you would like to update the information to </b>
+                  <p>You have selected position: {{tray_position}}</p>
+                  <br>
+                  <div class="row">
+                      <div class="btn-group2">
+                          <button class="button"  v-on:click="tray_position='1'">1</button>
+                          <button class="button"  v-on:click="tray_position='2'">2</button>
+                          <button class="button"  v-on:click="tray_position='3'">3</button>
+                      </div>
+                      <div class="btn-group2">
+                          <button class="button"  v-on:click="tray_position='4'">4</button>
+                          <button class="button"  v-on:click="tray_position='5'">5</button>
+                          <button class="button"  v-on:click="tray_position='6'">6</button>
+                      </div>
+                      <div class="btn-group2">
+                          <button class="button"  v-on:click="tray_position='...'">...</button>
+                          <button class="button"  v-on:click="tray_position='...'">...</button>
+                          <button class="button"  v-on:click="tray_position='...'">...</button>
+                      </div>
+                      <div class="btn-group2">
+                          <button class="button"  v-on:click="tray_position='...'">...</button>
+                          <button class="button"  v-on:click="tray_position='...'">...</button id="button">
+                          <button class="button"  v-on:click="tray_position='...'">...</button>
+                      </div>
+                  </div>   
+              </div>
+          </div>       
+      </form>
+      <input type="submit" value="Submit" style="float:right">
+      </div>
+
+      <div v-bind:class="{active: isDataViewActive}" class="data-view">
+        <h2 style="margin-bottom: 25px;">Data View</h2>
+        <table>
+            <tr>
+                <th rowspan="2" @click="sort('zone')">Zone</th>
+                <th rowspan="2" @click="sort('bay')">Bay</th>
+                <th rowspan="2" @click="sort('shelf')">Shelf</th>
+                <th rowspan="2" @click="sort('row')">Row</th>
+                <th rowspan="2" @click="sort('column')">Column</th>
+                <th rowspan="2" @click="sort('category')">Category</th>
+                <th rowspan="2" @click="sort('weight')">Weight</th>
+                <th style="cursor: default;" colspan="2">Expiry Year</th>
+                <th style="cursor: default;" colspan="2">Expiry Month</th>
+                <th rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
+                <th rowspan="2">Note</th>
+            </tr>
+    
+            <tr>
+                <th @click="sort('expiryYear.start')">Start</th>
+                <th @click="sort('expiryYear.end')">End</th>
+                <th @click="sort('expiryMonth.start')">Start</th>
+                <th @click="sort('expiryMonth.end')">End</th>
+            </tr>
+    
+            <tr v-for="tray in sortedTrays">
+                <td>{{ tray.zone }}</td>
+                <td>{{ tray.bay }}</td>
+                <td>{{ tray.shelf }}</td>
+                <td>{{ tray.row }}</td>
+                <td>{{ tray.column }}</td>
+                <td>{{ tray.category }}</td>
+                <td>{{ tray.weight }}</td>
+                <td>{{ tray.expiryYear.start }}</td>
+                <td>{{ tray.expiryYear.end }}</td>
+                <td>{{ tray.expiryMonth.start }}</td>
+                <td>{{ tray.expiryMonth.end }}</td>
+                <td>{{ tray.lastUpdated }}</td>
+                <td>{{ tray.userNote }}</td>
+            </tr>
+    
+        </table>
+    
+        <div class="page-control-buttons">
+            <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
+            <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
+        </div>
+        <div class="input-filters">
+            <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
+            <label>Bay Filter: <input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" ></label>
+            <label>Shelf Filter: <input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" ></label>
+            <label>Row Filter: <input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" ></label>
+            <label>Column Filter: <input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" ></label>
+            <label>Category Filter: <input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" ></label>
+            <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src='./src/main.js'></script>
 </body>
 </html>

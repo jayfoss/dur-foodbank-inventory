@@ -43,6 +43,13 @@ class Validator {
 		return true;
 	}
 	
+	isInteger(id, value) {
+		if(!Number.isInteger(value)) {
+			return this.err(this.resource, id, {'name':'isInteger'}, this.resource + ' ' + id + ' must be a whole number.');
+		}
+		return true;
+	}
+	
 	isBoolean(id, value) {
 		if (value !== true && value !== false) {
 			return this.err(this.resource, id, {'name':'isBoolean'}, this.resource + ' ' + id + ' must be a true or false value.');
@@ -62,6 +69,10 @@ class Validator {
 		return this.isNotNull(id, value) && this.isInRange(id, value, min, max);
 	}
 	
+	isIntegerNN(id, value) {
+		return this.isNotNull(id, value) && this.isInteger(id, value);
+	}
+	
 	isBooleanNN(id, value, min, max) {
 		return this.isNotNull(id, value) && this.isBoolean(id, value);
 	}
@@ -70,3 +81,5 @@ class Validator {
 		return this.errors.length > 0;
 	}
 }
+
+module.exports = Validator;

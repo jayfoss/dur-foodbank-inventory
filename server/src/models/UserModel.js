@@ -1,10 +1,10 @@
 const Model = require('./Model');
-const Validator = require('Validator');
+const Validator = require('./Validator');
 
 class UserModel extends Model {
 	constructor() {
 		this.fields = this.buildFields([
-			'id',
+			'_id',
 			'email',
 			'password',
 			'firstName',
@@ -16,6 +16,7 @@ class UserModel extends Model {
 		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse'];
 		this.validator = new Validator('User');
 		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse']);
+		this.protectedFields = ['password'];
 	}
 	
 	set email(value){
@@ -38,10 +39,20 @@ class UserModel extends Model {
 	}
 	
 	set lastName(value){
-		if(!this.validator.isValidLength('lastName', value, 1, 50)){
+		if(!this.validator.isValidLengthNN('lastName', value, 1, 50)){
 			return false;
 		}
 		this.fields.lastName = value;
 		return this;
 	}
+	
+	set password(value) {
+		if(!this.validator.isValidLengthNN('password', value, 8, 50)){
+			return false;
+		}
+		this.fields.password = value;
+		return this;
+	}
 }
+
+module.exports = UserModel;

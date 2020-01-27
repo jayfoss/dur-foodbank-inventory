@@ -15,7 +15,7 @@ class AppError {
 	}
 	
 	sendServerError(resp, error = null, code = 500, message = 'A server error has occurred.'){
-		console.err(error);
+		console.error(error);
 		if(resp.headersSent) return;
 		resp.status(code);
 		resp.send({error:message, type:'serverError'});
