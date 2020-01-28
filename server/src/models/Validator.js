@@ -57,6 +57,10 @@ class Validator {
 		return true;
 	}
 	
+	isYearStartEnd(id, value) {
+		
+	}
+	
 	isTimeNN(id, value) {
 		return this.isNotNull(id, value) && this.isTime(id, value);
 	}

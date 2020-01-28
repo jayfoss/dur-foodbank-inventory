@@ -1,3 +1,7 @@
+const AppError = require('../errors/AppError');
+const appError = new AppError();
+const ColumnModel = require('../models/ColumnModel');
+
 class ColumnController {
 
     constructor(db){

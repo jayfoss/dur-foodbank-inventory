@@ -125,6 +125,19 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/column
 	columnController.deleteColumn(req, resp);
 });
 
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId/tray', (req, resp) => {
+	trayController.getTray(req, resp);
+});
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId/tray', (req, resp) => {
+	trayController.createTray(req, resp);
+});
+apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId/tray', (req, resp) => {
+	trayController.modifyTray(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/:columnId/tray', (req, resp) => {
+	trayController.deleteTray(req, resp);
+});
+
 apiRouter.get('/trays', (req, resp) => {
 	trayController.getAllTrays(req, resp);
 });
