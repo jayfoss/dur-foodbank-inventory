@@ -13,6 +13,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <script src="./src/jquery.datetimepicker.full.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
   <div style="width: 100%; height: 100%;" id="shelfie-app">
@@ -61,26 +62,20 @@
                     <div class="row">
                         <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
                             <label for="select_zone">Zone</label>
-                            <select name = "select_zone" id="select_zone" v-model= "select_zone">
+                            <select name = "select_zone" id="select_zone" v-model= "select_zone" @change="inventoryFetchBays">
                                 <option v-for="zoneName in inventoryZones">{{ zoneName }}</option>
                             </select>
                         </div>
                         <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
                             <label for="select_bay">Bay</label>
-                            <select id="select_bay" v-model="select_bay" >
-                                <option>A</option>
-                                <option>B</option>
-                                <option>C</option>
-                                <option>D</option>
+                            <select id="select_bay" v-model="select_bay" @change="inventoryFetchShelves">
+                                <option v-for="bayName in inventoryBays">{{ bayName }}</option>
                             </select>
                         </div>
                         <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
                             <label for="select_level">Level</label>
-                            <select name = "select_level" id="select_level" v-model="select_level" >
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
+                            <select name = "select_level" id="select_level" v-model="select_level" @change="inventoryFetchRowsAndColumns">
+                                <option v-for="shelfNumber in inventoryShelves">{{ shelfNumber }}</option>
                             </select>
                         </div>
                     </div>
@@ -159,10 +154,11 @@
                     <b>Plase select the tray you would like to update the information to </b>
                     <p>You have selected position: {{tray_position}}</p>
                     <br>
-                    <!---
+                    
                     <table >
-                        <tr v-for="row in rows"><th v-for="column in column"></tr>
-                    </table>-->
+                        <tr v-for="row in inventoryRows.slice().reverse()"><th v-for="column in inventoryColumns" v-on:click="inventorySetSelectedTray(row, column)">TRAY</th></tr>
+                    </table>
+
                     <!--
                     <div class="row">
                         <div class="btn-group2">
@@ -187,10 +183,13 @@
                         </div>
                     </div>  
                     --> 
+                    <input type="submit" value="Submit" v-on:click="inventorySubmitNewTrays"> 
                 </div>
-            </div>       
+                
+            </div>
+              
         </form>
-        <input type="submit" value="Submit" style="float:right">
+        
         </div>
 
         <div v-bind:class="{active: isDataViewActive}" class="data-view">
@@ -238,7 +237,7 @@
             <div class="page-control-buttons">
                 <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
                 <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
-                <button onclick="fetchAllTrays()" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
             </div>
             <div class="input-filters">
                 <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>

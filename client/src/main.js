@@ -18,6 +18,10 @@ var shelfieApp = new Vue({
 
         /* INVENTORY */
         inventoryZones: [''],
+        inventoryBays: [''],
+        inventoryShelves: [''],
+        inventoryRows: [],
+        inventoryColumns: [],
         select_year: '',
         select_month: '',
         stock_taken_date: '',
@@ -27,6 +31,10 @@ var shelfieApp = new Vue({
         enter_weight:'',
         tray_category:'',
         tray_position:'',
+        selectedTrayColumn:0,
+        selectedTrayRow:0,
+        inventoryTrays: [],
+        inventoryTraysNew: [],
         /* END OF INVENTORY *
 
         /* DATA VIEW */
@@ -70,6 +78,110 @@ var shelfieApp = new Vue({
         /* END OF NAVIGATION CONTROL */
 
         /* INVENTORY */
+        inventoryFetchZones: function(){
+            axios.get(shelfieURL + '/zones').then((res) => {
+                this.inventoryZones = res.data;
+            }).catch((err) => {
+                this.inventoryZones = [''];
+            });
+        },
+        inventoryFetchBays: function(){
+            let zoneName = this.select_zone;
+            if(zoneName === '') {
+                this.inventoryBays = [''];
+                return;
+            }
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays').then((res) => {
+                this.inventoryBays = res.data.sort();
+            }).catch((err) => {
+                this.inventoryBays = [''];
+            });
+        },
+        inventoryFetchShelves: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            if(zoneName === '' || bayName === '') {
+                this.inventoryShelves = [''];
+                return;
+            }
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves').then((res) => {
+                console.log(res.data);
+                this.inventoryShelves = res.data.sort();
+            }).catch((err) => {
+                this.inventoryShelves = [''];
+            });
+        },
+        inventoryFetchRowsAndColumns: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            let shelfNum = this.select_level;
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows').then((res) => {
+                this.inventoryRows = res.data.sort();
+                console.log("Rows: " + res.data.sort())
+                if(this.inventoryRows[0] !== undefined){
+                    axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + this.inventoryRows[0] + '/columns').then((res) => {
+                        console.log("Columns: " + res.data);
+                        this.inventoryColumns = res.data.sort();
+                        this.inventoryTrays = [];
+                        this.inventoryTraysNew = [];
+                        
+
+                        
+                        for(let row in this.inventoryRows){
+                            for(let column in this.inventoryColumns){
+                                let col = this.inventoryColumns[column];
+                                let ro = this.inventoryRows[row];
+                                axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + ro + '/columns/' + col + '/tray').then((res) => {
+                                    let tray = res.data;
+                                    tray['row'] = ro;
+                                    tray['column'] = col;
+                                    this.inventoryTrays.push(tray);
+                                });
+                            }
+                        }
+                        console.log(this.inventoryTrays);
+                    });
+                }
+            }).catch((err) => {
+                this.inventoryRows = [];
+            });
+        },
+        inventorySetSelectedTray: function(row, col){
+            this.selectedTrayColumn = col;
+            this.selectedTrayRow = row;
+            let tray = {"category": this.tray_category, "weight": this.enter_weight, "expiryYear": {"start": this.select_year, "end": this.select_year}, "expiryMonth": {"start": this.select_month, "end": this.select_month}, "lastUpdated": this.stock_taken_date, "userNote": "", "row": row, "column": col};
+            let existingIndex = 0;
+            let alreadyExists = false;
+            for(let tr in this.inventoryTraysNew){
+                let tra = this.inventoryTraysNew[tr];
+                if(tra["row"] == row  && tra["column"] == col){
+                    alreadyExists = true;
+                    existingIndex = tr;
+                }
+            }
+
+            if(alreadyExists){
+                this.inventoryTraysNew[existingIndex] = tray;
+            } else {
+                this.inventoryTraysNew.push(tray);
+            }
+            
+        },
+        inventorySubmitNewTrays: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            let shelfNum = this.select_level;
+            for(let index in this.inventoryTraysNew){
+                let trayToSubmit = this.inventoryTraysNew[index];
+                let row = trayToSubmit["row"];
+                let column = trayToSubmit["column"];
+                delete trayToSubmit["row"];
+                delete trayToSubmit["column"];
+                axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray',
+                    trayToSubmit
+                );
+            }
+        },
         checkForm: function (e) {
             if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_level && this.enter_weight &&this.food_type) {
                 return true;
@@ -110,6 +222,13 @@ var shelfieApp = new Vue({
         /* END OF INVENTORY */
 
         /* DATA VIEW PAGE */
+        fetchAllTrays: function(){
+            axios.get(shelfieURL + '/trays').then((res) => {
+                this.trays = res.data;
+            }).catch((err) => {
+                this.trays = [];
+            });
+        },
         sort:function(s) {
             if(s === this.currentSort) {
                 this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
@@ -117,7 +236,7 @@ var shelfieApp = new Vue({
             this.currentSort = s;
         },
         nextPage:function() {
-            if((this.currentPage*this.pageSize) < this.trays.length) this.currentPage++;
+            if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
         },
         prevPage:function() {
             if(this.currentPage > 1) this.currentPage--;
@@ -125,6 +244,10 @@ var shelfieApp = new Vue({
         /* END OF DATA VIEW PAGE */
     },
     computed:{
+        /* INVENTORY */
+        
+        /* END OF INVENTORY */
+
         /* DATA VIEW PAGE */
         sortedTrays:function() {
             this.skippedRows = 0;
@@ -154,8 +277,9 @@ var shelfieApp = new Vue({
                 let start = (this.currentPage-1)*this.pageSize;
                 let end = this.currentPage*this.pageSize;
                 let tmpIndex = index - this.skippedRows;
-                if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated || !object.userNote){
+                if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated){
                     this.skippedRows ++;
+                    console.log(object)
                     return false;
                 }
                 if(tmpIndex >= start && tmpIndex < end) {
@@ -202,7 +326,7 @@ async function login(){
     });
 }
 
-async function fetchZones(){
+function fetchZones(){
     fetch(shelfieURL + '/zones').then((res) => {
         return res.json();
     }).then((data) => {
@@ -212,16 +336,18 @@ async function fetchZones(){
     });
 }
 
-function fetchAllTrays(){
-    fetchZones();
-    fetch(shelfieURL + '/trays').then((res) => {
+async function fetchBays(zoneName) {
+    fetch(shelfURL + '/zones/' + zoneName + '/bays').then((res) => {
         return res.json();
     }).then((data) => {
-        shelfieApp.$data.trays = data;
+        shelfieApp.$data.inventoryBays = data;
+    }).catch((err) => {
+        shelfieApp.$data.inventoryBays = [''];
     });
 }
 
-fetchAllTrays();
+shelfieApp.fetchAllTrays();
+shelfieApp.inventoryFetchZones();
 
 /* INVENTORY PAGE */
 $(function () {
