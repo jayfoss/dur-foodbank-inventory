@@ -8,7 +8,7 @@ class TrayController {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const trays = await this.getTraysFromDb();
+		const trays = await this.getAllTraysFromDb();
 		resp.status(200);
 		resp.send(trays);
 	}

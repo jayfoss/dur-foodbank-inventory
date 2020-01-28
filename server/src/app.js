@@ -32,6 +32,7 @@ const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController(db);
 
 app.use(express.json());
+app.use('/', express.static('../client'));
 
 apiRouter.use(require('cookie-parser')());
 apiRouter.post('/auth', (req, resp) => {
