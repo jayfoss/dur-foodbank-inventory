@@ -3,6 +3,7 @@ const Validator = require('./Validator');
 
 class TrayModel extends Model {
 	constructor() {
+		super();
 		this.fields = this.buildFields([
 			'category',
 			'weight',
