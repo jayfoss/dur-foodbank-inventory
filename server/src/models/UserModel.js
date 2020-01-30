@@ -3,6 +3,7 @@ const Validator = require('./Validator');
 
 class UserModel extends Model {
 	constructor() {
+		super();
 		this.fields = this.buildFields([
 			'_id',
 			'email',
