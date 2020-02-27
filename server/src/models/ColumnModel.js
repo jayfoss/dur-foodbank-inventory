@@ -3,6 +3,7 @@ const Validator = require('./Validator');
 
 class ColumnModel extends Model {
 	constructor() {
+		super();
 		this.fields = this.buildFields([
 			'column'
 		]);

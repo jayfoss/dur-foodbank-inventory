@@ -3,6 +3,7 @@ const Validator = require('./Validator');
 
 class ShelfModel extends Model {
 	constructor() {
+		super();
 		this.fields = this.buildFields([
 			'number'
 		]);

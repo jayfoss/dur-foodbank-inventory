@@ -1,3 +1,7 @@
+const AppError = require('../errors/AppError');
+const appError = new AppError();
+const TrayModel = require('../models/TrayModel');
+
 class TrayController {
 
     constructor(db){
@@ -8,12 +12,51 @@ class TrayController {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
 		}
-		const trays = await this.getTraysFromDb();
+		const trays = await this.getAllTraysFromDb();
 		resp.status(200);
 		resp.send(trays);
 	}
+	
+	async getTray(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const tray = await this.getTrayFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId);
+		resp.status(200);
+		resp.send(tray);
+	}
+	
+	async createTray(req, resp) {
+		if(!req.jwtDecoded.canEditData) {
+			return appError.forbidden(resp, 'You do not have permission to edit data');
+		}
+		const tray = new TrayModel();
+		if(!tray.map(req.body)) return;
+		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
+		resp.status(201);
+		resp.send(tray);
+	}
+	
+	async modifyTray(req, resp) {
+		if(!req.jwtDecoded.canEditData) {
+			return appError.forbidden(resp, 'You do not have permission to edit data');
+		}
+		const tray = new TrayModel();
+		if(!tray.map(req.body)) return;
+		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
+		resp.status(200);
+		resp.send(tray);
+	}
+	
+	async deleteTray(req, resp) {
+		if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		await this.clearTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId);
+		resp.sendStatus(204);
+	}
 
-    async getTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber){
+    async getTrayFromDb(zoneName, bayName, shelfNumber, rowNumber, columnNumber){
         let tray = {};
         const query = '{\'' + zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '\' : {$exists: true}}';
 
@@ -103,7 +146,7 @@ class TrayController {
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
-    async setTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newTray) {
+    async insertTray(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newTray) {
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber;
         let filter = {[insertStringLeft]: { $exists: true }};
         let updateQuery = { $set: { [insertStringLeft]: newTray } };

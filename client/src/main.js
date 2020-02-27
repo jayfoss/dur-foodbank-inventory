@@ -1,4 +1,4 @@
-const url = 'http://localhost:8080/api/v1';
+const shelfieURL = 'http://localhost:8080/api/v1';
 
 var shelfieApp = new Vue({
 	el: "#shelfie-app",
@@ -6,7 +6,7 @@ var shelfieApp = new Vue({
         /* LOGIN */
         isLoggedIn: false,
         /* END OF LOGIN */
-        
+
         /* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
@@ -17,6 +17,11 @@ var shelfieApp = new Vue({
         /* END OF NAV CONTROL */
 
         /* INVENTORY */
+        inventoryZones: [''],
+        inventoryBays: [''],
+        inventoryShelves: [''],
+        inventoryRows: [],
+        inventoryColumns: [],
         select_year: '',
         select_month: '',
         stock_taken_date: '',
@@ -26,6 +31,10 @@ var shelfieApp = new Vue({
         enter_weight:'',
         tray_category:'',
         tray_position:'',
+        selectedTrayColumn:0,
+        selectedTrayRow:0,
+        inventoryTrays: [],
+        inventoryTraysNew: [],
         /* END OF INVENTORY *
 
         /* DATA VIEW */
@@ -41,7 +50,7 @@ var shelfieApp = new Vue({
         columnFilter: "",
         categoryFilter: "",
         weightFilter: "",
-        trays: 
+        trays: []
         /* END OF DATA VIEW */
     },
     methods:{
@@ -69,6 +78,110 @@ var shelfieApp = new Vue({
         /* END OF NAVIGATION CONTROL */
 
         /* INVENTORY */
+        inventoryFetchZones: function(){
+            axios.get(shelfieURL + '/zones').then((res) => {
+                this.inventoryZones = res.data;
+            }).catch((err) => {
+                this.inventoryZones = [''];
+            });
+        },
+        inventoryFetchBays: function(){
+            let zoneName = this.select_zone;
+            if(zoneName === '') {
+                this.inventoryBays = [''];
+                return;
+            }
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays').then((res) => {
+                this.inventoryBays = res.data.sort();
+            }).catch((err) => {
+                this.inventoryBays = [''];
+            });
+        },
+        inventoryFetchShelves: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            if(zoneName === '' || bayName === '') {
+                this.inventoryShelves = [''];
+                return;
+            }
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves').then((res) => {
+                console.log(res.data);
+                this.inventoryShelves = res.data.sort();
+            }).catch((err) => {
+                this.inventoryShelves = [''];
+            });
+        },
+        inventoryFetchRowsAndColumns: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            let shelfNum = this.select_level;
+            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows').then((res) => {
+                this.inventoryRows = res.data.sort();
+                console.log("Rows: " + res.data.sort())
+                if(this.inventoryRows[0] !== undefined){
+                    axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + this.inventoryRows[0] + '/columns').then((res) => {
+                        console.log("Columns: " + res.data);
+                        this.inventoryColumns = res.data.sort();
+                        this.inventoryTrays = [];
+                        this.inventoryTraysNew = [];
+                        
+
+                        
+                        for(let row in this.inventoryRows){
+                            for(let column in this.inventoryColumns){
+                                let col = this.inventoryColumns[column];
+                                let ro = this.inventoryRows[row];
+                                axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + ro + '/columns/' + col + '/tray').then((res) => {
+                                    let tray = res.data;
+                                    tray['row'] = ro;
+                                    tray['column'] = col;
+                                    this.inventoryTrays.push(tray);
+                                });
+                            }
+                        }
+                        console.log(this.inventoryTrays);
+                    });
+                }
+            }).catch((err) => {
+                this.inventoryRows = [];
+            });
+        },
+        inventorySetSelectedTray: function(row, col){
+            this.selectedTrayColumn = col;
+            this.selectedTrayRow = row;
+            let tray = {"category": this.tray_category, "weight": this.enter_weight, "expiryYear": {"start": this.select_year, "end": this.select_year}, "expiryMonth": {"start": this.select_month, "end": this.select_month}, "lastUpdated": this.stock_taken_date, "userNote": "", "row": row, "column": col};
+            let existingIndex = 0;
+            let alreadyExists = false;
+            for(let tr in this.inventoryTraysNew){
+                let tra = this.inventoryTraysNew[tr];
+                if(tra["row"] == row  && tra["column"] == col){
+                    alreadyExists = true;
+                    existingIndex = tr;
+                }
+            }
+
+            if(alreadyExists){
+                this.inventoryTraysNew[existingIndex] = tray;
+            } else {
+                this.inventoryTraysNew.push(tray);
+            }
+            
+        },
+        inventorySubmitNewTrays: function(){
+            let zoneName = this.select_zone;
+            let bayName = this.select_bay;
+            let shelfNum = this.select_level;
+            for(let index in this.inventoryTraysNew){
+                let trayToSubmit = this.inventoryTraysNew[index];
+                let row = trayToSubmit["row"];
+                let column = trayToSubmit["column"];
+                delete trayToSubmit["row"];
+                delete trayToSubmit["column"];
+                axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray',
+                    trayToSubmit
+                );
+            }
+        },
         checkForm: function (e) {
             if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_level && this.enter_weight &&this.food_type) {
                 return true;
@@ -109,6 +222,13 @@ var shelfieApp = new Vue({
         /* END OF INVENTORY */
 
         /* DATA VIEW PAGE */
+        fetchAllTrays: function(){
+            axios.get(shelfieURL + '/trays').then((res) => {
+                this.trays = res.data;
+            }).catch((err) => {
+                this.trays = [];
+            });
+        },
         sort:function(s) {
             if(s === this.currentSort) {
                 this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
@@ -116,17 +236,18 @@ var shelfieApp = new Vue({
             this.currentSort = s;
         },
         nextPage:function() {
-            if((this.currentPage*this.pageSize) < this.trays.length) this.currentPage++;
+            if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
         },
         prevPage:function() {
             if(this.currentPage > 1) this.currentPage--;
-        },
-        fetchAllTrays: async function(){
-            return await fetch(url + '/trays');
         }
         /* END OF DATA VIEW PAGE */
     },
     computed:{
+        /* INVENTORY */
+        
+        /* END OF INVENTORY */
+
         /* DATA VIEW PAGE */
         sortedTrays:function() {
             this.skippedRows = 0;
@@ -156,6 +277,11 @@ var shelfieApp = new Vue({
                 let start = (this.currentPage-1)*this.pageSize;
                 let end = this.currentPage*this.pageSize;
                 let tmpIndex = index - this.skippedRows;
+                if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated){
+                    this.skippedRows ++;
+                    console.log(object)
+                    return false;
+                }
                 if(tmpIndex >= start && tmpIndex < end) {
                     if(object.zone.toLowerCase().startsWith(this.zoneFilter.toLowerCase()) &&
                     object.bay.toLowerCase().startsWith(this.bayFilter.toLowerCase()) &&
@@ -178,6 +304,51 @@ var shelfieApp = new Vue({
     }
 });
 
+async function login(){
+    await fetch(shelfieURL + '/auth', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+            "email": $("#username-input").val(),
+            "password": $("#passwd-input").val()
+        })
+    }).then((res) => {
+        if(res.status === 201){
+            shelfieApp.$data.isLoggedIn = true;
+        } else {
+            shelfieApp.$data.isLoggedIn = false;
+        }
+    }).catch((err) => {
+        shelfieApp.$data.isLoggedIn = false;
+    });
+}
+
+function fetchZones(){
+    fetch(shelfieURL + '/zones').then((res) => {
+        return res.json();
+    }).then((data) => {
+        shelfieApp.$data.inventoryZones = data;
+    }).catch((err) => {
+        shelfieApp.$data.inventoryZones = [''];
+    });
+}
+
+async function fetchBays(zoneName) {
+    fetch(shelfURL + '/zones/' + zoneName + '/bays').then((res) => {
+        return res.json();
+    }).then((data) => {
+        shelfieApp.$data.inventoryBays = data;
+    }).catch((err) => {
+        shelfieApp.$data.inventoryBays = [''];
+    });
+}
+
+shelfieApp.fetchAllTrays();
+shelfieApp.inventoryFetchZones();
+
 /* INVENTORY PAGE */
 $(function () {
     $('#datetimepicker').datetimepicker({
@@ -190,27 +361,3 @@ $('#button').click(function(e){
     e.preventDefault();
 });
 /* END OF INVENTORY PAGE */
-
-
-/* TRAY TEMPLATE DATA
-
-[
-            { "zone": "blue", "bay":"A", "shelf": 1, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 2, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-07-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 3, "row":1, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-03-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-01-06", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 2, "row":1, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-01", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 5, "row":2, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-09-11", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 2, "row":4, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-12-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 3, "row":3, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-23", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 1, "row":3, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 6, "row":1, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 4, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 4, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "blue", "bay":"A", "shelf": 3, "row":4, "column":1, "category": "pasta", "weight": 2, "expiryYear" : {"start": 2021, "end":2021}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2020-04-06", "userNote": "This is a note" },
-            { "zone": "yellow", "bay":"C", "shelf": 3, "row":3, "column":2, "category": "beans", "weight": 1.5, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 2, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
-            { "zone": "purple", "bay":"C", "shelf": 3, "row":2, "column":3, "category": "jam", "weight": 0.65, "expiryYear" : {"start": 2023, "end":2023}, "expiryMonth" : {"start": 3, "end": 3}, "lastUpdated": "2021-04-06", "userNote": "This is a note" },
-            { "zone": "orange", "bay":"E", "shelf": 2, "row":1, "column":4, "category": "meat", "weight": 1.23, "expiryYear" : {"start": 2022, "end":2022}, "expiryMonth" : {"start": 5, "end": 6}, "lastUpdated": "2021-04-06", "userNote": "This is a note" }
-        ]
-
-*/

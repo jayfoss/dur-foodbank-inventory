@@ -3,6 +3,7 @@ const Validator = require('./Validator');
 
 class RowModel extends Model {
 	constructor() {
+		super();
 		this.fields = this.buildFields([
 			'row'
 		]);
