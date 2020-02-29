@@ -19,9 +19,9 @@
   <div style="width: 100%; height: 100%;" id="shelfie-app">
         <div style="width: 100%; height: 100%;" class="login" v-bind:class="{active: !isLoggedIn}">
             <p>
-                <h2>Welcome! Please Login</h2>
+                <h1>Welcome! Please Login</h1>
             </p>
-            <div class = "container">
+            <div class = "loginContainer">
                 <label for = "uname"><b>Username</b></label>
                 <input id="username-input" type = "text" placeholder="Enter Username/Email" name="uname" required>
 
@@ -29,7 +29,7 @@
                 <input id="passwd-input"type="password" placeholder="Enter Password" name="psw" required>
             
                 <button onclick="login()" type="submit">Login</button>
-                <label>
+                <label class = "rememberCheckbox">
                   <input type="checkbox" checked="checked" name="remember"> Remember me
                 </label>
             </div>
@@ -58,7 +58,7 @@
         <div v-bind:class="{active: isInventoryActive}" class="inventory">
             <form role="form" @submit='checkForm' method="post">
             <div class="data-entry-form">
-                <div class= "container">
+                <div class= "inventory-container">
                     <div class="row">
                         <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
                             <label for="select_zone">Zone</label>
@@ -125,29 +125,23 @@
                     <p>You have selected: {{tray_category}}</p>
                     <br>
                     <div class="row">
-                        <div class="btn-group1" >
-                            <button class="button" v-on:click="tray_category='MIXED'">MIXED</button>
-                            <button class="button" v-on:click="tray_category='BEANS'">BEANS</button>
-                            <button class="button" v-on:click="tray_category='CEREAL'">CEREAL</button>
-                            <button class="button" v-on:click="tray_category='POTATOES'">POTATOES</button>    
-                        </div>
-                        <div class="btn-group1">
-                            <button class="button" v-on:click="tray_category='INSTAN MEAL'">INSTAN MEAL</button>
-                            <button class="button" v-on:click="tray_category='JAM'">JAM</button>
-                            <button class="button" v-on:click="tray_category='MISCELL'">MISCELL</button>
-                            <button class="button" v-on:click="tray_category='RICE'">RICE</button>
-                        </div>
-                        <div class="btn-group1">
-                            <button class="button" v-on:click="tray_category='PASTA'" value="PASTA">PASTA</button>
-                            <button class="button" v-on:click="tray_category='BISCUITS'" value="BISCUITS">BISCUITS</button>
-                            <button class="button" v-on:click="tray_category='MILK'" value="MILK">MILK</button>
-                            <button class="button" v-on:click="tray_category='SOUP'" value="SOUP">SOUP</button>
-                        </div>
-                        <div class="btn-group1">
-                            <button class="button" v-on:click="tray_category='...'">...</button>
-                            <button class="button" v-on:click="tray_category='...'">...</button>
-                            <button class="button" v-on:click="tray_category='...'">...</button>
-                            <button class="button" v-on:click="tray_category='...'">...</button>
+                        <div class="button-group">
+                            <button class="invButton" v-on:click="tray_category='MIXED'">MIXED</button>
+                            <button class="invButton" v-on:click="tray_category='BEANS'">BEANS</button>
+                            <button class="invButton" v-on:click="tray_category='CEREAL'">CEREAL</button>
+                            <button class="invButton" v-on:click="tray_category='POTATOES'">POTATOES</button>    
+                            <button class="invButton" v-on:click="tray_category='INSTAN MEAL'">INSTAN MEAL</button>
+                            <button class="invButton" v-on:click="tray_category='JAM'">JAM</button>
+                            <button class="invButton" v-on:click="tray_category='MISCELL'">MISCELL</button>
+                            <button class="invButton" v-on:click="tray_category='RICE'">RICE</button>
+                            <button class="invButton" v-on:click="tray_category='PASTA'" value="PASTA">PASTA</button>
+                            <button class="invButton" v-on:click="tray_category='BISCUITS'" value="BISCUITS">BISCUITS</button>
+                            <button class="invButton" v-on:click="tray_category='MILK'" value="MILK">MILK</button>
+                            <button class="invButton" v-on:click="tray_category='SOUP'" value="SOUP">SOUP</button>
+                            <button class="invButton" v-on:click="tray_category='...'">...</button>
+                            <button class="invButton" v-on:click="tray_category='...'">...</button>
+                            <button class="invButton" v-on:click="tray_category='...'">...</button>
+                            <button class="invButton" v-on:click="tray_category='...'">...</button>
                         </div>
                     </div>
                     <br>
@@ -158,31 +152,6 @@
                     <table >
                         <tr v-for="row in inventoryRows.slice().reverse()"><th v-for="column in inventoryColumns" v-on:click="inventorySetSelectedTray(row, column)">TRAY</th></tr>
                     </table>
-
-                    <!--
-                    <div class="row">
-                        <div class="btn-group2">
-                            <button class="button"  v-on:click="tray_position='1'">1</button>
-                            <button class="button"  v-on:click="tray_position='2'">2</button>
-                            <button class="button"  v-on:click="tray_position='3'">3</button>
-                        </div>
-                        <div class="btn-group2">
-                            <button class="button"  v-on:click="tray_position='4'">4</button>
-                            <button class="button"  v-on:click="tray_position='5'">5</button>
-                            <button class="button"  v-on:click="tray_position='6'">6</button>
-                        </div>
-                        <div class="btn-group2">
-                            <button class="button"  v-on:click="tray_position='...'">...</button>
-                            <button class="button"  v-on:click="tray_position='...'">...</button>
-                            <button class="button"  v-on:click="tray_position='...'">...</button>
-                        </div>
-                        <div class="btn-group2">
-                            <button class="button"  v-on:click="tray_position='...'">...</button>
-                            <button class="button"  v-on:click="tray_position='...'">...</button id="button">
-                            <button class="button"  v-on:click="tray_position='...'">...</button>
-                        </div>
-                    </div>  
-                    --> 
                     <input type="submit" value="Submit" v-on:click="inventorySubmitNewTrays"> 
                 </div>
                 
