@@ -19,13 +19,13 @@ html{
 }
 
 p {
-  margin: 18px 6px 6px 18px;
-  font-size: 20px;
-  text-align: justify;
+	margin: 18px 6px 6px 18px;
+	font-size: 20px;
+	text-align: justify;
 }
 
 h1{
-  font-size: x-large;
+	font-size: x-large;
 	text-align: center;
 }
 
@@ -39,11 +39,6 @@ button {
   cursor: pointer;
   width: 100%;
   font-size: x-large;
-}
-
-/* Add a hover effect for buttons */
-button:hover {
-  opacity: 0.8;
 }
 
 .app-container.active {
@@ -199,14 +194,14 @@ input[type=text], input[type=password] {
 /* SIDE BAR CSS */
 
 .sidebar {
-	width: 300px;
+	width: 250px;
 	height: 100vh;
 	background-color: #a8d26e;
 	display: block;
 	position: fixed;
 	margin-left: -300px;
-  transition: margin-left 0.3s ease;
-  font-size: 18px;
+	transition: margin-left 0.3s ease;
+	font-size: 18px;
 }
 
 .sidebar .button-list {
@@ -228,19 +223,22 @@ input[type=text], input[type=password] {
 
 .topbar {
 	width: 100%;
-	height: 75px;
+	height: 50px;
 	background-color: #a8d26e;
 }
 
 .hamburger {
     background-color: none;
     height: 100%;
-    display: block;
-    width: 75px;
+    width: 50px;
+	height: 50px;
+	margin-left: .65em;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+	position: fixed;
+	z-index:1000;
 }
 
 .hamburger > section {
@@ -253,7 +251,6 @@ input[type=text], input[type=password] {
 
 .hamburger:hover {
     cursor: pointer;
-    background-color: #85bd37;
 }
 
 .main {
@@ -263,7 +260,7 @@ input[type=text], input[type=password] {
 }
 
 .main.active {
-	margin-left: 300px;
+	margin-left: 250px;
 }
 
 .sidebar.active {
@@ -349,45 +346,31 @@ input[type=text], input[type=password] {
 
 /* INVENTORY PAGE CSS */
 
-.inventory-container{
-  width: 95%;
-  padding-left: 16px;
-  margin-left: 16px;
+.button-group {
+	font-size: 0;
 }
 
 /*creating a class for buttons on the inventory page*/
-.invButton
-{
-	height:150px;
-  width: 170px;
-	margin-left:2px;
-	margin-top:0px;
-  border: 1px solid;
-  cursor: pointer; /* Pointer/hand icon */
-  float: left; /* Float the buttons side by side */
-  background-color: #00506C;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 18px;
-  cursor: pointer;
-  display: block;
+.invButton {
+	height: 50px;
+	width: 110px;
+	font-weight:bold;
+	margin: 0;
+	padding: 0;
+	border: 1px solid white;
+	cursor: pointer;
+	background-color: #00506C;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	font-size: 12px;
+	cursor: pointer;
+	display: inline-block;
 }
 
-.invButton:hover{
-	background-color:#d7d7d7;
-}
-
-/* Clear floats (clearfix hack) */
-.button-group:after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-.button-group button:not(:last-child) {
-  border-right: none; /* Prevent double borders */
+.invButton:hover {
+	background-color: #072631;
+	color: white;
 }
 
 .inventory {
@@ -397,6 +380,143 @@ input[type=text], input[type=password] {
 
 .inventory.active {
 	display: initial;
+}
+
+.inv-v-ctrl-head {
+	/*font-size: 1.25em;*/
+}
+
+.inv-v-ctrl-mv {
+	display: flex; 
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.inv-v-ctrl-mv div {
+	font-size: 2em;
+}
+
+.inv-v-ctrl-mv button {
+	padding: 0;
+	font-size: 2em;
+	width: 1.25em;
+	height: 1.25em;
+	margin: 0;
+	text-align: center;
+	line-height: 0;
+	outline: none;
+}
+
+.inv-checked {
+	padding: 0;
+	font-size: 2em;
+	width: 1.25em;
+	height: 1.25em;
+	background-color: red;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	direction: ltr;
+}
+
+.inv-checked:after {
+	content:"X";
+}
+
+.inv-checked.done {
+	background-color: green;
+}
+
+.inv-checked.done:after {
+	content:"\1F5F9";
+}
+
+.inv-warehouse-container {
+	padding:.5em;
+	background-color: #68B72E;
+	overflow: scroll;
+	height: 440px;
+}
+
+.inv-w-row {
+	padding: .25em;
+	width: 1250px;
+}
+
+.inv-w-el {
+	background-color: white;
+	display: inline-flex;
+	align-items: center;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	margin:.25em;
+	-webkit-transform: scale(1, 1);
+	transform: scale(1, 1);
+	position: relative;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+}
+
+.inv-w-el.selected {
+	box-shadow: 0 20px 30px rgba(0,0,0,0.23), 0 12px 12px rgba(0,0,0,0.27);
+	-webkit-transform: scale(1.2, 1.2);
+	transform: scale(1.2, 1.2);
+	z-index: 100;
+	background-color: #00506C;
+	color: white;
+}
+
+.inv-w-el-tray {
+	font-size: 1.25em;
+	padding: .5em 1.5em;
+}
+
+.inv-w-el-meta {
+	font-size: 1em;
+	display:inline-block;
+	border-left: 1px solid black;
+}
+
+.inv-w-el-weight {
+	padding: .5em .75em;
+	border-bottom: 1px solid black;
+}
+
+.inv-w-el-expiry {
+	padding: .5em .75em;
+}
+
+.exp-cyc-yellow {
+	background-color:yellow;
+	color:black;
+}
+
+.exp-cyc-blue {
+	background-color:blue;
+	color:white;
+}
+
+.exp-cyc-pink {
+	background-color:deeppink;
+	color:black;
+}
+
+.exp-cyc-green {
+	background-color:green;
+	color:white;
+}
+
+.inv-v-bay-view {
+	color: white;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	direction: rtl;
+	padding-left: .5em;
+}
+
+.inv-left-controls {
+	display: flex;
+	flex-direction: column;
 }
 
 /* END OF INVENTORY PAGE CSS */

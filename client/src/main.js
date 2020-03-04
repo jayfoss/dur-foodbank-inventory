@@ -4,7 +4,7 @@ var shelfieApp = new Vue({
 	el: "#shelfie-app",
     data: {
         /* LOGIN */
-        isLoggedIn: false,
+        isLoggedIn: true,
         /* END OF LOGIN */
 
         /* NAV CONTROL */
@@ -33,6 +33,7 @@ var shelfieApp = new Vue({
         tray_position:'',
         selectedTrayColumn:0,
         selectedTrayRow:0,
+		selectedTray:null,
         inventoryTrays: [],
         inventoryTraysNew: [],
         /* END OF INVENTORY *
@@ -154,7 +155,7 @@ var shelfieApp = new Vue({
             let alreadyExists = false;
             for(let tr in this.inventoryTraysNew){
                 let tra = this.inventoryTraysNew[tr];
-                if(tra["row"] == row  && tra["column"] == col){
+                if(tra["row"] === row  && tra["column"] === col){
                     alreadyExists = true;
                     existingIndex = tr;
                 }
