@@ -388,56 +388,6 @@ input[type=text], input[type=password] {
 	display: initial;
 }
 
-/* END OF INVENTORY PAGE CSS */
-
-
-/* USER MANAGEMENT */
-.user-view {
-	display: none;
-	padding: 50px;
-	overflow-x: auto;
-}
-
-.user-view-container{
-  width: 95%;
-  align-items: center;
-	flex-direction: column;
-  padding-left: 16px;
-  margin-left: 16px;
-  display: flex;
-}
-
-.user-view.active {
-  display: initial;
-  align-items: center;
-  flex-direction: column;
-  padding: 50px;
-	overflow-x: auto;
-}
-
-.user-view .current-record {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  margin: 15px;
-  float: left;
-  flex-wrap: wrap;
-}
-
-.user-view .page-control-buttons {
-	display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-	margin: 10px;
-}
-
-.user-view .record-item{
-  float:left;
-  display:flex;
-  vertical-align: center;
-  align-items: center;
-}
 .inv-v-ctrl-head {
 	/*font-size: 1.25em;*/
 }
@@ -576,3 +526,56 @@ input[type=text], input[type=password] {
 }
 
 /* END OF INVENTORY PAGE CSS */
+
+
+
+
+/* USER MANAGEMENT */
+.user-view {
+	display: none;
+	padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view-container{
+  width: 95%;
+  align-items: center;
+	flex-direction: column;
+  padding-left: 16px;
+  margin-left: 16px;
+  display: flex;
+}
+
+.user-view.active {
+  display: initial;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view .current-record {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
+  float: left;
+  flex-wrap: wrap;
+}
+
+.user-view .page-control-buttons {
+	display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+	margin: 10px;
+}
+
+.user-view .record-item{
+  float:left;
+  display:flex;
+  vertical-align: center;
+  align-items: center;
+}
+
+/* END OF USER MANAGEMENT */
