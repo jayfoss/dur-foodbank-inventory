@@ -24,7 +24,7 @@ p {
 	text-align: justify;
 }
 
-p1{
+p1 {
   margin: 18px 6px 18px 6px;
   font-size: 20px;
   text-align: justify;
@@ -578,4 +578,7 @@ input[type=text], input[type=password] {
   align-items: center;
 }
 
+.user-view .user-view-button{
+	
+}
 /* END OF USER MANAGEMENT */

@@ -488,9 +488,9 @@
                 </div>
 
                 <div class="page-control-buttons">      <!-- TO DO: add functionality -->
-                    <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
-                    <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
-                    <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                    <button @click="prevPage" class = "invButton" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
+                    <button @click="nextPage" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
+                    <button @click="fetchAllTrays" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
                 </div>
 
                 <p style="text-align: center; font-weight:bold; margin-top: 5%; margin-bottom: 0px">Selected User</p>
@@ -512,13 +512,13 @@
                         <div class="record-item">
                             <p1>Permissions: </p1>
                             <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-                                <input type="checkbox" value="true" checked/>  Can View Data<br><br>
-                                <input type="checkbox"/>  Can Edit Data<br><br>
-                                <input type="checkbox"/>  Can Modify Warehouse<br><br>
-                                <input type="checkbox"/>  Can Modify Users<br><br>
+                                <input type="checkbox" value="true" checked/><p1>  Can View Data</p1><br><br><br>
+                                <input type="checkbox"/><p1>  Can Edit Data</p1><br><br><br>
+                                <input type="checkbox"/><p1>  Can Modify Warehouse</p1><br><br>
+                                <input type="checkbox"/><p1>  Can Modify Users</p1><br><br>
                             </div>
                         </div>
-                        <button class="invButton">Update Record</button>
+                        <button class="invButton" style="margin-left: 15px; padding:10px; height: 100px; width:150px; background-color: #68B72E;">Update Record</button>
                     </div>
                 </div>
             </div>
