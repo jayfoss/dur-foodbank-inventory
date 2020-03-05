@@ -218,6 +218,95 @@
                 <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
             </div>
         </div>
+
+
+        <!-- USER MANAGEMENT PAGE -->
+        <div v-bind:class="{active: isUserManagementActive}" class="user-view">
+            <div class = "user-view-container">
+                <h2 style = "margin-bottom: 25px;">User Management</h2>
+                
+                <div>
+                    <table style="text-align: center;"> <!-- TO DO: read from DB-->
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Can View Data</th>
+                            <th>Can Edit Data</th>
+                            <th>Can Modify Warehouse</th>
+                            <th>Can Modify Users</Th>
+
+                        </tr>
+                        <tr style="font-weight:bold">
+                            <td>Aidan</td>
+                            <td>Williamson</td>
+                            <td>Aidan@AidansEmail.com</td>
+                            <td>Manager</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Eve</td>
+                            <td>Jackson</td>
+                            <td>EveJackson@OutkastsHub.co.uk</td>
+                            <td>Designated Volunteer</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                          </tr>
+                        <tr>
+                            <td>Roxanne</td>
+                            <td>Harriet</td>
+                            <td>RoxaneRoxanneson@googly.com</td>
+                            <td>Designated Volunteer</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                        </tr>
+                    </table>    
+                </div>
+
+                <div class="page-control-buttons">      <!-- TO DO: add functionality -->
+                    <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
+                    <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
+                    <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                </div>
+
+                <p style="text-align: center; font-weight:bold; margin-top: 5%; margin-bottom: 0px">Selected User</p>
+                    <div class="current-record">
+                        <div class="record-item">
+                            <p1>Name: </p1>
+                            <input type="text" style="height:38px;width:300px" placeholder="Aidan Williamson"></p></div>
+                        <div class="record-item">
+                            <p1>email: </p1>
+                            <input type="text" style="height:38px;width:300px" placeholder="Aidan@AidansEmail.com"></p></div>
+                        <div class="record-item">
+                            <p1>Role: </p1>
+                            <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
+                                <button class="invButton" style="width:100%;height:50px;background-color: #497E92;">Manager</button>
+                                <button class="invButton" style="width:100%;height:50px">Designated Volunteer</button>
+                                <button class="invButton" style="width:100%;height:50px">Non-Designated Volunteer</button>
+                            </div>
+                        </div>
+                        <div class="record-item">
+                            <p1>Permissions: </p1>
+                            <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
+                                <input type="checkbox" value="true" checked/>  Can View Data<br><br>
+                                <input type="checkbox"/>  Can Edit Data<br><br>
+                                <input type="checkbox"/>  Can Modify Warehouse<br><br>
+                                <input type="checkbox"/>  Can Modify Users<br><br>
+                            </div>
+                        </div>
+                        <button class="invButton">Update Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
   </div>
