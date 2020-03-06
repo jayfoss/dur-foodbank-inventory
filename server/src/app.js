@@ -138,6 +138,9 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/column
 	trayController.deleteTray(req, resp);
 });
 
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/trays', (req, resp) => {
+	trayController.getTraysOnShelf(req, resp);
+});
 apiRouter.get('/trays', (req, resp) => {
 	trayController.getAllTrays(req, resp);
 });
