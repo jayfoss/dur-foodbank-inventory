@@ -97,23 +97,24 @@ input[type=checkbox] {
 /* END OF WAREHOUSE CONFIG */
 
 /*REPORT PAGE*/
-.report
-{
-	margin-left:50px;
-	margin-top:50px;
-	border-collapse: collapse;
-	float: left;
-	text-align:left;
+.report_page{
+	display: none;
 }
 
-.report th{
-	background-color:#a8d26e;
+.report_page.active{
+	display: flex;
 }
-.report td, th {
+
+td, th {
 	border:1px solid #615b57;
 	padding:8px;
 }
-
+.custombut{
+  background-color: #004040;
+}
+.custombut:active{
+	background-color: #00506C;	
+}
 .separator{
 	margin-left:50px;
 	margin-top:50px;
@@ -126,15 +127,6 @@ input[type=checkbox] {
 	width:150px;
 	text-align:center;
 	font-size:15px;
-}
-
-.zone_input{
-	margin-left:50px;
-	margin-top:10px;
-	height:50px;
-	text-align:center;
-	font-size:15px;
-
 }
 
 .info_display{
