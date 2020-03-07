@@ -24,6 +24,12 @@ p {
 	text-align: justify;
 }
 
+p1 {
+  margin: 18px 6px 18px 6px;
+  font-size: 20px;
+  text-align: justify;
+}
+
 h1{
 	font-size: x-large;
 	text-align: center;
@@ -47,7 +53,7 @@ button {
 
 /*mainly used for remember me checkbox*/
 input[type=checkbox] {
-  transform: scale(4);
+  transform: scale(2.5);
   margin-right: 1.5%;
 }
 
@@ -289,7 +295,7 @@ input[type=text], input[type=password] {
 }
 
 .data-view.active {
-	display: flex;
+	display: flex;    /*why is this flex and everything else initial?*/
 }
 
 .data-view table {
@@ -358,6 +364,34 @@ input[type=text], input[type=password] {
 	font-size: 12px;
 	cursor: pointer;
 	display: inline-block;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	vertical-align: top;
+}
+
+.invButton.expandable {
+	height: 50px;
+	width: 110px;
+	border: 1px solid white;
+	background-color: #072631;
+	font-size: 10px;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+	opacity: 1;
+	pointer-events: auto;
+	
+}
+
+.invButton.expandable:hover {
+	background-color: white;
+	color: black;
+}
+
+.invButton.expandable.hidden {
+	height: 0;
+	width: 0;
+	border: none;
+	opacity: 0;
+	pointer-events: none;
 }
 
 .invButton:hover {
@@ -398,6 +432,11 @@ input[type=text], input[type=password] {
 	text-align: center;
 	line-height: 0;
 	outline: none;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.inv-v-zone {
+	text-transform: uppercase;
 }
 
 .inv-checked {
@@ -425,10 +464,11 @@ input[type=text], input[type=password] {
 }
 
 .inv-warehouse-container {
-	padding:.5em;
+	padding:.75em;
 	background-color: #68B72E;
 	overflow: scroll;
 	height: 440px;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .inv-w-row {
@@ -437,6 +477,8 @@ input[type=text], input[type=password] {
 }
 
 .inv-w-el {
+	width: 210px;
+	height: 81px;
 	background-color: white;
 	display: inline-flex;
 	align-items: center;
@@ -445,8 +487,10 @@ input[type=text], input[type=password] {
 	-webkit-transform: scale(1, 1);
 	transform: scale(1, 1);
 	position: relative;
+	cursor: pointer;
 	-webkit-transition: all .2s ease-in-out;
 	transition: all .2s ease-in-out;
+	vertical-align: top;
 }
 
 .inv-w-el.selected {
@@ -458,24 +502,58 @@ input[type=text], input[type=password] {
 	color: white;
 }
 
+.inv-w-el.selected .inv-w-el-weight input {
+	color: white;
+}
+
 .inv-w-el-tray {
-	font-size: 1.25em;
-	padding: .5em 1.5em;
+	font-size: 1.1em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: uppercase;
+	text-align: center;
+	width: 115px;
+	height: 100%;
 }
 
 .inv-w-el-meta {
+	height: 100%;
 	font-size: 1em;
 	display:inline-block;
 	border-left: 1px solid black;
+	width: 95px;
+	position: relative;
 }
 
 .inv-w-el-weight {
 	padding: .5em .75em;
 	border-bottom: 1px solid black;
+	height: 50%;
+	display: flex;
+	align-items: center;
+}
+
+.inv-w-el-weight input {
+	width: 100%;
+	background-color: transparent;
+	border: none;
+	outline: none;
 }
 
 .inv-w-el-expiry {
 	padding: .5em .75em;
+	height: 50%;
+	display: flex;
+	align-items: center;
+}
+
+.exp-cyc-ryy {
+	font-size: .9em;
+}
+
+.exp-cyc-rym {
+	font-size: .8em;
 }
 
 .exp-cyc-yellow {
@@ -512,3 +590,59 @@ input[type=text], input[type=password] {
 }
 
 /* END OF INVENTORY PAGE CSS */
+
+
+
+
+/* USER MANAGEMENT */
+.user-view {
+	display: none;
+	padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view-container{
+  width: 95%;
+  align-items: center;
+	flex-direction: column;
+  padding-left: 16px;
+  margin-left: 16px;
+  display: flex;
+}
+
+.user-view.active {
+  display: initial;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view .current-record {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
+  float: left;
+  flex-wrap: wrap;
+}
+
+.user-view .page-control-buttons {
+	display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+	margin: 10px;
+}
+
+.user-view .record-item{
+  float:left;
+  display:flex;
+  vertical-align: center;
+  align-items: center;
+}
+
+.user-view .user-view-button{
+	
+}
+/* END OF USER MANAGEMENT */

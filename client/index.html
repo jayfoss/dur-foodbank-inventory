@@ -12,6 +12,7 @@
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
   <script src="./src/jquery.datetimepicker.full.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
@@ -38,15 +39,15 @@
         <nav class="sidebar" v-bind:class="{active: isSidebarActive}">
         <ul class="button-list">
             <img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
-            <li v-on:click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
-            <li v-on:click="activatePage('viewData')">View Data</li>
-            <li v-on:click="activatePage('report')">Report Generator</li>
-            <li v-on:click="activatePage('warehouseConfig')">Warehouse Config</li>
-            <li v-on:click="activatePage('userManagement')">User Management</li>
+            <li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
+            <li @click="activatePage('viewData')">View Data</li>
+            <li @click="activatePage('report')">Report Generator</li>
+            <li @click="activatePage('warehouseConfig')">Warehouse Config</li>
+            <li @click="activatePage('userManagement')">User Management</li>
         </ul>
         </nav>
         <div v-bind:class="{active: isSidebarActive}" class="main">
-            <section v-on:click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
+            <section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
 				<section></section>
 				<section></section>
 				<section></section>
@@ -125,33 +126,33 @@
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">Zone</div>
 									<div class="inv-v-ctrl-mv">
-										<button>&#129092;</button>
-										<div>RED</div>
-										<button>&#129094;</button>
+										<button @click="sectionSelect('zone', false)">&#129092;</button>
+										<div class="inv-v-zone">{{inventoryZones[selectedZone]}}</div>
+										<button @click="sectionSelect('zone', true)">&#129094;</button>
 									</div>
 								</div>
 								<div class="inv-v-ctrl-container text-center pt-1">
 									<div class="inv-v-ctrl-head">Bay</div>
 									<div class="inv-v-ctrl-mv">
-										<button>&#129092;</button>
-										<div>A</div>
-										<button>&#129094;</button>
+										<button @click="sectionSelect('bay', false)">&#129092;</button>
+										<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
+										<button @click="sectionSelect('bay', true)">&#129094;</button>
 									</div>
 								</div>
 								<div class="inv-v-ctrl-container text-center pt-1">
 									<div class="inv-v-ctrl-head">Shelf</div>
 									<div class="inv-v-ctrl-mv">
 										<button>&#129095;</button>
-										<div>1</div>
+										<div>{{selectedShelf}}</div>
 										<button>&#129093;</button>
 									</div>
 								</div>
-								<div class="inv-v-ctrl-container d-flex justify-content-between">
+								<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
 									<div class="inv-left-controls">
-										<button class="invButton" v-on:click="">Shelf OK</button>
-										<button class="invButton" v-on:click="">Fill Shelf</button>
-										<button class="invButton" v-on:click="">Clear Tray</button>
-										<button class="invButton" v-on:click="">View Note</button>
+										<button class="invButton" @click="">Shelf OK</button>
+										<button class="invButton" @click="">Fill Shelf</button>
+										<button class="invButton" @click="">Clear Tray</button>
+										<button class="invButton" @click="">View Note</button>
 									</div>
 									<div class="inv-v-bay-view">
 										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
@@ -164,123 +165,12 @@
 							</div>
 							<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
 								<div class="inv-warehouse-container">
-									<div class="inv-w-row">
-										<div class="inv-w-el" :class="{selectedTray:id == selectedTray}" @click="selectedTray = id">
-											<div class="inv-w-el-tray">BEANS</div>
+									<div class="inv-w-row" v-for="row in shelfTrays.slice()">
+										<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
+											<div class="inv-w-el-tray">{{tray.category}}</div>
 											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry exp-cyc-yellow">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el selected">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry exp-cyc-blue">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry exp-cyc-pink">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry exp-cyc-green">May 2020</div>
-											</div>
-										</div>
-									</div>
-									<div class="inv-w-row">
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-									</div>
-									<div class="inv-w-row">
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-									</div>
-									<div class="inv-w-row">
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
-											</div>
-										</div>
-										<div class="inv-w-el">
-											<div class="inv-w-el-tray">BEANS</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight">10.25</div>
-												<div class="inv-w-el-expiry">May 2020</div>
+												<div class="inv-w-el-weight"><input type="number" min="0" step="0.01"></div>
+												<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
 											</div>
 										</div>
 									</div>
@@ -291,84 +181,77 @@
 					<div class="inv-category-inputs my-2">
 						<div class="row no-gutters mx-0">
 							<div class="button-group col-lg-9">
-								<button class="invButton" v-on:click="tray_category='MIXED'">MIXED</button>
-								<button class="invButton" v-on:click="tray_category='BABY'">BABY</button>
-								<button class="invButton" v-on:click="tray_category='CLEANING'">CLEANING</button>
-								<button class="invButton" v-on:click="tray_category='HOT CHOC'">HOT CHOC</button>
-								<button class="invButton" v-on:click="tray_category='PASTA'">PASTA</button>
-								<button class="invButton" v-on:click="tray_category='RICE PUD'">RICE PUD</button>
-								<button class="invButton" v-on:click="tray_category='TEA BAGS'">TEA BAGS</button>
-								<button class="invButton" v-on:click="tray_category='BABY'">BABY</button>
-								<button class="invButton" v-on:click="tray_category='EFBs'">EFBs</button>
-								<button class="invButton" v-on:click="tray_category='BEANS'">BEANS</button>
-								<button class="invButton" v-on:click="tray_category='CUSTARD'">CUSTARD</button>
-								<button class="invButton" v-on:click="tray_category='INSTANT MEALS'">INSTANT MEALS</button>
-								<button class="invButton" v-on:click="tray_category='PASTA SAUCE'">PASTA SAUCE</button>
-								<button class="invButton" v-on:click="tray_category='SAVOURY TREATS'">SAVOURY TREATS</button>
-								<button class="invButton" v-on:click="tray_category='TOILETRIES'">TOILETRIES</button>
-								<button class="invButton" v-on:click="tray_category='TRAYS'">TRAYS</button>
-								<button class="invButton" v-on:click="tray_category='BISCUITS'">BISCUITS</button>
-								<button class="invButton" v-on:click="tray_category='FEM HYGIENE'">FEM HYGIENE</button>
-								<button class="invButton" v-on:click="tray_category='JAM'">JAM</button>
-								<button class="invButton" v-on:click="tray_category='PET FOOD'">PET FOOD</button>
-								<button class="invButton" v-on:click="tray_category='SOUP'">SOUP</button>
-								<button class="invButton" v-on:click="tray_category='TOMATOES'">TOMATOES</button>
-								<button class="invButton" v-on:click="tray_category='SHORT DATE'">SHORT DATE</button>
-								<button class="invButton" v-on:click="tray_category='CEREAL'">CEREAL</button>
-								<button class="invButton" v-on:click="tray_category='FISH'">FISH</button>
-								<button class="invButton" v-on:click="tray_category='MEAT'">MEAT</button>
-								<button class="invButton" v-on:click="tray_category='POP/SQUASH'">POP/SQUASH</button>
-								<button class="invButton" v-on:click="tray_category='SPAGHETTI'">SPAGHETTI</button>
-								<button class="invButton" v-on:click="tray_category='VEGETABLES'">VEGETABLES</button>
-								<button class="invButton" v-on:click="tray_category='OUT OF DATE'">OUT OF DATE</button>
-								<button class="invButton" v-on:click="tray_category='CHOC/SWEET'">CHOC/SWEET</button>
-								<button class="invButton" v-on:click="tray_category='FRUIT'">FRUIT</button>
-								<button class="invButton" v-on:click="tray_category='MILK'">MILK</button>
-								<button class="invButton" v-on:click="tray_category='POTATOES'">POTATOES</button>
-								<button class="invButton" v-on:click="tray_category='SPONGE PUD'">SPONGE PUD</button>
-								<button class="invButton" v-on:click="tray_category='CHRISTMAS'">CHRISTMAS</button>
-								<button class="invButton" v-on:click="tray_category='UNSORTED'">UNSORTED</button>
-								<button class="invButton" v-on:click="tray_category='COFFEE'">COFFEE</button>
-								<button class="invButton" v-on:click="tray_category='FRUIT JUICE'">FRUIT JUICE</button>
-								<button class="invButton" v-on:click="tray_category='MISC'">MISC</button>
-								<button class="invButton" v-on:click="tray_category='RICE'">RICE</button>
-								<button class="invButton" v-on:click="tray_category='SUGAR'">SUGAR</button>
-								<button class="invButton" v-on:click="tray_category='OTHER'">OTHER</button>
-								<button class="invButton exp-cyc-yellow date" v-on:click="tray_category='2020'">2020</button>
-								<button class="invButton exp-cyc-blue date" v-on:click="tray_category='2021'">2021</button>
-								<button class="invButton exp-cyc-pink date" v-on:click="tray_category='2022'">2022</button>
-								<button class="invButton exp-cyc-green date" v-on:click="tray_category='2023'">2023</button>
-								<button class="invButton exp-cyc-yellow date" v-on:click="tray_category='2024'">2024</button>
+								<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
+								<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
+								<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
+								<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
+								<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
+								<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
+								<button class="invButton" @click="trayContent('MILK')">MILK</button>
+								<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
+								<button class="invButton" @click="trayContent('RICE')">RICE</button>
+								<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
+								<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
+								<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
+								<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
+								<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
+								<button class="invButton" @click="trayContent('JAM')">JAM</button>
+								<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
+								<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
+								<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
+								<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
+								<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
+								<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
+								<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
+								<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
+								<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
+								<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
+								<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
+								<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
+								<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
+								<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
+								<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
+								<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('CHRISTMAS')">XMAS CAKE</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
+								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
+								<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
+								<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
+								<button class="invButton" @click="trayContent('FISH')">FISH</button>
+								<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
+								<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
+								<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
+								<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
+								<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
+								<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
+								<button class="invButton" @click="trayContent('MISC')">MISC</button>
+								<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
+								<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
 							</div>
 							<div class="button-group col-lg-3">
-								<button class="invButton date" v-on:click="tray_category='JAN 2020'">JAN 2020</button>
-								<button class="invButton date" v-on:click="tray_category='FEB 2020'">FEB 2020</button>
-								<button class="invButton date" v-on:click="tray_category='MAR 2020'">MAR 2020</button>
-								<button class="invButton date" v-on:click="tray_category='APR 2020'">APR 2020</button>
-								<button class="invButton date" v-on:click="tray_category='MAY 2020'">MAY 2020</button>
-								<button class="invButton date" v-on:click="tray_category='JUN 2020'">JUN 2020</button>
-								<button class="invButton date" v-on:click="tray_category='JUL 2020'">JUL 2020</button>
-								<button class="invButton date" v-on:click="tray_category='AUG 2020'">AUG 2020</button>
-								<button class="invButton date" v-on:click="tray_category='SEP 2020'">SEP 2020</button>
-								<button class="invButton date" v-on:click="tray_category='OCT 2020'">OCT 2020</button>
-								<button class="invButton date" v-on:click="tray_category='NOV 2020'">NOV 2020</button>
-								<button class="invButton date" v-on:click="tray_category='DEC 2020'">DEC 2020</button>
-								<button class="invButton date" v-on:click="tray_category='JAN-MAR 2020'">JAN-MAR 2020</button>
-								<button class="invButton date" v-on:click="tray_category='APR-JUN 2020'">APR-JUN 2020</button>
-								<button class="invButton date" v-on:click="tray_category='JUL-SEP 2019'">JUL-SEP 2019</button>
-								<button class="invButton date" v-on:click="tray_category='OCT-DEC 2019'">OCT-DEC 2019</button>
+								<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
+								<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
 							</div>
 						</div>
 					</div>
-                    <br>
-                    <b>Plase select the tray you would like to update the information to </b>
-                    <p>You have selected position: {{tray_position}}</p>
-                    <br>
-                    
-                    <table >
-                        <tr v-for="row in inventoryRows.slice().reverse()"><th v-for="column in inventoryColumns" v-on:click="inventorySetSelectedTray(row, column)">TRAY</th></tr>
-                    </table>
-                    <input type="submit" value="Submit" v-on:click="inventorySubmitNewTrays"> 
+                    <input type="submit" value="Submit" @click="inventorySubmitNewTrays"> 
                 </div>
                 
             </div>
@@ -540,9 +423,96 @@
 			</div>
 		</div>
 		<!-- End of code for report generation-->
+
+
+        <!-- USER MANAGEMENT PAGE -->
+        <div v-bind:class="{active: isUserManagementActive}" class="user-view">
+            <div class = "user-view-container">
+                <h2 style = "margin-bottom: 25px;">User Management</h2>
+                
+                <div>
+                    <table style="text-align: center;"> <!-- TO DO: read from DB-->
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Can View Data</th>
+                            <th>Can Edit Data</th>
+                            <th>Can Modify Warehouse</th>
+                            <th>Can Modify Users</Th>
+
+                        </tr>
+                        <tr style="font-weight:bold">
+                            <td>Aidan</td>
+                            <td>Williamson</td>
+                            <td>Aidan@AidansEmail.com</td>
+                            <td>Manager</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Eve</td>
+                            <td>Jackson</td>
+                            <td>EveJackson@OutkastsHub.co.uk</td>
+                            <td>Designated Volunteer</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                          </tr>
+                        <tr>
+                            <td>Roxanne</td>
+                            <td>Harriet</td>
+                            <td>RoxaneRoxanneson@googly.com</td>
+                            <td>Designated Volunteer</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                        </tr>
+                    </table>    
+                </div>
+
+                <div class="page-control-buttons">      <!-- TO DO: add functionality -->
+                    <button @click="prevPage" class = "invButton" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
+                    <button @click="nextPage" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
+                    <button @click="fetchAllTrays" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                </div>
+
+                <p style="text-align: center; font-weight:bold; margin-top: 5%; margin-bottom: 0px">Selected User</p>
+				<div class="current-record">
+					<div class="record-item">
+						<p1>Name: </p1>
+						<input type="text" style="height:38px;width:300px" placeholder="Aidan Williamson"></p></div>
+					<div class="record-item">
+						<p1>email: </p1>
+						<input type="text" style="height:38px;width:300px" placeholder="Aidan@AidansEmail.com"></p></div>
+					<div class="record-item">
+						<p1>Role: </p1>
+						<div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
+							<button class="invButton" style="width:100%;height:50px;background-color: #497E92;">Manager</button>
+							<button class="invButton" style="width:100%;height:50px">Designated Volunteer</button>
+							<button class="invButton" style="width:100%;height:50px">Non-Designated Volunteer</button>
+						</div>
+					</div>
+					<div class="record-item">
+						<p1>Permissions: </p1>
+						<div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
+							<input type="checkbox" value="true" checked/><p1>  Can View Data</p1><br><br><br>
+							<input type="checkbox"/><p1>  Can Edit Data</p1><br><br><br>
+							<input type="checkbox"/><p1>  Can Modify Warehouse</p1><br><br>
+							<input type="checkbox"/><p1>  Can Modify Users</p1><br><br>
+						</div>
+					</div>
+					<button class="invButton" style="margin-left: 15px; padding:10px; height: 100px; width:150px; background-color: #68B72E;">Update Record</button>
+				</div>
+            </div>
         </div>
     </div>
-  </div>
+</div>
 
   <script src="./src/main.js" ></script>
 </body>

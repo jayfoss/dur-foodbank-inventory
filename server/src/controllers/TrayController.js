@@ -17,6 +17,15 @@ class TrayController {
 		resp.send(trays);
 	}
 	
+	async getTraysOnShelf(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const trays = await this.getTraysOnShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		resp.status(200);
+		resp.send(trays);
+	}
+	
 	async getTray(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
@@ -72,7 +81,7 @@ class TrayController {
     }
 
     async getAllTraysFromDb(){
-        let trays = []
+        let trays = [];
 
         try{
             let cursor = await this.db.queryDatabase('warehouse', {});
@@ -100,6 +109,40 @@ class TrayController {
             console.log(err);
         }
         return trays;
+    }
+	
+	async getTraysOnShelfFromDb(zoneName, bayName, shelfNumber){
+		try {
+			const str = zoneName + '.' + bayName + '.' + shelfNumber;
+            const query = {};
+			query[str] = {$exists: true};
+			
+            let cursor = await this.db.queryDatabase('warehouse', query);
+			let shelf = [];
+            await cursor.forEach(function(result){
+				if(result.length === 0) return shelf;
+                let numOfRows = Object.keys(result[zoneName][bayName][shelfNumber]).length;
+                let numOfColumns = 0;
+                if(numOfRows > 0) {
+                    numOfColumns = Object.keys(result[zoneName][bayName][shelfNumber][1]).length;
+                }
+
+                for(let rowNumber in result[zoneName][bayName][shelfNumber]){
+					let row = [];
+                    for(let columnNumber in result[zoneName][bayName][shelfNumber][rowNumber]){
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = rowNumber;
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = columnNumber;
+                        row.push(result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]);
+                    }
+					shelf.push(row);
+                }
+            });
+            return shelf;
+            
+        } catch(err) {
+            console.log(err);
+            return null;
+        }
     }
 
     async setTrayCategory(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newCategory) {
