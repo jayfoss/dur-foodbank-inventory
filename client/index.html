@@ -284,7 +284,7 @@
 											</div>
 										</div>
 									</div>
-								</div>
+								</div>	
 							</div>
 						</div>
 					</div>
@@ -434,6 +434,112 @@
                 <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
             </div>
         </div>
+		<!-- Start of code for report generation -->
+		<div v-bind:class = "{active:isReportActive}" class = "report_page">
+			<div class = "container-fluid" style = "margin-left:5vw;">
+				<div class = "row">
+					<div class = "col-sm-6" style = "max-height: 100vh;overflow: scroll;">
+					<table class = "table">	
+						<tr>
+							<th>Item</th>
+							<th>Total Weightage(kg)</th>
+						</tr>
+						<tr>
+							<td>BEANS</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>PASTA</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>BAGS</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>BISCUITS</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>JAM</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>FISH</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>CEREAL</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Beans</td>
+							<td>1000.0</td>
+						</tr>
+						<tr>
+							<td>Total</td>
+							<td>10000.0</td>
+						</tr>
+					</table>
+					</div>
+					<div class = "col-sm-6" style = "max-height:100px;">
+					<button>RED</button>	
+					<button>BLUE</button>
+					<button>PINK</button>
+					<button class = "custombut">EXPORT</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End of code for report generation-->
         </div>
     </div>
   </div>
