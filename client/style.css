@@ -24,16 +24,41 @@ p {
 	text-align: justify;
 }
 
-p1 {
-  margin: 18px 6px 18px 6px;
-  font-size: 20px;
-  text-align: justify;
-}
-
 h1{
 	font-size: x-large;
 	text-align: center;
 }
+
+h2 {
+	margin: 18px 6px 18px 6px;
+	font-size: 20px;
+	text-align: justify;
+	font-weight: initial;
+}
+  
+h3 {
+	margin: 18px 6px 18px 6px;
+	font-size: 20px;
+	text-align: justify;
+	font-weight: initial;
+}
+
+h5{
+	margin: 18px 6px 18px 6px;
+}
+
+hr {
+	border: 0;
+	margin-top: 12px;
+	margin-bottom: 16px;
+	clear:both;
+	display:block;
+	width: 96%;
+	background-color: grey;
+	/*align-self: center;*/
+	text-align: center;
+	height: 1px;
+  }
 
 /* Set a style for all buttons */
 button {
@@ -45,6 +70,10 @@ button {
   cursor: pointer;
   width: 100%;
   font-size: x-large;
+}
+
+button:hover{
+	background-color: #072631;
 }
 
 #shelfie-app {
@@ -683,7 +712,20 @@ input[type=text], input[type=password] {
   align-items: center;
 }
 
-.user-view .user-view-button{
-	
+.role-button {
+	background-color: #00506C;
+	color: white;
+	padding: 14px 20px;
+	margin: 3px 0;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	height: 50px;
+	font-size: large;
 }
+
+.role-button:hover{
+	background-color: #072631;
+}
+
 /* END OF USER MANAGEMENT */
