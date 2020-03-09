@@ -12,11 +12,12 @@ class UserModel extends Model {
 			'lastName',
 			'canViewData',
 			'canEditData',
-			'canModifyWarehouse'
+			'canModifyWarehouse',
+			'canEditUsers'
 		]);
-		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse'];
+		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers'];
 		this.validator = new Validator('User');
-		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse']);
+		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.protectedFields = ['password'];
 	}
 	

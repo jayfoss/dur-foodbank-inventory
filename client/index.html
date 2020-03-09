@@ -18,7 +18,7 @@
 </head>
 <body class="bg-light">
   <div style="width: 100%; height: 100%;" id="shelfie-app">
-        <div style="width: 100%; height: 100%;" class="login" v-bind:class="{active: !isLoggedIn}">
+        <div class="login" v-bind:class="{active: !isLoggedIn()}">
             <p>
                 <h1>Welcome! Please Login</h1>
             </p>
@@ -35,7 +35,7 @@
                 </label>
             </div>
         </div>
-        <div  class="app-container" v-bind:class="{active: isLoggedIn}">
+        <div  class="app-container" v-bind:class="{active: isLoggedIn()}">
         <nav class="sidebar" v-bind:class="{active: isSidebarActive}">
         <ul class="button-list">
             <img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
@@ -142,9 +142,9 @@
 								<div class="inv-v-ctrl-container text-center pt-1">
 									<div class="inv-v-ctrl-head">Shelf</div>
 									<div class="inv-v-ctrl-mv">
-										<button>&#129095;</button>
-										<div>{{selectedShelf}}</div>
-										<button>&#129093;</button>
+										<button @click="sectionSelect('shelf', false)">&#129095;</button>
+										<div class="inv-v-zone">{{inventoryShelves[selectedShelf]}}</div>
+										<button @click="sectionSelect('shelf', true)">&#129093;</button>
 									</div>
 								</div>
 								<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
@@ -630,32 +630,33 @@
                 </div>
 
                 <p style="text-align: center; font-weight:bold; margin-top: 5%; margin-bottom: 0px">Selected User</p>
-				<div class="current-record">
-					<div class="record-item">
-						<p1>Name: </p1>
-						<input type="text" style="height:38px;width:300px" placeholder="Aidan Williamson"></p></div>
-					<div class="record-item">
-						<p1>email: </p1>
-						<input type="text" style="height:38px;width:300px" placeholder="Aidan@AidansEmail.com"></p></div>
-					<div class="record-item">
-						<p1>Role: </p1>
-						<div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
-							<button class="invButton" style="width:100%;height:50px;background-color: #497E92;">Manager</button>
-							<button class="invButton" style="width:100%;height:50px">Designated Volunteer</button>
-							<button class="invButton" style="width:100%;height:50px">Non-Designated Volunteer</button>
-						</div>
-					</div>
-					<div class="record-item">
-						<p1>Permissions: </p1>
-						<div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-							<input type="checkbox" value="true" checked/><p1>  Can View Data</p1><br><br><br>
-							<input type="checkbox"/><p1>  Can Edit Data</p1><br><br><br>
-							<input type="checkbox"/><p1>  Can Modify Warehouse</p1><br><br>
-							<input type="checkbox"/><p1>  Can Modify Users</p1><br><br>
-						</div>
-					</div>
-					<button class="invButton" style="margin-left: 15px; padding:10px; height: 100px; width:150px; background-color: #68B72E;">Update Record</button>
-				</div>
+                    <div class="current-record">
+                        <div class="record-item">
+                            <p>Name: </p>
+                            <input type="text" style="height:38px;width:300px" placeholder="Aidan Williamson"></p></div>
+                        <div class="record-item">
+                            <p>email: </p>
+                            <input type="text" style="height:38px;width:300px" placeholder="Aidan@AidansEmail.com"></p></div>
+                        <div class="record-item">
+                            <p>Role: </p>
+                            <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
+                                <button class="invButton" style="width:100%;height:50px;background-color: #497E92;">Manager</button>
+                                <button class="invButton" style="width:100%;height:50px">Designated Volunteer</button>
+                                <button class="invButton" style="width:100%;height:50px">Non-Designated Volunteer</button>
+                            </div>
+                        </div>
+                        <div class="record-item">
+                            <p>Permissions: </p>
+                            <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
+                                <input type="checkbox" value="true" checked/><p>  Can View Data</p><br><br><br>
+                                <input type="checkbox"/><p>  Can Edit Data</p><br><br><br>
+                                <input type="checkbox"/><p>  Can Modify Warehouse</p><br><br>
+                                <input type="checkbox"/><p>  Can Modify Users</p><br><br>
+                            </div>
+                        </div>
+                        <button class="invButton" style="margin-left: 15px; padding:10px; height: 100px; width:150px; background-color: #68B72E;">Update Record</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

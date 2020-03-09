@@ -41,9 +41,11 @@ apiRouter.post('/auth', (req, resp) => {
 apiRouter.delete('/auth', authController.logout);
 
 apiRouter.use(function(req, resp, next) {
-	let token = req.cookies._id;
-	if (token) {
-		jwt.verify(token, config.auth.jwtSecret, function(err, decoded) {
+	const _id = req.cookies._id;
+	const _p = req.cookies._p;
+	if (_id && _p) {
+		const tok = _id.split('.');
+		jwt.verify(tok[0] + '.' + _p + '.' + tok[1], config.auth.jwtSecret, function(err, decoded) {
 			if (err) {
 				return appError.unauthorized(resp, 'Invalid or expired authorization token.');
 			} else {
@@ -52,7 +54,7 @@ apiRouter.use(function(req, resp, next) {
 			}
 		});
 	} else {
-		return appError.unauthorized(resp, 'No authorization token provided.');
+		return appError.unauthorized(resp, 'Missing or incomplete authorization token.');
 	}
 });
 
