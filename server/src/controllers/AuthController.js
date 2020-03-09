@@ -22,7 +22,9 @@ class AuthController {
 		if(pwdMatch) {
 			user.password = '';
 			delete user.password;
-			resp.cookie('_id', this.createAuth(user), {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: true, secure: config.auth.secureCookie});
+			const auth = this.createAuth(user);
+			resp.cookie('_id', auth['id'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: true, secure: config.auth.secureCookie});
+			resp.cookie('_p', auth['p'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: false, secure: config.auth.secureCookie});
 			resp.status(201);
 			resp.send(user);
 		}
@@ -35,19 +37,29 @@ class AuthController {
 		req.accepts('json');
 		resp.set('etag', false);
 		resp.cookie('_id', false, {expires: -1, httpOnly: true, secure: config.auth.secureCookie}); 
+		resp.cookie('_p', false, {expires: -1, httpOnly: false, secure: config.auth.secureCookie}); 
 	}
 	
-	createAuth(user){
+	createAuthToken(user){
 		const payload = {
 			id: user._id,
 			canViewData: user.canViewData,
 			canEditData: user.canEditData,
-			canModifyWarehouse: user.canModifyWarehouse
+			canModifyWarehouse: user.canModifyWarehouse,
+			canEditUsers: user.canEditUsers
 		};
 		let token = jwt.sign(payload, config.auth.jwtSecret, {
 			expiresIn: config.auth.maxAge
 		});
 		return token;
+	}
+	
+	createAuth(user) {
+		const tok = this.createAuthToken(user).split('.');
+		const a = {};
+		a['id'] = tok[0] + '.' + tok[2];
+		a['p'] = tok[1];
+		return a;
 	}
 	
 	getUsers(req, resp) {

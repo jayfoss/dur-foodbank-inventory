@@ -1,5 +1,21 @@
 const shelfieURL = 'http://localhost:8080/api/v1';
 
+function getAuthInfo() {
+	const cookieStrings = document.cookie.split(';');
+	const cookies = {};
+	for(let cookie of cookieStrings) {
+		const c = cookie.trim().split('=');
+		cookies[c[0]] = c[1];
+	}
+	if(cookies['_p']) {
+		const authInfo = JSON.parse(atob(cookies['_p']));
+		if(new Date() < authInfo.exp * 1000) {
+			return authInfo;
+		}
+	}
+	return false;
+}
+
 function getYearColor(y) {
 	if(y === NaN) return null;
 	if(Number.isInteger((y - 2016) / 4)) return 'exp-cyc-yellow';
@@ -56,8 +72,6 @@ function getExpiryColor(tray) {
 var shelfieApp = new Vue({
 	el: '#shelfie-app',
     data: {
-        /* LOGIN */
-        isLoggedIn: true,
         /* END OF LOGIN */
 
         /* NAV CONTROL */
@@ -108,6 +122,9 @@ var shelfieApp = new Vue({
         /* END OF DATA VIEW */
     },
     methods:{
+		isLoggedIn: () => {
+			return getAuthInfo() !== false ? true : false;
+		},
         /* NAVIGATION CONTROL */
 		activatePage: function(page){
             this.isSidebarActive = false;
@@ -152,19 +169,20 @@ var shelfieApp = new Vue({
                 this.inventoryBays = [];
             });
         },
-        inventoryFetchShelves: function(){
+        inventoryFetchShelves: function(selectFirst=false){
             if(this.selectedZone === -1 || this.selectedBay === -1) {
                 this.inventoryShelves = [];
                 return;
             }
             axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves', {withCredentials: true}).then((res) => {
                 this.inventoryShelves = res.data.sort();
+				if(this.inventoryShelves.length > 0 && selectFirst) this.selectedShelf = 0;
             }).catch((err) => {
                 this.inventoryShelves = [];
             });
         },
 		inventoryFetchShelfTrays: function() {
-			axios.get(shelfieURL + '/zones/' + this.select_zone + '/bays/' + this.select_bay + '/shelves/' + this.select_shelf + '/trays', {withCredentials: true}).then((res) => {
+			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf] + '/trays', {withCredentials: true}).then((res) => {
                 this.shelfTrays = res.data;
             }).catch((err) => {
                 this.shelfTrays = [];
@@ -358,7 +376,7 @@ var shelfieApp = new Vue({
         },
         prevPage:function() {
             if(this.currentPage > 1) this.currentPage--;
-        }
+        },
         /* END OF DATA VIEW PAGE */
     },
     computed:{
@@ -458,15 +476,23 @@ var shelfieApp = new Vue({
     },
 	watch: {
 		selectedZone: function() {
-			this.inventoryFetchBays();
+			this.inventoryFetchBays(true);
 		},
-		inventoryZones: function() {
-			this.inventoryFetchBays();
+		selectedBay: function() {
+			this.inventoryFetchShelves(true);
+		},
+		inventoryBays: function() {
+			this.inventoryFetchShelves(true);
+		},
+		selectedShelf: function() {
+			this.inventoryFetchShelfTrays();
+		},
+		inventoryShelves: function() {
+			this.inventoryFetchShelfTrays();
 		}
 	},
 	created () {
 		this.inventoryFetchZones(true);
-		this.inventoryFetchShelfTrays();
 	}
 });
 
@@ -491,7 +517,7 @@ async function login(){
         shelfieApp.$data.isLoggedIn = false;
     });
 }
-
+/**
 function fetchZones(){
     fetch(shelfieURL + '/zones').then((res) => {
         return res.json();
@@ -514,7 +540,7 @@ async function fetchBays(zoneName) {
 
 shelfieApp.fetchAllTrays();
 shelfieApp.inventoryFetchZones();
-
+*/
 /* INVENTORY PAGE */
 $(function () {
     $('#datetimepicker').datetimepicker({

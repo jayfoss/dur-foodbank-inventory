@@ -47,6 +47,11 @@ button {
   font-size: x-large;
 }
 
+#shelfie-app {
+	width: 100%;
+	height: 100%;
+}
+
 .app-container.active {
 	display: initial;
 }
