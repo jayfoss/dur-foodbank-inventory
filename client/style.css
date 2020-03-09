@@ -104,17 +104,25 @@ input[type=checkbox] {
 .report_page.active{
 	display: flex;
 }
-
+.table-bordered{
+	border:1px solid black;
+}
 td, th {
-	border:1px solid #615b57;
+	border:1px solid black;
 	padding:8px;
 }
-.custombut{
+
+.custombtn.active{		
+	background-color: #00506C;
+}
+.custombtn{
+	background-color: #9FAFBB;
+}
+
+.exportbtn{
   background-color: #004040;
 }
-.custombut:active{
-	background-color: #00506C;	
-}
+
 .separator{
 	margin-left:50px;
 	margin-top:50px;

@@ -318,106 +318,133 @@
             </div>
         </div>
 		<!-- Start of code for report generation -->
-		<div v-bind:class = "{active:isReportActive}" class = "report_page">
-			<div class = "container-fluid" style = "margin-left:5vw;">
-				<div class = "row">
-					<div class = "col-sm-6" style = "max-height: 100vh;overflow: scroll;">
-					<table class = "table">	
+		<div v-bind:class="{active:isReportActive}" class = "report_page">
+			<div class="container-fluid"><h4 class="display-4 ml-5">Stock Report</h4>
+				<div class="row mt-5">
+					<div class = "col-sm-6" style = "max-height:82vh;overflow:scroll;">
+					<table class = "table table-bordered">	
+						<thead class = "thead-dark">
 						<tr>
 							<th>Item</th>
-							<th>Total Weightage(kg)</th>
+							<th>Count</th>
+							<th>Total Weight(kg)</th>
 						</tr>
+						</thead>
 						<tr>
 							<td>BEANS</td>
+							<td>121</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>PASTA</td>
+							<td>12</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>BAGS</td>
+							<td>31</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>BISCUITS</td>
+							<td>41</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>JAM</td>
+							<td>63</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>FISH</td>
+							<td>18</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
 							<td>CEREAL</td>
+							<td>3</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>TEA BAGS</td>
+							<td>99</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>CUSTARD</td>
+							<td>121</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>HOT CHOC</td>
+							<td>13</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>SUGAR</td>
+							<td>66</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>FRUIT JUICE</td>
+							<td>53</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>RICE PUDDING</td>
+							<td>22</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>INSTANT MEALS</td>
+							<td>73</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>CLEANING</td>
+							<td>124</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>COFFEE</td>
+							<td>5</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>CRACKERS</td>
+							<td>19</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>MILK</td>
+							<td>23</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>TOMATOES</td>
+							<td>11</td>
 							<td>1000.0</td>
 						</tr>
 						<tr>
-							<td>Beans</td>
+							<td>POTATOES</td>
+							<td>121</td>
 							<td>1000.0</td>
 						</tr>
-						<tr>
+						<tr class = "table-info">
 							<td>Total</td>
+							<td>1000</td>
 							<td>10000.0</td>
 						</tr>
 					</table>
 					</div>
-					<div class = "col-sm-6" style = "max-height:100px;">
-					<button>RED</button>	
-					<button>BLUE</button>
-					<button>PINK</button>
-					<button class = "custombut">EXPORT</button>
+					<div class = "col-sm-3">
+					<h4 class="display-5">Selected Zones</h4>
+					<button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+					<button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+					<button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+					</div>
+					<div class = "col-sm-3">
+					<button class = "exportbtn mt-5">EXPORT</button>
 					</div>
 				</div>
 			</div>
