@@ -83,6 +83,19 @@ var shelfieApp = new Vue({
         isUserManagementActive: false,
         /* END OF NAV CONTROL */
 
+        /* WAREHOUSE CONFIG */
+        toInsertZoneName: "",
+        toInsertBayName: "",
+        toInsertNumOfShelves: 4,
+        toInsertNumOfRows: 3,
+        toInsertNumOfColumns: 4,
+        warehouseZones: [],
+        warehouseBays: [],
+        warehouseShelves: [],
+        originalData: {"zone":{"name":""}, "bay":{"name":""}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        modifiedData: {"zone":{"name":""}, "bay":{"name":""}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        /* END OF WAREHOUSE CONFIG */
+
         /* INVENTORY */
         inventoryZones: [],
         inventoryBays: [],
@@ -144,9 +157,98 @@ var shelfieApp = new Vue({
 			} else if(page === 'userManagement'){
 				this.isUserManagementActive = true;
 			}
-            console.log(this.isInventoryActive);
         },
         /* END OF NAVIGATION CONTROL */
+
+        /* WAREHOUSE CONFIG */
+        warehouseLimitShelfSelector: function(){
+            if(this.toInsertNumOfShelves > 1)
+                this.toInsertNumOfShelves--;
+        },
+        warehouseLimitRowSelector: function(useModifySection){
+            if(useModifySection){
+                if(this.modifiedData.shelf.rows > 1)
+                    this.modifiedData.shelf.rows--;
+            } else {
+                if(this.toInsertNumOfRows > 1)
+                    this.toInsertNumOfRows--;
+            }
+        },
+        warehouseLimitColumnSelector: function(useModifySection){
+            if(useModifySection){
+                if(this.modifiedData.shelf.columns > 1)
+                    this.modifiedData.shelf.columns--;
+            } else {
+                if(this.toInsertNumOfColumns > 1)
+                    this.toInsertNumOfColumns--;
+            }
+        },
+        warehouseFetchZones: function(){
+            this.warehouseZones = [];
+            this.warehouseBays = [];
+            this.warehouseShelves = [];
+            this.originalData.zone.name = this.modifiedData.zone.name = "";
+            this.originalData.bay.name = this.modifiedData.bay.name = "";
+            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+            
+            axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
+                this.warehouseZones = res.data;
+            }).catch((err) => {
+                this.warehouseZones = [];
+            });
+        },
+        warehouseFetchBays: function(zoneName){
+            this.warehouseBays = [];
+            this.warehouseShelves = [];
+            this.originalData.bay.name = this.modifiedData.bay.name = "";
+            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays', {withCredentials: true}).then((res) => {
+                this.warehouseBays = res.data;
+            }).catch((err) => {
+                this.warehouseBays = [];
+            });
+        },
+        warehouseFetchShelves: function(bayName){
+            this.originalData.bay.name = this.modifiedData.bay.name = bayName;
+            this.warehouseShelves = [];
+            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
+                this.warehouseShelves = res.data;
+            }).catch((err) => {
+                this.warehouseShelves = [];
+            });
+
+        },
+        warehouseFetchRowsColumns(shelfNumber){
+            this.originalData.shelf.number = this.modifiedData.shelf.number = shelfNumber;
+            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfNumber + '/rows', {withCredentials: true}).then((res) => {
+                let rows = res.data.length;
+                this.originalData.shelf.rows = this.modifiedData.shelf.rows = rows;
+
+                axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfNumber + '/rows/1/columns', {withCredentials: true}).then((res) => {
+                    let columns = res.data.length;
+                    this.originalData.shelf.columns = this.modifiedData.shelf.columns = columns;
+                }).catch((err) => {
+                    this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
+                });
+                
+                
+            }).catch((err) => {
+                this.originalData.shelf.rows = this.modifiedData.shelf.rows = 0;
+                this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
+            });
+        },
+        /* END OF WAREHOUSE CONFIG */
 
         /* INVENTORY */
         inventoryFetchZones: function(selectFirst=false){
@@ -553,3 +655,4 @@ $('#button').click(function(e){
     e.preventDefault();
 });
 /* END OF INVENTORY PAGE */
+
