@@ -1,3 +1,10 @@
+<!-- GLOBAL STYLINGS:
+<h4 class="display-4"> TITLE <\h2>
+<hr>
+<h5 class="h2"> SUBTITLE <\h5>
+<h5 class="display-5"> LABELS & STUFF <\h5>
+<p> normal text </p>-->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -261,7 +268,8 @@
         </div>
 
         <div v-bind:class="{active: isDataViewActive}" class="data-view">
-            <h2 style="margin-bottom: 25px;">Data View</h2>
+            <h4 class="display-4">Data View</h4>
+            <hr>
             <div style="overflow-x: scroll; width: 100%; min-width: 500px;">
                 <table>
                     <tr>
@@ -308,122 +316,155 @@
                 <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
             </div>
             <div class="input-filters">
-                <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
-                <label>Bay Filter: <input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" ></label>
-                <label>Shelf Filter: <input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" ></label>
-                <label>Row Filter: <input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" ></label>
-                <label>Column Filter: <input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" ></label>
-                <label>Category Filter: <input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" ></label>
-                <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">ZONE FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">BAY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">SHELFT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">ROW FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">COLUMN FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">CATEGORY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">WEIGHT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" class="form-control"></label>
             </div>
         </div>
+
+
 		<!-- Start of code for report generation -->
-		<div v-bind:class = "{active:isReportActive}" class = "report_page">
-			<div class = "container-fluid" style = "margin-left:5vw;">
-				<div class = "row">
-					<div class = "col-sm-6" style = "max-height: 100vh;overflow: scroll;">
-					<table class = "table">	
-						<tr>
-							<th>Item</th>
-							<th>Total Weightage(kg)</th>
-						</tr>
-						<tr>
-							<td>BEANS</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>PASTA</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>BAGS</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>BISCUITS</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>JAM</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>FISH</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>CEREAL</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Beans</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>Total</td>
-							<td>10000.0</td>
-						</tr>
-					</table>
-					</div>
-					<div class = "col-sm-6" style = "max-height:100px;">
-					<button>RED</button>	
-					<button>BLUE</button>
-					<button>PINK</button>
-					<button class = "custombut">EXPORT</button>
+		<div v-bind:class="{active:isReportActive}" class = "report_page">
+			<div class="container-fluid">
+                <h4 class="display-4">Stock Report</h4>
+                <hr>
+				<div class="row mt-5" style="vertical-align: center;">
+                    <div class="col-sm-6">
+                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Results</h5>
+                        <div style = "max-height:82vh;overflow:scroll;">
+                            <table class = "table table-bordered">
+                                <thead class = "thead-dark">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Count</th>
+                                    <th>Total Weight(kg)</th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td>BEANS</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>PASTA</td>
+                                    <td>12</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>BAGS</td>
+                                    <td>31</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>BISCUITS</td>
+                                    <td>41</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>JAM</td>
+                                    <td>63</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>FISH</td>
+                                    <td>18</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CEREAL</td>
+                                    <td>3</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>TEA BAGS</td>
+                                    <td>99</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CUSTARD</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>HOT CHOC</td>
+                                    <td>13</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>SUGAR</td>
+                                    <td>66</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>FRUIT JUICE</td>
+                                    <td>53</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>RICE PUDDING</td>
+                                    <td>22</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>INSTANT MEALS</td>
+                                    <td>73</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CLEANING</td>
+                                    <td>124</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>COFFEE</td>
+                                    <td>5</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CRACKERS</td>
+                                    <td>19</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>MILK</td>
+                                    <td>23</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>TOMATOES</td>
+                                    <td>11</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>POTATOES</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr class = "table-info">
+                                    <td>Total</td>
+                                    <td>1000</td>
+                                    <td>10000.0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+					<div class = "col-sm-4" style="align-items: center;">
+                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+                        <button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- End of code for report generation-->
 
+        <!-- WAREHOUSE CONFIGURATION -->
         <div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config text-center">
             <button v-on:click="warehouseFetchZones()">REFRESH</button>
             <h4 class="display-4">Warehouse Configuration</h4>
@@ -483,7 +524,7 @@
                 <button class="my-2" v-on:click="warehouseCreateSubmit()">SUBMIT</button>
             </div>
             <hr>
-            <h4 class="display-4">Modify</h4>
+            <h4 class="h2">Modify</h4>
             <div class="d-flex col-12 align-items-start justify-content-around flex-wrap">
                 <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
                     <h1 class="display-5 mt-4 mb-3">SELECT A ZONE</h1>
@@ -604,26 +645,30 @@
                 </div>
             </div>
         </div>
+        <!-- END OF WAREHOUSE CONFIGURATION -->
+
 
         <!-- USER MANAGEMENT PAGE -->
-        <div v-bind:class="{active: isUserManagementActive}" class="user-view">
+        <!--ERROR: slight gap at the top of the page before container :(-->
+        <div v-bind:class="{active: isUserManagementActive}" class="user-view text-center">
             <div class="user-view-container">
-                <h2 style="margin-bottom: 25px;">User Management</h2>
-                
+                <h4 class="display-4">User Management</h4>
+                <hr>
                 <div>
+                    <h5 class="h2">All Users</h5>
                     <table style="text-align: center;"> <!-- TO DO: read from DB-->
                         <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Can View Data</th>
-                            <th>Can Edit Data</th>
-                            <th>Can Modify Warehouse</th>
-                            <th>Can Modify Users</th>
+                            <th>FIRST NAME</th>
+                            <th>LAST NAME</th>
+                            <th>EMAIL</th>
+                            <th>ROLE</th>
+                            <th>CAN VIEW DATA</th>
+                            <th>CAN EDIT DATA</th>
+                            <th>CAN MODIFY WAREHOUSE</th>
+                            <th>CAN MODIFY USERS</th>
 
                         </tr>
-                        <tr style="font-weight:bold">
+                        <tr style="font-weight:bold; color: white;" class="bg-primary">
                             <td>Aidan</td>
                             <td>Williamson</td>
                             <td>Aidan@AidansEmail.com</td>
@@ -637,13 +682,23 @@
                             <td>Eve</td>
                             <td>Jackson</td>
                             <td>EveJackson@OutkastsHub.co.uk</td>
-                            <td>Designated Volunteer</td>
+                            <td>Team Leader</td>
                             <td><input type="checkbox" disabled checked/>  Yes</td>
                             <td><input type="checkbox" disabled checked/>  Yes</td>
                             <td><input type="checkbox" disabled/>  No</td>
                             <td><input type="checkbox" disabled/>  No</td>
-                          </tr>
+                        </tr>
                         <tr>
+                        <tr>
+                            <td>Davis</td>
+                            <td>McGregor</td>
+                            <td>McDavidson@ntlLand.com</td>
+                            <td>Stock Mover</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                            <td><input type="checkbox" disabled/>  No</td>
+                        </tr>
                             <td>Roxanne</td>
                             <td>Harriet</td>
                             <td>RoxaneRoxanneson@googly.com</td>
@@ -651,47 +706,58 @@
                             <td><input type="checkbox" disabled checked/>  Yes</td>
                             <td><input type="checkbox" disabled/>  No</td>
                             <td><input type="checkbox" disabled/>  No</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
+                            <td><input type="checkbox" disabled/>  No</td>
                         </tr>
                     </table>    
                 </div>
 
-                <div class="page-control-buttons">      <!-- TO DO: add functionality -->
-                    <button @click="prevPage" class = "invButton" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
-                    <button @click="nextPage" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
-                    <button @click="fetchAllTrays" class = "invButton" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                <div class="page-control-buttons" style="margin-bottom: 0px;">
+                    <button @click="prevPage" class = "Button" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
+                    <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
+                    <button @click="fetchAllTrays" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
                 </div>
 
-                <p style="text-align: center; font-weight:bold; margin-top: 5%; margin-bottom: 0px">Selected User</p>
-                    <div class="current-record">
+                <div class="page-control-buttons" style="margin-top: 0px; margin-bottom: 0px;">
+                    <button class="add-update-button submit-button" type="button">EDIT SELECTED USER</button>
+                    <button class="add-update-button submit-button" type="button">ADD USER</button>
+                </div>
+
+                <h5 class="h2">Selected User</h5>
+                    <div class="current-record" style="margin-left: 0px;">
+                        <div>
+                            <h5 class="input-label display-5">FIRST NAME:
+                            <input type="text" class="text-input form-control" placeholder="Aidan"></h5>
+                            <h5 class="input-label display-5">LAST NAME:
+                            <input type="text" class="text-input form-control" style="margin-left: 2px;" placeholder="Williamson"></h5>
+                            <h5 class="input-label display-5">EMAIL:
+                            <input type="text" class="text-input form-control" style="margin-left: 52px;" placeholder="Aidan@AidansEmail.com"></h5>
+                        </div>
                         <div class="record-item">
-                            <p>Name: </p>
-                            <input type="text" style="height:38px;width:300px" placeholder="Aidan Williamson"></p></div>
-                        <div class="record-item">
-                            <p>email: </p>
-                            <input type="text" style="height:38px;width:300px" placeholder="Aidan@AidansEmail.com"></p></div>
-                        <div class="record-item">
-                            <p>Role: </p>
+                            <h5 class = "display-5">ROLE: </h5>
                             <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
-                                <button class="invButton" style="width:100%;height:50px;background-color: #497E92;">Manager</button>
-                                <button class="invButton" style="width:100%;height:50px">Designated Volunteer</button>
-                                <button class="invButton" style="width:100%;height:50px">Non-Designated Volunteer</button>
+                                <button class="role-button" style="background-color: #497E92;">MANAGER</button>
+                                <button class="role-button" >TEAM LEADER</button>
+                                <button class="role-button" >STOCK MOVER</button>
+                                <button class="role-button" >SORTING VOLUNTEER</button>
                             </div>
                         </div>
                         <div class="record-item">
-                            <p>Permissions: </p>
+                            <h5 class="display-5">PERMISSIONS: </h5>
                             <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-                                <input type="checkbox" value="true" checked/><p>  Can View Data</p><br><br><br>
-                                <input type="checkbox"/><p>  Can Edit Data</p><br><br><br>
-                                <input type="checkbox"/><p>  Can Modify Warehouse</p><br><br>
-                                <input type="checkbox"/><p>  Can Modify Users</p><br><br>
+                                <h3><input type="checkbox" value="true" checked disabled/> Can View Data </h3>
+                                <h3><input type="checkbox" value="true" checked disabled/> Can Edit Data</h3>
+                                <h3><input type="checkbox" value="true" checked disabled/> Can Modify Warehouse</h3>
+                                <h3><input type="checkbox" value="true" checked disabled/> Can Modify Users</h3>
                             </div>
                         </div>
-                        <button class="invButton" style="margin-left: 15px; padding:10px; height: 100px; width:150px; background-color: #68B72E;">Update Record</button>
                     </div>
+                    <button class="submit-button Button" style="width:600px;">UPDATE RECORD</button>
                 </div>
             </div>
         </div>
+
+        <!-- END OF USER MANAGEMENT PAGE -->
+
     </div>
 </div>
 

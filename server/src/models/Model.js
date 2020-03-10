@@ -28,6 +28,7 @@ class Model {
 				get: () => {
 					return this.fields[field];
 				},
+				set: this[field],
 				enumerable: true
 			});				
 		});
