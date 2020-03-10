@@ -95,13 +95,33 @@ class ShelfController {
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
-
+    /*
     async deleteShelves(zoneName, bayName, shelfNumberStart, shelfNumberEnd){
         for(let shelf = shelfNumberStart; shelf <= shelfNumberEnd; shelf++){
             let deleteStringLeft = zoneName + '.' + bayName + '.' + shelf;
             let filter = {};
             let updateQuery = { $unset: { [deleteStringLeft]: '' } };
             await this.db.updateDatabase('warehouse', filter, updateQuery);
+        }
+    }*/
+
+    async deleteShelves(zoneName, bayName, newShelfNumber){
+        let originalShelves = await this.getShelvesFromDb(zoneName, bayName);
+        let numOfOrigShelves = originalShelves.length;
+        if(newShelfNumber >= numOfOrigShelves)
+            return;
+        for(let shelf = numOfOrigShelves; shelf > newShelfNumber; shelf--){
+            this.deleteShelfFromDb(zoneName, bayName, shelf);
+        }
+    }
+
+    async insertShelves(zoneName, bayName, newShelfNumber){
+        let originalShelves = await this.getShelvesFromDb(zoneName, bayName);
+        let numOfOrigShelves = originalShelves.length;
+        if(newShelfNumber <= numOfOrigShelves)
+            return;
+        for(let shelf = numOfOrigShelves + 1; shelf <= newShelfNumber; shelf++){
+            await this.insertShelf(zoneName, bayName, shelf);
         }
     }
 }
