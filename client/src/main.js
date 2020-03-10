@@ -131,8 +131,12 @@ var shelfieApp = new Vue({
         columnFilter: '',
         categoryFilter: '',
         weightFilter: '',
-        trays: []
+        trays: [],
         /* END OF DATA VIEW */
+		
+		/* REPORT PAGE */
+		isSelected:['red','blue','pink']
+		/* END OF REPORT PAGE */
     },
     methods:{
 		isLoggedIn: () => {
@@ -480,6 +484,18 @@ var shelfieApp = new Vue({
             if(this.currentPage > 1) this.currentPage--;
         },
         /* END OF DATA VIEW PAGE */
+		/* REPORT PAGE TESTING */
+		myFilter:function(reportzone) {
+			/*this.isSelected = !this.isSelected;*/
+			if(this.isSelected.includes(reportzone)){
+					const indextest = this.isSelected.indexOf(reportzone);
+					this.isSelected.splice(indextest,1);
+			}
+			else{
+				this.isSelected.push(reportzone);
+			}
+		}
+		/* END OF REPORT PAGE TESTING */
     },
     computed:{
         /* INVENTORY */
