@@ -76,6 +76,12 @@ button:hover{
 	background-color: #072631;
 }
 
+.submit-button{
+	font-weight: bold; 
+	width: 450px; 
+	background-color: #68B72E;
+}
+
 #shelfie-app {
 	width: 100%;
 	height: 100%;
