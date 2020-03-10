@@ -721,9 +721,19 @@ input[type=text], input[type=password] {
 
 .user-view .page-control-buttons {
 	display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+	justify-content: center;
+	flex-wrap: wrap;
 	margin: 10px;
+}
+
+.user-view .add-update-button {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin: 20px;
+	float: left;
+	font-weight: normal;
+	width: 300px;
 }
 
 .user-view .record-item{

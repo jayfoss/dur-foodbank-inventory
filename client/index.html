@@ -651,10 +651,15 @@
                     </table>    
                 </div>
 
-                <div class="page-control-buttons">
+                <div class="page-control-buttons" style="margin-bottom: 0px;">
                     <button @click="prevPage" class = "Button" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
                     <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
                     <button @click="fetchAllTrays" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                </div>
+
+                <div class="page-control-buttons" style="margin-top: 0px; margin-bottom: 0px;">
+                    <button class="add-update-button submit-button" type="button">EDIT SELECTED USER</button>
+                    <button class="add-update-button submit-button" type="button">ADD USER</button>
                 </div>
 
                 <h5 class="h2">Selected User</h5>
