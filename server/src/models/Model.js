@@ -30,7 +30,7 @@ class Model {
 				},
 				set: () => {
 					return this.prototype[field](value);
-				}
+				},
 				enumerable: true
 			});				
 		});
