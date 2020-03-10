@@ -77,23 +77,24 @@ var shelfieApp = new Vue({
         /* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
-		isInventoryActive: true,
+		isInventoryActive: false,
 		isReportActive: false,
-		isWarehouseConfigActive: false,
+		isWarehouseConfigActive: true,
         isUserManagementActive: false,
         /* END OF NAV CONTROL */
 
         /* WAREHOUSE CONFIG */
         toInsertZoneName: "",
         toInsertBayName: "",
+        toInsertNumberOfBays: 0,
         toInsertNumOfShelves: 4,
         toInsertNumOfRows: 3,
         toInsertNumOfColumns: 4,
         warehouseZones: [],
         warehouseBays: [],
         warehouseShelves: [],
-        originalData: {"zone":{"name":""}, "bay":{"name":""}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
-        modifiedData: {"zone":{"name":""}, "bay":{"name":""}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        originalData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        modifiedData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
         /* END OF WAREHOUSE CONFIG */
 
         /* INVENTORY */
@@ -183,6 +184,159 @@ var shelfieApp = new Vue({
                     this.toInsertNumOfColumns--;
             }
         },
+        warehouseChangeNumberOfBaysInsert: function(offset){
+            this.toInsertNumberOfBays += offset;
+            if (this.toInsertNumberOfBays < 0)
+                this.toInsertNumberOfBays = 0;
+            else if(this.toInsertNumberOfBays > 26)
+                this.toInsertNumberOfBays = 26;
+        },
+        warehouseModifySubmit: function(){
+            // SHELF FUNCTIONALITY
+            if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
+                if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
+                    // DELETE SOME COLUMNS
+                } else{
+                    // ADD SOME COLUMNS
+                }
+            }
+
+
+
+            if(this.modifiedData.shelf.rows != this.originalData.shelf.rows){
+                if(this.modifiedData.shelf.rows < this.originalData.shelf.rows){
+                    // DELETE SOME ROWS
+                } else {
+                    // ADD SOME ROWS
+                }
+            }
+
+            // BAY FUNCTIONALITY
+            if(this.modifiedData.bay.name != this.originalData.bay.name){
+                // RENAME ZONE
+                axios.patch(shelfieURL + '/zones/' + this.originalData.zones.name + '/bays/' + this.modifiedData.bay.name, {
+                    "name": this.modifiedData.bay.name,
+                    withCredentials: true
+                });
+            }
+            
+            // ZONE FUNCTIONALITY
+            if(this.modifiedData.zone.numberOfBays != this.originalData.zone.numberOfBays){
+                if(this.modifiedData.zone.numberOfBays < this.originalData.zone.numberOfBays){
+                    // DELETE SOME BAYS
+                } else {
+                    // ADD SOME BAYS
+                }
+            }
+
+            if(this.modifiedData.zone.name != this.originalData.zone.name){
+                // RENAME ZONE
+                axios.patch(shelfieURL + '/zones/' + this.originalData.zone.name, {
+                    "name": this.modifiedData.zone.name,
+                    withCredentials: true
+                });
+            }
+
+            
+        },
+        warehouseCreateSubmit: function(){
+            if(this.toInsertZoneName == '')
+                return;
+            // INSERTS A ZONE
+            axios.post(shelfieURL + '/zones', {
+                "name": this.toInsertZoneName,
+                withCredentials: true
+            }).then(() => {
+                if(this.toInsertBayName != ''){
+                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/', {
+                        "name": this.toInsertBayName,
+                        withCredentials: true
+                    }).then(() => {
+                        if(this.toInsertNumOfShelves > 0 && this.toInsertNumOfRows > 0 && this.toInsertNumOfColumns > 0){
+                            for(let shelf = 1; shelf < this.toInsertNumOfShelves + 1; shelf++){
+                                // INSERTS A SHELF
+                                axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves', {
+                                    "number": shelf,
+                                    withCredentials: true
+                                }).then(() => {
+                                    for(let row = 1; row < this.toInsertNumOfRows + 1; row++){
+                                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows', {
+                                            "row": row,
+                                            withCredentials: true
+                                        }).then(() => {
+                                            for(let col = 1; col < this.toInsertNumOfColumns + 1; col++){
+                                                axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/', {
+                                                    "column": col,
+                                                    withCredentials: true
+                                                }).then(() => {
+                                                    let date = new Date();
+                                                    let dateString = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+                                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
+                                                        "category": "",
+                                                        "weight": 0.0,
+                                                        "expiryYear": {"start":"", "end":""},
+                                                        "expiryMonth": {"start":"", "end":""},
+                                                        "lastUpdated": dateString,
+                                                        "userNote": ""
+                                                    });
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else if(this.toInsertNumberOfBays != 0){
+                    for(let offset = 0; offset < this.toInsertNumberOfBays; offset++){
+                        let bayName = String.fromCharCode(65 + offset);
+                        // INSERTS A BAY
+                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/', {
+                            "name": bayName,
+                            withCredentials: true
+                        }).then(() => {
+                            if(this.toInsertNumOfShelves > 0 && this.toInsertNumOfRows > 0 && this.toInsertNumOfColumns > 0){
+                                for(let shelf = 1; shelf < this.toInsertNumOfShelves + 1; shelf++){
+                                    // INSERTS A SHELF
+                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves', {
+                                        "number": shelf,
+                                        withCredentials: true
+                                    }).then(() => {
+                                        for(let row = 1; row < this.toInsertNumOfRows + 1; row++){
+                                            axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows', {
+                                                "row": row,
+                                                withCredentials: true
+                                            }).then(() => {
+                                                for(let col = 1; col < this.toInsertNumOfColumns + 1; col++){
+                                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/', {
+                                                        "column": col,
+                                                        withCredentials: true
+                                                    }).then(() => {
+                                                        let date = new Date();
+                                                        let dateString = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+                                                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
+                                                            "category": "",
+                                                            "weight": 0.0,
+                                                            "expiryYear": {"start":"", "end":""},
+                                                            "expiryMonth": {"start":"", "end":""},
+                                                            "lastUpdated": dateString,
+                                                            "userNote": ""
+                                                        });
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                } else{
+                    return;
+                }
+            });
+            
+        },
         warehouseFetchZones: function(){
             this.warehouseZones = [];
             this.warehouseBays = [];
@@ -200,6 +354,7 @@ var shelfieApp = new Vue({
             });
         },
         warehouseFetchBays: function(zoneName){
+            this.originalData.zone.name = this.modifiedData.zone.name = zoneName;
             this.warehouseBays = [];
             this.warehouseShelves = [];
             this.originalData.bay.name = this.modifiedData.bay.name = "";
@@ -209,9 +364,12 @@ var shelfieApp = new Vue({
 
             axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays', {withCredentials: true}).then((res) => {
                 this.warehouseBays = res.data;
+                this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = this.warehouseBays.length;
             }).catch((err) => {
                 this.warehouseBays = [];
+                this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = 0;
             });
+            
         },
         warehouseFetchShelves: function(bayName){
             this.originalData.bay.name = this.modifiedData.bay.name = bayName;
@@ -222,8 +380,10 @@ var shelfieApp = new Vue({
 
             axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
                 this.warehouseShelves = res.data;
+                this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = this.warehouseShelves.length;
             }).catch((err) => {
                 this.warehouseShelves = [];
+                this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = 0;
             });
 
         },
@@ -247,6 +407,16 @@ var shelfieApp = new Vue({
                 this.originalData.shelf.rows = this.modifiedData.shelf.rows = 0;
                 this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
             });
+        },
+        warehouseChangeNumberOfBays: function(offset){
+            this.modifiedData.zone.numberOfBays += offset
+            if(this.modifiedData.zone.numberOfBays < 1)
+                this.modifiedData.zone.numberOfBays = 1
+        },
+        warehouseChangeNumberOfShelves: function(offset){
+            this.modifiedData.bay.numberOfShelves += offset
+            if(this.modifiedData.bay.numberOfShelves < 1)
+                this.modifiedData.bay.numberOfShelves = 1
         },
         /* END OF WAREHOUSE CONFIG */
 
