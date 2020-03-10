@@ -718,6 +718,22 @@ input[type=text], input[type=password] {
   display:flex;
   vertical-align: center;
   align-items: center;
+  margin-left: 20px;
+}
+
+.user-view .text-input{
+	height:38px;
+	width:300px; 
+	margin-bottom: 0px; 
+	border-bottom: 0px; 
+	align-self:right; 
+}
+
+.user-view .input-label{
+	margin-bottom: 0px; 
+	margin-top: 0px; 
+	border-top: 0px; 
+	border-bottom: 0px;
 }
 
 .role-button {
