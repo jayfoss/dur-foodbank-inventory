@@ -278,8 +278,8 @@ var shelfieApp = new Vue({
                                                     axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
                                                         "category": "",
                                                         "weight": 0.0,
-                                                        "expiryYear": {"start":"", "end":""},
-                                                        "expiryMonth": {"start":"", "end":""},
+                                                        "expiryYear": {"start":null, "end":null},
+                                                        "expiryMonth": {"start":null, "end":null},
                                                         "lastUpdated": dateString,
                                                         "userNote": ""
                                                     });
@@ -321,8 +321,8 @@ var shelfieApp = new Vue({
                                                         axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
                                                             "category": "",
                                                             "weight": 0.0,
-                                                            "expiryYear": {"start":"", "end":""},
-                                                            "expiryMonth": {"start":"", "end":""},
+                                                            "expiryYear": {"start":null, "end":null},
+                                                            "expiryMonth": {"start":null, "end":null},
                                                             "lastUpdated": dateString,
                                                             "userNote": ""
                                                         });

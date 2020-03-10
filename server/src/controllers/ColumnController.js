@@ -79,8 +79,8 @@ class ColumnController {
         let updateQuery = { $set: { [insertStringLeft]: { 
             "category":"",
             "weight": 0.0,
-            "expiryYear": {"start": date.getFullYear(), "end": date.getFullYear()},
-            "expiryMonth": {"start": date.getMonth(), "end": date.getMonth()},
+            "expiryYear": {"start": null, "end": null},
+            "expiryMonth": {"start": null, "end": null},
             "lastUpdated": date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear(),
             "userNote": ""
          } } };
