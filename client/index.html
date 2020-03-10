@@ -268,7 +268,8 @@
         </div>
 
         <div v-bind:class="{active: isDataViewActive}" class="data-view">
-            <h2 style="margin-bottom: 25px;">Data View</h2>
+            <h4 class="display-4">Data View</h4>
+            <hr>
             <div style="overflow-x: scroll; width: 100%; min-width: 500px;">
                 <table>
                     <tr>
@@ -315,143 +316,148 @@
                 <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
             </div>
             <div class="input-filters">
-                <label>Zone Filter: <input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" ></label>
-                <label>Bay Filter: <input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" ></label>
-                <label>Shelf Filter: <input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" ></label>
-                <label>Row Filter: <input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" ></label>
-                <label>Column Filter: <input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" ></label>
-                <label>Category Filter: <input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" ></label>
-                <label>Weight Filter: <input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" ></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">ZONE FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">BAY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">SHELFT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">ROW FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">COLUMN FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">CATEGORY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" class="form-control"></label>
+                <label><h5 class="display-5" style="margin-bottom: 0px;">WEIGHT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" class="form-control"></label>
             </div>
         </div>
+
+
 		<!-- Start of code for report generation -->
 		<div v-bind:class="{active:isReportActive}" class = "report_page">
-			<div class="container-fluid"><h4 class="display-4 ml-5">Stock Report</h4>
-				<div class="row mt-5">
-					<div class = "col-sm-6" style = "max-height:82vh;overflow:scroll;">
-					<table class = "table table-bordered">	
-						<thead class = "thead-dark">
-						<tr>
-							<th>Item</th>
-							<th>Count</th>
-							<th>Total Weight(kg)</th>
-						</tr>
-						</thead>
-						<tr>
-							<td>BEANS</td>
-							<td>121</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>PASTA</td>
-							<td>12</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>BAGS</td>
-							<td>31</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>BISCUITS</td>
-							<td>41</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>JAM</td>
-							<td>63</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>FISH</td>
-							<td>18</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>CEREAL</td>
-							<td>3</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>TEA BAGS</td>
-							<td>99</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>CUSTARD</td>
-							<td>121</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>HOT CHOC</td>
-							<td>13</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>SUGAR</td>
-							<td>66</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>FRUIT JUICE</td>
-							<td>53</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>RICE PUDDING</td>
-							<td>22</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>INSTANT MEALS</td>
-							<td>73</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>CLEANING</td>
-							<td>124</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>COFFEE</td>
-							<td>5</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>CRACKERS</td>
-							<td>19</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>MILK</td>
-							<td>23</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>TOMATOES</td>
-							<td>11</td>
-							<td>1000.0</td>
-						</tr>
-						<tr>
-							<td>POTATOES</td>
-							<td>121</td>
-							<td>1000.0</td>
-						</tr>
-						<tr class = "table-info">
-							<td>Total</td>
-							<td>1000</td>
-							<td>10000.0</td>
-						</tr>
-					</table>
-					</div>
-					<div class = "col-sm-3">
-					<h4 class="display-5">Selected Zones</h4>
-					<button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-					<button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-					<button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
-					</div>
-					<div class = "col-sm-3">
-					<button class = "exportbtn mt-5">EXPORT</button>
+			<div class="container-fluid">
+                <h4 class="display-4">Stock Report</h4>
+                <hr>
+				<div class="row mt-5" style="vertical-align: center;">
+                    <div class="col-sm-6">
+                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Results</h5>
+                        <div style = "max-height:82vh;overflow:scroll;">
+                            <table class = "table table-bordered">
+                                <thead class = "thead-dark">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Count</th>
+                                    <th>Total Weight(kg)</th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td>BEANS</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>PASTA</td>
+                                    <td>12</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>BAGS</td>
+                                    <td>31</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>BISCUITS</td>
+                                    <td>41</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>JAM</td>
+                                    <td>63</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>FISH</td>
+                                    <td>18</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CEREAL</td>
+                                    <td>3</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>TEA BAGS</td>
+                                    <td>99</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CUSTARD</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>HOT CHOC</td>
+                                    <td>13</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>SUGAR</td>
+                                    <td>66</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>FRUIT JUICE</td>
+                                    <td>53</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>RICE PUDDING</td>
+                                    <td>22</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>INSTANT MEALS</td>
+                                    <td>73</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CLEANING</td>
+                                    <td>124</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>COFFEE</td>
+                                    <td>5</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>CRACKERS</td>
+                                    <td>19</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>MILK</td>
+                                    <td>23</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>TOMATOES</td>
+                                    <td>11</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr>
+                                    <td>POTATOES</td>
+                                    <td>121</td>
+                                    <td>1000.0</td>
+                                </tr>
+                                <tr class = "table-info">
+                                    <td>Total</td>
+                                    <td>1000</td>
+                                    <td>10000.0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+					<div class = "col-sm-4" style="align-items: center;">
+                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+                        <button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 					</div>
 				</div>
 			</div>
@@ -583,6 +589,7 @@
 
 
         <!-- USER MANAGEMENT PAGE -->
+        <!--ERROR: slight gap at the top of the page before container :(-->
         <div v-bind:class="{active: isUserManagementActive}" class="user-view text-center">
             <div class="user-view-container">
                 <h4 class="display-4">User Management</h4>
