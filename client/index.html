@@ -335,7 +335,7 @@
 				<div class="row mt-5" style="vertical-align: center;">
                     <div class="col-sm-6">
                         <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Results</h5>
-                        <div style = "max-height:82vh;overflow:scroll;">
+                        <div>
                             <table class = "table table-bordered">
                                 <thead class = "thead-dark">
                                 <tr>
@@ -452,12 +452,14 @@
                             </table>
                         </div>
                     </div>
-					<div class = "col-sm-4" style="align-items: center;">
+					<div class = "col-sm-6 d-flex justify-content-center">
+					<div>
                         <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
                         <button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
                         <button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
                         <button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
                         <button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -594,7 +596,7 @@
             <div class="user-view-container">
                 <h4 class="display-4">User Management</h4>
                 <hr>
-                <div>
+                <div>	
                     <h5 class="h2">All Users</h5>
                     <table style="text-align: center;"> <!-- TO DO: read from DB-->
                         <tr>
