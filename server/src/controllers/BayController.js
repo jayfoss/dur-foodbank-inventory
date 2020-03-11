@@ -16,7 +16,7 @@ class BayController {
 		resp.status(200);
 		resp.send(bays);
 	}
-	
+
 	async createBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
@@ -83,6 +83,27 @@ class BayController {
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
+    }
+
+    async deleteBays(zoneName, newNumberOfBays){
+        let originalBays = await this.getBaysFromDb(zoneName);
+        let numOfOrigBays = originalBays.length;
+        if(newNumberOfBays >= numOfOrigBays)
+            return;
+        for(let bayIndex = numOfOrigBays-1; bayIndex >= newNumberOfBays; bayIndex--){
+            this.deleteBayFromDb(zoneName, originalBays[bayIndex]);
+        }
+    }
+
+    async insertBays(zoneName, newNumberOfBays){
+        let originalBays = await this.getBaysFromDb(zoneName);
+        let numOfOrigBays = originalBays.length;
+        if(newNumberOfBays <= numOfOrigBays)
+            return;
+        for(let offset = numOfOrigBays; offset <= newNumberOfBays; offset++){
+            let bayName = String.fromCharCode(65 + offset);
+            this.insertBay(zoneName, bayName);
+        }
     }
 }
 
