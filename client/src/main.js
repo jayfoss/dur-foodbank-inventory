@@ -680,6 +680,7 @@ var shelfieApp = new Vue({
             if(this.currentPage > 1) this.currentPage--;
         },
         /* END OF DATA VIEW PAGE */
+        
 		/* REPORT PAGE TESTING */
 		myFilter:function(reportzone) {
 			/*this.isSelected = !this.isSelected;*/
@@ -790,7 +791,7 @@ var shelfieApp = new Vue({
     },
 	watch: {
 		selectedZone: function() {
-			this.inventoryFetchBays(true);
+            this.inventoryFetchBays(true);
 		},
 		selectedBay: function() {
 			this.inventoryFetchShelves(true);
