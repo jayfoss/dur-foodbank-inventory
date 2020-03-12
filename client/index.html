@@ -11,16 +11,13 @@
   <title>Shelfie Cloud</title>
   <!-- CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="./src/jquery.datetimepicker.min.css" >
-  <link rel="stylesheet" type ="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.common.min.js" integrity="sha256-S9IfZdC9SFaKRF3xmPWyOByiMj19lahczFsE9T2yjQY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/portal-vue@2.1.7/dist/portal-vue.umd.min.js" integrity="sha256-hpvN0uXcWg/hXFoIk7TfFKLWKV0HMa5WOICSKiyxxn4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
-  <script src="./src/jquery.datetimepicker.full.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-light">
@@ -61,72 +58,27 @@
             </section> 
 
         <div v-bind:class="{active: isInventoryActive}" class="inventory">
-            <form role="form" @submit='checkForm' method="post">
+			<div class="modal fade" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Note for the tray</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>Modal body text goes here.</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary">Save changes</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
             <div class="data-entry-form">
                 <div class="container-fluid inventory-container mx-0">
-					<!--
-                    <div class="row">
-                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
-                            <label for="select_zone">Zone</label>
-                            <select name = "select_zone" id="select_zone" v-model= "select_zone" @change="inventoryFetchBays">
-                                <option v-for="zoneName in inventoryZones">{{ zoneName }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
-                            <label for="select_bay">Bay</label>
-                            <select id="select_bay" v-model="select_bay" @change="inventoryFetchShelves">
-                                <option v-for="bayName in inventoryBays">{{ bayName }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 col-sm-3" style="padding: 25px; margin: auto;">
-                            <label for="select_level">Level</label>
-                            <select name = "select_level" id="select_level" v-model="select_level" @change="inventoryFetchRowsAndColumns">
-                                <option v-for="shelfNumber in inventoryShelves">{{ shelfNumber }}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-4" style="padding: 25px; margin: auto;">
-                            <label for="select_year">Expiry Year</label>
-                            <select name = "select_year" id="select_year" v-model="select_year" >
-                                <option>2023</option>
-                                <option>2022</option>
-                                <option>2021</option>
-                                <option>2020</option>
-                                <option>2019</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 col-sm-4"  style="padding: 25px; margin: auto;">
-                            <label for="select_month">Expiry Month</label>
-                            <select name = "select_month" id="select_month" v-model="select_month" >
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                                <option>11</option>
-                                <option>12</option>
-                            </select>
-                        </div>
-    
-                        <div class="col-md-3 col-sm-4"  style="padding: 25px; margin: auto;">
-                        <label for="stock_taken_date">Stock Taken Date</label>
-                        <input type="text" name = "stock_taken_date" v-model="stock_taken_date" id="datetimepicker">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-3"  style="padding: 25px; margin: auto;">
-                            <label for="enter_weight">Weight</label>
-                            <input type='text' name= "enter_weight" v-model="enter_weight">
-                            <p></p>
-                        </div>
-                    </div>
-					-->
 					<div class="inv-warehouse-view-container">
 						<div class="row">
 							<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
@@ -156,10 +108,10 @@
 								</div>
 								<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
 									<div class="inv-left-controls">
-										<button class="invButton" @click="">Shelf OK</button>
-										<button class="invButton" @click="">Fill Shelf</button>
-										<button class="invButton" @click="">Clear Tray</button>
-										<button class="invButton" @click="">View Note</button>
+										<button class="invButton" @click="shelfOk()">Shelf OK</button>
+										<button class="invButton" @click="fillShelf()">Fill Shelf</button>
+										<button class="invButton" @click="clearTray()">Clear Tray</button>
+										<button class="invButton" @click="viewNote()">View Note</button>
 									</div>
 									<div class="inv-v-bay-view">
 										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
@@ -260,11 +212,7 @@
 					</div>
                     <input type="submit" value="Submit" @click="inventorySubmitNewTrays"> 
                 </div>
-                
-            </div>
-              
-        </form>
-        
+            </div>        
         </div>
 
         <div v-bind:class="{active: isDataViewActive}" class="data-view">
@@ -328,16 +276,16 @@
 
 
 		<!-- Start of code for report generation -->
-		<div v-bind:class="{active:isReportActive}" class = "report_page">
+		<div v-bind:class="{active:isReportActive}" class="report_page">
 			<div class="container-fluid">
                 <h4 class="display-4">Stock Report</h4>
                 <hr>
 				<div class="row mt-5" style="vertical-align: center;">
                     <div class="col-sm-6">
                         <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Results</h5>
-                        <div style = "max-height:82vh;overflow:scroll;">
-                            <table class = "table table-bordered">
-                                <thead class = "thead-dark">
+                        <div style="max-height:82vh;overflow:scroll;">
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
                                 <tr>
                                     <th>Item</th>
                                     <th>Count</th>
@@ -444,7 +392,7 @@
                                     <td>121</td>
                                     <td>1000.0</td>
                                 </tr>
-                                <tr class = "table-info">
+                                <tr class="table-info">
                                     <td>Total</td>
                                     <td>1000</td>
                                     <td>10000.0</td>
@@ -452,12 +400,14 @@
                             </table>
                         </div>
                     </div>
-					<div class = "col-sm-4" style="align-items: center;">
-                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
-                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-                        <button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
-                        <button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+					<div class="col-sm-6 d-flex justify-content-center">
+						<div>
+							<h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
+							<button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+							<button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+							<button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+							<button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -725,12 +675,18 @@
                 <h5 class="h2">Selected User</h5>
                     <div class="current-record" style="margin-left: 0px;">
                         <div>
-                            <h5 class="input-label display-5">FIRST NAME:
-                            <input type="text" class="text-input form-control" placeholder="Aidan"></h5>
-                            <h5 class="input-label display-5">LAST NAME:
-                            <input type="text" class="text-input form-control" style="margin-left: 2px;" placeholder="Williamson"></h5>
-                            <h5 class="input-label display-5">EMAIL:
-                            <input type="text" class="text-input form-control" style="margin-left: 52px;" placeholder="Aidan@AidansEmail.com"></h5>
+							<div class="form-group">
+								<label class="d-inline">FIRST NAME:</label>
+								<input type="text" class="d-inline form-control" placeholder="Aidan">
+							</div>
+                            <div class="form-group">
+								<label>LAST NAME:</label>
+								<input type="text" class="form-control" placeholder="Aidan">
+							</div>
+							<div class="form-group">
+								<label>EMAIL:</label>
+								<input type="text" class="form-control" placeholder="Aidan">
+							</div>
                         </div>
                         <div class="record-item">
                             <h5 class = "display-5">ROLE: </h5>

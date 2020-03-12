@@ -28,8 +28,8 @@ class Model {
 				get: () => {
 					return this.fields[field];
 				},
-				set: () => {
-					return this.prototype[field](value);
+				set: (value) => {
+					return this[field](value);
 				},
 				enumerable: true
 			});				

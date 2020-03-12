@@ -631,6 +631,32 @@ var shelfieApp = new Vue({
 			else i--;
 			this[t] = (i % this[s].length + this[s].length) % this[s].length;
 		},
+		fillShelf: function() {
+			if(this.selectedTray === null) return;
+			for(let row of this.shelfTrays) {
+				for(let tray of row) {
+					tray.category = this.selectedTray.category;
+					tray.weight = this.selectedTray.weight;
+					tray.expiryYear = {start: this.selectedTray.expiryYear.start, end: this.selectedTray.expiryYear.end};
+					tray.expiryMonth = {start: this.selectedTray.expiryMonth.start, end: this.selectedTray.expiryMonth.end};
+					tray.userNote = this.selectedTray.userNote;
+				}
+			}
+		},
+		clearTray: function() {
+			if(this.selectedTray === null) return;
+			this.selectedTray.category = '';
+			this.selectedTray.weight = 0;
+			this.selectedTray.expiryYear = {start: null, end: null};
+			this.selectedTray.expiryMonth = {start: null, end: null};
+			this.selectedTray.userNote = '';
+		},
+		shelfOk: function() {
+			
+		},
+		viewNote: function() {
+			
+		},
         /* END OF INVENTORY */
 
         /* DATA VIEW PAGE */
@@ -641,16 +667,16 @@ var shelfieApp = new Vue({
                 this.trays = [];
             });
         },
-        sort:function(s) {
+        sort: function(s) {
             if(s === this.currentSort) {
                 this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
             }
             this.currentSort = s;
         },
-        nextPage:function() {
+        nextPage: function() {
             if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
         },
-        prevPage:function() {
+        prevPage: function() {
             if(this.currentPage > 1) this.currentPage--;
         },
         /* END OF DATA VIEW PAGE */
@@ -829,16 +855,4 @@ async function fetchBays(zoneName) {
 shelfieApp.fetchAllTrays();
 shelfieApp.inventoryFetchZones();
 */
-/* INVENTORY PAGE */
-$(function () {
-    $('#datetimepicker').datetimepicker({
-        format: 'd-m-Y',
-        timepicker:false
-    });
-});
-
-$('#button').click(function(e){
-    e.preventDefault();
-});
-/* END OF INVENTORY PAGE */
 
