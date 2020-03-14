@@ -69,10 +69,24 @@ function getExpiryColor(tray) {
 	return getYearColor(y);
 }
 
-var shelfieApp = new Vue({
+axios.interceptors.response.use((resp) => {
+	return resp
+}, (err) => {
+	if(err.response.data && err.response.data.error) {
+		this.makeToast('Error', err.response.data.error, 'danger');
+	}
+	else {
+		this.makeToast('Error', 'A request failed. This may be a connection issue.', 'danger');
+	}
+	return Promise.reject(err);
+});
+
+const shelfieApp = new Vue({
 	el: '#shelfie-app',
     data: {
-        /* END OF LOGIN */
+		toastCount: 0,
+		loginUsername: null,
+		loginPassword: null,
 
         /* NAV CONTROL */
 		isSidebarActive: false,
@@ -140,6 +154,44 @@ var shelfieApp = new Vue({
 		/* END OF REPORT PAGE */
     },
     methods:{
+		makeToast(title, msg, variant = null) {
+			this.toastCount++
+			this.$bvToast.toast(msg, {
+				  title: title,
+				  autoHideDelay: 5000,
+				  appendToast: true,
+				  variant: variant
+			})
+		},
+		login: function(e) {
+			axios.post(shelfieURL + '/auth', {
+				email: this.loginUsername,
+				password: this.loginPassword
+			}).then((res) => {
+				this.loginUsername = null;
+				this.loginPassword = null;
+			}).catch((err) => {
+				if(err.response.data && err.response.data.error) {
+					this.makeToast('Error', err.response.data.error, 'danger');
+				}
+				else {
+					this.makeToast('Error', 'Login failed. This may be a connection issue.', 'danger');
+				}
+			});
+			e.preventDefault();
+		},
+		logout: function() {
+			axios.delete(shelfieURL + '/auth').then((res) => {
+				this.isSidebarActive = false;
+			}).catch((err) => {
+				if(err.response.data && err.response.data.error) {
+					this.makeToast('Error', err.response.data.error, 'danger');
+				}
+				else {
+					this.makeToast('Error', 'Logout failed. This may be a connection issue.', 'danger');
+				}
+			});
+		},
 		isLoggedIn: () => {
 			return getAuthInfo() !== false ? true : false;
 		},
@@ -655,7 +707,8 @@ var shelfieApp = new Vue({
 			
 		},
 		viewNote: function() {
-			
+			this.$bvModal.show('note-modal');
+			console.log('test');
 		},
         /* END OF INVENTORY */
 
@@ -807,7 +860,9 @@ var shelfieApp = new Vue({
 		}
 	},
 	created () {
-		this.inventoryFetchZones(true);
+		if(this.isLoggedIn()) {
+			this.inventoryFetchZones(true);
+		}
 	}
 });
 
@@ -832,28 +887,3 @@ async function login(){
         shelfieApp.$data.isLoggedIn = false;
     });
 }
-/**
-function fetchZones(){
-    fetch(shelfieURL + '/zones').then((res) => {
-        return res.json();
-    }).then((data) => {
-        shelfieApp.$data.inventoryZones = data;
-    }).catch((err) => {
-        shelfieApp.$data.inventoryZones = [''];
-    });
-}
-
-async function fetchBays(zoneName) {
-    fetch(shelfURL + '/zones/' + zoneName + '/bays').then((res) => {
-        return res.json();
-    }).then((data) => {
-        shelfieApp.$data.inventoryBays = data;
-    }).catch((err) => {
-        shelfieApp.$data.inventoryBays = [''];
-    });
-}
-
-shelfieApp.fetchAllTrays();
-shelfieApp.inventoryFetchZones();
-*/
-

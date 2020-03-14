@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-//const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const apiRouter = express.Router();
 const config = require('../config');
@@ -32,7 +31,7 @@ const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController(db);
 
 app.use(express.json());
-app.use('/', express.static('../client'));
+app.use('/', express.static('../client', {maxAge: 3600000}));
 
 apiRouter.use(require('cookie-parser')());
 apiRouter.post('/auth', (req, resp) => {
@@ -58,9 +57,15 @@ apiRouter.use(function(req, resp, next) {
 	}
 });
 
-apiRouter.get('/users', authController.getUsers);
-apiRouter.post('/users', authController.createUser);
-apiRouter.delete('/users/:userId', authController.deleteUser);
+apiRouter.get('/users', (req, resp) => {
+	authController.getUsers(req, resp);
+});
+apiRouter.post('/users', (req, resp) => {
+	authController.createUser(req, resp);
+});
+apiRouter.delete('/users/:userId', (req, resp) => {
+	authController.deleteUser(req, resp);
+});
 
 apiRouter.get('/zones', (req, resp) => {
 	zoneController.getZones(req, resp);

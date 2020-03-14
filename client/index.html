@@ -1,46 +1,55 @@
-<!-- GLOBAL STYLINGS:
-<h4 class="display-4"> TITLE <\h4>
-<hr>
-<h5 class="h2"> SUBTITLE <\h5>
-<h5 class="display-5"> LABELS & STUFF <\h5>
-<p> normal text </p> -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Shelfie Cloud</title>
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="style.css">
+	<title>Shelfie Cloud</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.css" integrity="sha256-A47OwxL/nAN0ydiDFTSGX7ftbfTJTKgiJ0zqCuTPDh4=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.css" integrity="sha256-DdAtjBS1alSSjGdknERh+FrjHv0m7NTxE5iMhdv5JKs=" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="style.css">
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.common.min.js" integrity="sha256-S9IfZdC9SFaKRF3xmPWyOByiMj19lahczFsE9T2yjQY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/portal-vue@2.1.7/dist/portal-vue.umd.min.js" integrity="sha256-hpvN0uXcWg/hXFoIk7TfFKLWKV0HMa5WOICSKiyxxn4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<!-- SCRIPTS -->
+	<script src="https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js" integrity="sha256-bpvncwMbMjT7nC1s89l0DbEgj0NRvsoyXsNPdv0481Y=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-router@3.1.6/dist/vue-router.min.js" integrity="sha256-B8zvQ+y1lIQkcm+EJyCis+7AgsnzaTCBAHgkrPFQr9A=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/portal-vue@2.1.7/dist/portal-vue.umd.min.js" integrity="sha256-hpvN0uXcWg/hXFoIk7TfFKLWKV0HMa5WOICSKiyxxn4=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.js" integrity="sha256-Rg0qQCADTRyTZPkSVnItp1nSpSP0ZtYjTh/bNchzS+E=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
 </head>
 <body class="bg-light">
-  <div style="width: 100%; height: 100%;" id="shelfie-app">
-        <div class="login" v-bind:class="{active: !isLoggedIn()}">
-            <p>
-                <h1>Welcome! Please Login</h1>
-            </p>
-            <div class = "loginContainer">
-                <label for = "uname"><b>Username</b></label>
-                <input id="username-input" type = "text" placeholder="Enter Username/Email" name="uname" required>
-
-                <label for="psw"><b>Password</b></label>
-                <input id="passwd-input" type="password" placeholder="Enter Password" name="psw" required>
-            
-                <button onclick="login()" type="submit">Login</button>
-                <label class = "rememberCheckbox">
-                  <input type="checkbox" checked="checked" name="remember"> Remember me
-                </label>
-            </div>
+  <div id="shelfie-app">
+        <div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-md-6 col-xs-8">
+						<form id="login-form" @submit="login">
+							<div>
+								<h1>Welcome! Please enter your details</h1>
+							</div>
+							<div class="form-group">
+								<label for="username">Username</label>
+								<input type="text" class="form-control" id="username" placeholder="Enter username" v-model="loginUsername" required>
+							</div>
+							<div class="form-group">
+								<label for="password">Password</label>
+								<input type="password" class="form-control" id="password" placeholder="Enter password" v-model="loginPassword" required>
+							</div>
+							<div class="form-group">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="login-remember">
+									<label class="custom-control-label" for="login-remember">Remember me</label>
+								</div>
+							</div>
+							<button type="submit" class="button mt-0">Login</button>
+						</form>
+					</div>
+				</div>
+			</div>
         </div>
-        <div  class="app-container" v-bind:class="{active: isLoggedIn()}">
-        <nav class="sidebar" v-bind:class="{active: isSidebarActive}">
+        <div id="app-container" v-if="isLoggedIn()">
+        <nav id="sidebar" v-bind:class="{active: isSidebarActive}">
         <ul class="button-list">
             <img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
             <li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
@@ -48,9 +57,10 @@
             <li @click="activatePage('report')">Report Generator</li>
             <li @click="activatePage('warehouseConfig')">Warehouse Config</li>
             <li @click="activatePage('userManagement')">User Management</li>
+			<li @click="logout()">Logout</li>
         </ul>
         </nav>
-        <div v-bind:class="{active: isSidebarActive}" class="main">
+        <div v-bind:class="{active: isSidebarActive}" id="main">
             <section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
 				<section></section>
 				<section></section>
@@ -58,25 +68,11 @@
             </section> 
 
         <div v-bind:class="{active: isInventoryActive}" class="inventory">
-			<div class="modal fade" tabindex="-1" role="dialog">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">Note for the tray</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							  <span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<p>Modal body text goes here.</p>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary">Save changes</button>
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						</div>
-					</div>
+			<b-modal id="note-modal" title="Tray Note">
+				<div class="form-group">
+					<textarea class="note-textarea form-control"></textarea>
 				</div>
-			</div>
+			</b-modal>
             <div class="data-entry-form">
                 <div class="container-fluid inventory-container mx-0">
 					<div class="inv-warehouse-view-container">
@@ -215,63 +211,107 @@
             </div>        
         </div>
 
-        <div v-bind:class="{active: isDataViewActive}" class="data-view">
-            <h4 class="display-4">Data View</h4>
-            <hr>
-            <div style="overflow-x: scroll; width: 100%; min-width: 500px;">
-                <table>
-                    <tr>
-                        <th rowspan="2" @click="sort('zone')">Zone</th>
-                        <th rowspan="2" @click="sort('bay')">Bay</th>
-                        <th rowspan="2" @click="sort('shelf')">Shelf</th>
-                        <th rowspan="2" @click="sort('row')">Row</th>
-                        <th rowspan="2" @click="sort('column')">Column</th>
-                        <th rowspan="2" @click="sort('category')">Category</th>
-                        <th rowspan="2" @click="sort('weight')">Weight</th>
-                        <th style="cursor: default;" colspan="2">Expiry Year</th>
-                        <th style="cursor: default;" colspan="2">Expiry Month</th>
-                        <th rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
-                        <th rowspan="2">Note</th>
-                    </tr>
-            
-                    <tr>
-                        <th @click="sort('expiryYear.start')">Start</th>
-                        <th @click="sort('expiryYear.end')">End</th>
-                        <th @click="sort('expiryMonth.start')">Start</th>
-                        <th @click="sort('expiryMonth.end')">End</th>
-                    </tr>
-            
-                    <tr v-for="tray in sortedTrays">
-                        <td>{{ tray.zone }}</td>
-                        <td>{{ tray.bay }}</td>
-                        <td>{{ tray.shelf }}</td>
-                        <td>{{ tray.row }}</td>
-                        <td>{{ tray.column }}</td>
-                        <td>{{ tray.category }}</td>
-                        <td>{{ tray.weight }}</td>
-                        <td>{{ tray.expiryYear.start }}</td>
-                        <td>{{ tray.expiryYear.end }}</td>
-                        <td>{{ tray.expiryMonth.start }}</td>
-                        <td>{{ tray.expiryMonth.end }}</td>
-                        <td>{{ tray.lastUpdated }}</td>
-                        <td>{{ tray.userNote }}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="page-control-buttons">
-                <button @click="prevPage" style="padding: 8px;width: 125px; margin: 10px;" type="button">Previous</button>
-                <button @click="nextPage" style="padding: 8px; width: 125px; margin: 10px;"type="button">Next</button>
-                <button @click="fetchAllTrays" style="padding: 8px; width: 125px; margin: 10px;" type="button">Refresh Table</button>
-            </div>
-            <div class="input-filters">
-                <label><h5 class="display-5" style="margin-bottom: 0px;">ZONE FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="zoneFilter" placeholder="Search by zone" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">BAY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="bayFilter" placeholder="Search by bay" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">SHELFT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="shelfFilter" placeholder="Search by shelf" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">ROW FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="rowFilter" placeholder="Search by row" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">COLUMN FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="columnFilter" placeholder="Search by column" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">CATEGORY FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="categoryFilter" placeholder="Search by category" type="text" class="form-control"></label>
-                <label><h5 class="display-5" style="margin-bottom: 0px;">WEIGHT FILTER: </h5><input v-on:keyup="currentPage = 1" v-model="weightFilter" placeholder="Search by weight" type="text" class="form-control"></label>
-            </div>
+        <div v-bind:class="{active: isDataViewActive}" id="data-view">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						<h1 class="display-4 text-center">Data View</h1>
+						<hr>
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
+										<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
+										<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
+										<th scope="col" rowspan="2" @click="sort('row')">Row</th>
+										<th scope="col" rowspan="2" @click="sort('column')">Column</th>
+										<th scope="col" rowspan="2" @click="sort('category')">Category</th>
+										<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
+										<th scope="col" class="no-click" colspan="2">Expiry Year</th>
+										<th scope="col" class="no-click" colspan="2">Expiry Month</th>
+										<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
+										<th scope="col" rowspan="2">Note</th>
+									</tr>
+									<tr>
+										<th scope="col" @click="sort('expiryYear.start')">Start</th>
+										<th scope="col" @click="sort('expiryYear.end')">End</th>
+										<th scope="col" @click="sort('expiryMonth.start')">Start</th>
+										<th scope="col" @click="sort('expiryMonth.end')">End</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="tray in sortedTrays">
+										<td>{{ tray.zone }}</td>
+										<td>{{ tray.bay }}</td>
+										<td>{{ tray.shelf }}</td>
+										<td>{{ tray.row }}</td>
+										<td>{{ tray.column }}</td>
+										<td>{{ tray.category }}</td>
+										<td>{{ tray.weight }}</td>
+										<td>{{ tray.expiryYear.start }}</td>
+										<td>{{ tray.expiryYear.end }}</td>
+										<td>{{ tray.expiryMonth.start }}</td>
+										<td>{{ tray.expiryMonth.end }}</td>
+										<td>{{ tray.lastUpdated }}</td>
+										<td>{{ tray.userNote }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="page-control-buttons">
+							<button @click="prevPage" type="button" class="m-3">Previous</button>
+							<button @click="nextPage" type="button" class="m-3">Next</button>
+							<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
+						</div>
+					</div>
+				</div>
+				<div class="row d-flex justify-content-center">
+					<div class="col-sm-9">
+						<h2 class="display-5">Filters</h2>
+					</div>
+				</div>
+				<div class="row d-flex justify-content-center">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="filter-zone">Zone Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
+						</div>
+						<div class="form-group">
+							<label for="filter-bay">Bay Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
+						</div>
+						<div class="form-group">
+							<label for="filter-shelf">Shelf Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="filter-row">Row Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
+						</div>
+						<div class="form-group">
+							<label for="filter-column">Column Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for="filter-category">Category Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
+						</div>
+						<div class="form-group">
+							<label for="filter-weight">Weight Filter</label>
+							<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
 
 
