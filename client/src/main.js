@@ -510,7 +510,7 @@ const shelfieApp = new Vue({
             });
         },
 		inventoryFetchShelfTrays: function() {
-			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf] + '/trays', {withCredentials: true}).then((res) => {
+			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
                 this.shelfTrays = res.data;
             }).catch((err) => {
                 this.shelfTrays = [];
@@ -640,6 +640,7 @@ const shelfieApp = new Vue({
 			else {
 				this.selectedTray.expiryMonth = {start: null, end: null};
 			}
+			this.nextTray();
 		},
 		getExpiryString: (tray) => {
 			const state = getExpiryFormatState(tray);
@@ -684,7 +685,10 @@ const shelfieApp = new Vue({
 			this[t] = (i % this[s].length + this[s].length) % this[s].length;
 		},
 		fillShelf: function() {
-			if(this.selectedTray === null) return;
+			if(this.selectedTray === null) { 
+				this.makeToast('Error', 'No tray selected.', 'danger');
+				return;
+			}
 			for(let row of this.shelfTrays) {
 				for(let tray of row) {
 					tray.category = this.selectedTray.category;
@@ -696,7 +700,10 @@ const shelfieApp = new Vue({
 			}
 		},
 		clearTray: function() {
-			if(this.selectedTray === null) return;
+			if(this.selectedTray === null){
+				this.makeToast('Error', 'No tray selected.', 'danger');
+				return;
+			}
 			this.selectedTray.category = '';
 			this.selectedTray.weight = 0;
 			this.selectedTray.expiryYear = {start: null, end: null};
@@ -704,11 +711,43 @@ const shelfieApp = new Vue({
 			this.selectedTray.userNote = '';
 		},
 		shelfOk: function() {
-			
+			if(!this.inventoryShelves[this.selectedShelf]) return;
+			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
+				{_shelfOk: true},
+				{withCredentials: true})
+			.then((res) => {
+				this.inventoryShelves[this.selectedShelf]._shelfOk = true;
+                this.makeToast('Success', 'Shelf marked OK', 'success');
+            });
+		},
+		isShelfOk: function(shelf) {
+			if(!shelf) return false;
+			return shelf._shelfOk;
+		},
+		isShelfSelected: function(shelf) {
+			if(!shelf) return false;
+			return shelf === this.inventoryShelves[this.selectedShelf];
+		},
+		nextTray: function() {
+			const tray = this.selectedTray;
+			if(!tray) return;
+			console.log(tray);
+			if(tray.col - 1 < this.shelfTrays[tray.row - 1].length - 1) {
+				this.selectedTray = this.shelfTrays[tray.row - 1][tray.col];
+			}
+			else if(tray.col - 1 === this.shelfTrays[tray.row - 1].length - 1 && tray.row - 1 < this.shelfTrays.length - 1) {
+				this.selectedTray = this.shelfTrays[tray.row][0];
+			}
+			else {
+				this.selectedTray = this.shelfTrays[0][0];
+			}
 		},
 		viewNote: function() {
+			if(this.selectedTray === null) {
+				this.makeToast('Error', 'No tray selected.', 'danger');
+				return;
+			}
 			this.$bvModal.show('note-modal');
-			console.log('test');
 		},
         /* END OF INVENTORY */
 
@@ -749,6 +788,23 @@ const shelfieApp = new Vue({
     },
     computed:{
         /* INVENTORY */
+		noteModel: {
+			get: function() {
+				if(this.selectedTray !== null) {
+					return this.selectedTray.userNote;
+				}
+				let note = '';
+				return note;
+			},
+			set: function(value) {
+				if(this.selectedTray !== null) {
+					this.selectedTray.userNote = value;
+					return;
+				}
+				this.makeToast('Error', 'Could not update note. No tray selected. How did we get here?', 'danger');
+			}
+			
+		},
         monthYearButtons: function() {
 			const start = luxon.DateTime.local().minus({months: 1});
 			const end = luxon.DateTime.local().plus({months: 11});
@@ -764,7 +820,7 @@ const shelfieApp = new Vue({
 		},
 		yearButtons: function() {
 			const start = luxon.DateTime.local();
-			const end = luxon.DateTime.local().plus({years: 5});
+			const end = luxon.DateTime.local().plus({years: 3});
 			const years = [];
 			let current = start;
 			while(current < end) {

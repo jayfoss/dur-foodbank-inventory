@@ -19,10 +19,15 @@ button {
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-.toast-header button, .toast-header button:hover, .modal-header button, .modal-header button:hover {
+.toast-header button, .toast-header button:hover {
 	background-color: transparent;
 	box-shadow: none;
 	margin-top: 0;
+}
+
+.modal-header button, .modal-header button:hover {
+	background-color: transparent;
+	box-shadow: none;
 }
 
 button:hover {
@@ -52,17 +57,6 @@ button:hover {
 
 .warehouse-config.active {
 	display: block;
-}
-
-.warehouse-config input[type="text"] {
-	width: 300px;
-	height: 50px;
-}
-
-.warehouse-config button {
-	width: initial;
-	height: 50px;
-	padding: 0 25px;
 }
 
 .warehouse-config .scrollable-list {
@@ -139,6 +133,7 @@ button:hover {
 #login-page {
 	width: 100vw;
 	height: 100vh;
+	font-size: 1.2em;
 }
 
 #login-form {
@@ -397,6 +392,9 @@ button:hover {
 	line-height: 0;
 	outline: none;
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .inv-v-zone {
@@ -413,6 +411,10 @@ button:hover {
 	align-items: center;
 	justify-content: center;
 	direction: ltr;
+}
+
+.inv-checked.selected, .inv-checked.done.selected {
+	background-color: gray;
 }
 
 .inv-checked:after {
@@ -438,6 +440,17 @@ button:hover {
 .inv-w-row {
 	padding: .25em;
 	width: 1250px;
+}
+
+.inv-w-el-tray-note {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 20px 20px 0 0;
+	border-color: #ff0000 transparent transparent transparent;
 }
 
 .inv-w-el {

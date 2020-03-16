@@ -99,6 +99,9 @@ apiRouter.get('/zones/:zoneId/bays/:bayId/shelves', (req, resp) => {
 apiRouter.post('/zones/:zoneId/bays/:bayId/shelves', (req, resp) => {
 	shelfController.createShelf(req, resp);
 });
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
+	shelfController.getShelfInfo(req, resp);
+});
 apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
 	shelfController.modifyShelf(req, resp);
 });

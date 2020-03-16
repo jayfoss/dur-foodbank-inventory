@@ -7,7 +7,7 @@
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.css" integrity="sha256-A47OwxL/nAN0ydiDFTSGX7ftbfTJTKgiJ0zqCuTPDh4=" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.css" integrity="sha256-DdAtjBS1alSSjGdknERh+FrjHv0m7NTxE5iMhdv5JKs=" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="style.css?v=2">
 
 	<!-- SCRIPTS -->
 	<script src="https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js" integrity="sha256-bpvncwMbMjT7nC1s89l0DbEgj0NRvsoyXsNPdv0481Y=" crossorigin="anonymous"></script>
@@ -23,7 +23,7 @@
         <div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
 			<div class="container">
 				<div class="row justify-content-center">
-					<div class="col-md-6 col-xs-8">
+					<div class="col-md-8 col-xs-10">
 						<form id="login-form" @submit="login">
 							<div>
 								<h1>Welcome! Please enter your details</h1>
@@ -68,9 +68,9 @@
             </section> 
 
         <div v-bind:class="{active: isInventoryActive}" class="inventory">
-			<b-modal id="note-modal" title="Tray Note">
+			<b-modal id="note-modal" title="Tray Note" centered ok-title="Save note" ok-only>
 				<div class="form-group">
-					<textarea class="note-textarea form-control"></textarea>
+					<textarea class="note-textarea form-control" v-model="noteModel"></textarea>
 				</div>
 			</b-modal>
             <div class="data-entry-form">
@@ -97,9 +97,9 @@
 								<div class="inv-v-ctrl-container text-center pt-1">
 									<div class="inv-v-ctrl-head">Shelf</div>
 									<div class="inv-v-ctrl-mv">
-										<button @click="sectionSelect('shelf', false)">&#129095;</button>
-										<div class="inv-v-zone">{{inventoryShelves[selectedShelf]}}</div>
-										<button @click="sectionSelect('shelf', true)">&#129093;</button>
+										<button @click="sectionSelect('shelf', true)">&#129095;</button>
+										<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
+										<button @click="sectionSelect('shelf', false)">&#129093;</button>
 									</div>
 								</div>
 								<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
@@ -110,11 +110,7 @@
 										<button class="invButton" @click="viewNote()">View Note</button>
 									</div>
 									<div class="inv-v-bay-view">
-										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
-										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
-										<div class="inv-v-bay-view-shelf"><div class="inv-checked done"></div></div>
-										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
-										<div class="inv-v-bay-view-shelf"><div class="inv-checked"></div></div>
+										<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
 									</div>
 								</div>
 							</div>
@@ -122,9 +118,10 @@
 								<div class="inv-warehouse-container">
 									<div class="inv-w-row" v-for="row in shelfTrays.slice()">
 										<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
+											<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
 											<div class="inv-w-el-tray">{{tray.category}}</div>
 											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight"><input type="number" min="0" step="0.01"></div>
+												<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
 												<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
 											</div>
 										</div>
@@ -456,29 +453,34 @@
 		<!-- End of code for report generation-->
 
         <!-- WAREHOUSE CONFIGURATION -->
-        <div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config text-center">
-            <button v-on:click="warehouseFetchZones()">REFRESH</button>
-            <h4 class="display-4">Warehouse Configuration</h4>
-            <hr>
-            <h5 class="h2">Create</h5>
+        <div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
             <div class="container-fluid">
+				<div class="row">
+					<div class="col text-center">
+						<button v-on:click="warehouseFetchZones()">REFRESH</button>
+						<h1 class="display-4">Warehouse Configuration</h1>
+						<hr>
+						<h5 class="h2">Create</h5>
+					</div>
+				</div>
                 <div class="row align-items-center justify-content-center">
                     <div class="col-xl-4">
-                        <div class="">
-                            <h5 class="display-5">ZONE NAME</h5>
-                            <input type="text" placeholder="Zone Name" v-model="toInsertZoneName">
-                        </div>
-                        
-                        <div class="">
-                            <h5 class="display-5">BAY NAME</h5>
-                            <input type="text" placeholder="Bay Name" v-model="toInsertBayName">
-                            <h5 class="display-5">OR NUMBER OF BAYS</h5>
-                            <div class="d-flex justify-content-center">
-                                <button v-on:click="warehouseChangeNumberOfBaysInsert(-1)">-</button>
-                                <h1 class="d-flex align-items-center display-5 px-5">{{toInsertNumberOfBays}}</h1>
-                                <button v-on:click="warehouseChangeNumberOfBaysInsert(1)">+</button>
-                            </div>
-                        </div>
+                        <div class="form-group">
+							<label>ZONE NAME</label>
+							<input class="form-control" type="text" placeholder="Zone Name" v-model="toInsertZoneName">
+						</div>
+						<div class="form-group">
+							<label>BAY NAME</label>
+							<input class="form-control" type="text" placeholder="Bay Name" v-model="toInsertBayName">
+						</div>
+						<div class="inv-v-ctrl-container text-center pt-3">
+							<div class="inv-v-ctrl-head">OR NUMBER OF BAYS</div>
+							<div class="inv-v-ctrl-mv">
+								<button @click="warehouseChangeNumberOfBaysInsert(-1)">-</button>
+								<div class="inv-v-zone">{{toInsertNumberOfBays}}</div>
+								<button @click="warehouseChangeNumberOfBaysInsert(1)">+</button>
+							</div>
+						</div>
                     </div>
 
                     <div class="col-xl-4">
@@ -758,6 +760,6 @@
     </div>
 </div>
 
-  <script src="./src/main.js" ></script>
+  <script src="./src/main.js?v=22" ></script>
 </body>
 </html>
