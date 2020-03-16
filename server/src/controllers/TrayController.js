@@ -157,6 +157,9 @@ class TrayController {
 
                 for(let rowNumber in result[zoneName][bayName][shelfNumber]){
 					let row = [];
+					if(rowNumber.startsWith('_')) {
+						continue;
+					}
                     for(let columnNumber in result[zoneName][bayName][shelfNumber][rowNumber]){
 						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = rowNumber;
 						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = columnNumber;

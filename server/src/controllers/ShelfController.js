@@ -45,6 +45,15 @@ class ShelfController {
 		resp.send(shelves);
 	}
 	
+	async getShelfInfo(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const shelf = await this.getShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		resp.status(200);
+		resp.send(shelf);
+	}
+	
 	async createShelf(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
@@ -83,8 +92,8 @@ class ShelfController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const shelf = new ShelfModel();
-		if(!shelf.map(req.body)) return;
-		await this.changeShelfName(req.params.zoneId, req.params.bayId, req.params.shelfId, shelf.number);
+		if(!shelf.update(req.body)) return;
+		await this.updateShelf(req.params.zoneId, req.params.bayId, req.params.shelfId, shelf.fields);
 		resp.status(200);
 		resp.send(shelf.fields);
 	}
@@ -105,7 +114,13 @@ class ShelfController {
             let cursor = await this.db.queryDatabase('warehouse', query);
             await cursor.forEach(function(result){
                 for(let key in result[zone][bay]){
-                    shelves.push(key);
+					const shelfData = {_id: key};
+					for(let shelfInfoKey in result[zone][bay][key]) {
+						if(shelfInfoKey.startsWith('_')) {
+							shelfData[shelfInfoKey] = result[zone][bay][key][shelfInfoKey];
+						}
+					}
+                    shelves.push(shelfData);
                 }
             });
         } catch (err){
@@ -113,13 +128,46 @@ class ShelfController {
         }
         return shelves;
     }
+	
+	async getShelfFromDb(zoneId, bayId, shelfId) {
+		let shelf = {};
+		
+		const query = '{\'' + zoneId + '.' + bayId + '.' + shelfId + '\' : {$exists: true}}';
 
-    async changeShelfName(zoneName, bayName, oldShelfName, newShelfName) {
-        let filter = {};
-        let renameStringLeft = zoneName + '.' + bayName + '.' + oldShelfName;
-        let renameStringRight = zoneName + '.' + bayName + '.' + newShelfName;
-        let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
-        await this.db.updateDatabase('warehouse', filter, updateQuery);
+        try {
+            let cursor = await this.db.queryDatabase('warehouse', query);
+            await cursor.forEach(function(result){
+                for(let key in result[zoneId][bayId][shelfId]){
+                    if(key.startsWith('_')) {
+						shelf[key] = result[zoneId][bayId][shelfId][key];
+					}
+                }
+            });
+        } catch (err){
+            console.log(err);
+        }
+        return shelf;
+	}
+	
+	async updateShelf(zoneName, bayName, shelfNumber, shelfData){
+		if(shelfData._id) {
+			let filter = {};
+			let renameStringLeft = zoneName + '.' + bayName + '.' + oldShelfName;
+			let renameStringRight = zoneName + '.' + bayName + '.' + newShelfName;
+			let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
+			await this.db.updateDatabase('warehouse', filter, updateQuery);
+		}
+        let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber;
+        let filter = {[insertStringLeft]:{$exists: true}};
+        let setObj = {}
+        for(let key in shelfData){
+			if(key === '_id') continue;
+            setObj[insertStringLeft + '.' + key] = shelfData[key];
+        }
+		if(Object.keys(setObj).length > 0) {
+			let updateQuery = {$set: setObj};
+			await this.db.updateDatabase('warehouse', filter, updateQuery);
+		}
     }
 
     async insertShelf(zoneName, bayName, shelfNumber){

@@ -20,17 +20,31 @@ class Model {
 		return !this.validator.hasErrors();
 	}
 	
+	update(body, whitelist = null){
+		for(let i in this.settableFields){
+			let settableField = this.settableFields[i];
+			if(whitelist !== null && !whitelist.includes(settableField)) continue;
+			if(body[settableField] !== undefined) {
+				this[settableField] = body[settableField];
+			}
+		}
+		return !this.validator.hasErrors();
+	}
+	
 	buildFields(fields) {
 		let obj = {};
+		const self = this;
 		fields.forEach(field => {
 			obj[field] = null;
-			Object.defineProperty(this, field, {
+			let desc = Object.getOwnPropertyDescriptor(self.__proto__.constructor.prototype, field);
+			if(!desc) {
+				desc = Object.getOwnPropertyDescriptor(self, field);
+			}
+			Object.defineProperty(self, field, {
 				get: () => {
-					return this.fields[field];
+					return self.fields[field];
 				},
-				set: () => {
-					return this.prototype[field](value);
-				},
+				set: desc !== undefined ? desc.set : undefined,
 				enumerable: true
 			});				
 		});
@@ -40,12 +54,16 @@ class Model {
 	booleanify(fields) {
 		fields.forEach(field => {
 			Object.defineProperty(this, field, {
+				get: () => {
+					return this.fields[field];
+				},
 				set: (value) => {
 					if(!this.validator.isBooleanNN(field, value)) return false;
 					this.fields[field] = value;
 					return this;
 				},
-				enumerable: true
+				enumerable: true,
+				configurable: true
 			});
 		});
 	}

@@ -36,8 +36,9 @@ class AuthController {
 	logout(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
-		resp.cookie('_id', false, {expires: -1, httpOnly: true, secure: config.auth.secureCookie}); 
-		resp.cookie('_p', false, {expires: -1, httpOnly: false, secure: config.auth.secureCookie}); 
+		resp.cookie('_id', false, {expires: new Date(Date.now() - 86000), httpOnly: true, secure: config.auth.secureCookie}); 
+		resp.cookie('_p', false, {expires: new Date(Date.now() - 86000), httpOnly: false, secure: config.auth.secureCookie});
+		resp.sendStatus(204);
 	}
 	
 	createAuthToken(user){
