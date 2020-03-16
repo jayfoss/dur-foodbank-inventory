@@ -36,7 +36,6 @@ button:hover {
 
 .submit-button {
 	font-weight: bold; 
-	width: 450px; 
 	background-color: #68B72E;
 }
 
@@ -71,24 +70,33 @@ button:hover {
 	height: 75px;
 }
 
-
+.cfg-modify-panel {
+	background-color: white;
+	padding: 1em;
+}
 
 /* END OF WAREHOUSE CONFIG */
 
 /*REPORT PAGE*/
-.report_page{
+#report-page{
 	display: none;
 }
 
-.report_page.active{
+#report-page.active{
 	display: flex;
 }
 
-.custombtn.active{		
-	background-color: #00506C;
+#report-page button {
+	width: 8em;
+	margin: 0 .5em .5em .5em;
 }
-.custombtn{
+
+#report-page button.disabled {		
 	background-color: #9FAFBB;
+}
+
+#report-table {
+	max-height: 500px;
 }
 
 .exportbtn{

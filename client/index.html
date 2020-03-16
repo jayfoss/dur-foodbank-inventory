@@ -313,20 +313,24 @@
 
 
 		<!-- Start of code for report generation -->
-		<div v-bind:class="{active:isReportActive}" class="report_page">
+		<div v-bind:class="{active:isReportActive}" id="report-page">
 			<div class="container-fluid">
-                <h4 class="display-4">Stock Report</h4>
-                <hr>
-				<div class="row mt-5" style="vertical-align: center;">
-                    <div class="col-sm-6">
-                        <h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Results</h5>
-                        <div style="max-height:82vh;overflow:scroll;">
+				<div class="row">
+					<div class="col">
+						<h4 class="display-4 text-center">Stock Report</h4>
+						<hr>
+					</div>
+				</div>
+				<div class="row mt-3">
+                    <div class="col-sm-6 order-1 order-sm-0">
+                        <h2>Results</h2>
+                        <div id="report-table" class="table-responsive">
                             <table class="table table-bordered">
                                 <thead class="thead-dark">
                                 <tr>
                                     <th>Item</th>
                                     <th>Count</th>
-                                    <th>Total Weight(kg)</th>
+                                    <th>Total Weight (kg)</th>
                                 </tr>
                                 </thead>
                                 <tr>
@@ -437,13 +441,13 @@
                             </table>
                         </div>
                     </div>
-					<div class="col-sm-6 d-flex justify-content-center">
-						<div>
-							<h5 class="h2" style="text-align: center; margin-top: 0px; border-top: 0px;">Selected Zones</h5>
-							<button class = "custombtn" v-bind:class="{active:isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-							<button class = "custombtn" v-bind:class="{active:isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-							<button class = "custombtn" v-bind:class="{active:isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
-							<button class = "custombtn" style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+					<div class="col-sm-6 order-0 order-sm-1">
+						<h2 class="text-center">Selected Zones</h2>
+						<div class="d-flex justify-content-center flex-wrap">
+							<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+							<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+							<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+							<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 						</div>
 					</div>
 					</div>
@@ -454,18 +458,20 @@
 
         <!-- WAREHOUSE CONFIGURATION -->
         <div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
-            <div class="container-fluid">
+			<div class="container-fluid">
 				<div class="row">
 					<div class="col text-center">
 						<button v-on:click="warehouseFetchZones()">REFRESH</button>
 						<h1 class="display-4">Warehouse Configuration</h1>
 						<hr>
-						<h5 class="h2">Create</h5>
+						<h2>Create</h2>
 					</div>
 				</div>
+			</div>
+            <div class="container">
                 <div class="row align-items-center justify-content-center">
-                    <div class="col-xl-4">
-                        <div class="form-group">
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group mt-1">
 							<label>ZONE NAME</label>
 							<input class="form-control" type="text" placeholder="Zone Name" v-model="toInsertZoneName">
 						</div>
@@ -483,160 +489,149 @@
 						</div>
                     </div>
 
-                    <div class="col-xl-4">
-                        <div class="d-flex flex-column my-4">
-                            <h5 class="display-5">NUMBER OF SHELVES</h5>
-                            <div class="d-flex justify-content-center">
-                                <button v-on:click="warehouseLimitShelfSelector()">-</button>
-                                <h1 class="d-flex align-items-center display-5 px-5">{{toInsertNumOfShelves}}</h1>
-                                <button v-on:click="toInsertNumOfShelves++">+</button>
-                            </div>
-                        </div>
-        
-        
-                        <div class="d-flex flex-column my-4">
-                            <h5 class="display-5">NUMBER OF TRAYS (VERTICAL)</h5>
-                            <div class="d-flex justify-content-center">
-                                <button v-on:click="warehouseLimitRowSelector(false)">-</button>
-                                <h1 class="d-flex align-items-center display-5 px-5">{{toInsertNumOfRows}}</h1>
-                                <button v-on:click="toInsertNumOfRows++">+</button>
-                            </div>
-                        </div>
-        
-                        <div class="d-flex flex-column my-4">
-                            <h5 class="display-5">NUMBER OF TRAYS (HORIZONTAL)</h5>
-                            <div class="d-flex justify-content-center">
-                                <button v-on:click="warehouseLimitColumnSelector(false)">-</button>
-                                <h1 class="d-flex align-items-center display-5 px-5">{{toInsertNumOfColumns}}</h1>
-                                <button v-on:click="toInsertNumOfColumns++">+</button>
-                            </div>
-                        </div>
+                    <div class="col-sm-6 col-lg-4">
+						<div class="inv-v-ctrl-container text-center pt-3">
+							<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
+							<div class="inv-v-ctrl-mv">
+								<button @click="warehouseLimitShelfSelector()">-</button>
+								<div class="inv-v-zone">{{toInsertNumOfShelves}}</div>
+								<button @click="toInsertNumOfShelves++">+</button>
+							</div>
+						</div>
+						<div class="inv-v-ctrl-container text-center pt-3">
+							<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
+							<div class="inv-v-ctrl-mv">
+								<button @click="warehouseLimitRowSelector(false)">-</button>
+								<div class="inv-v-zone">{{toInsertNumOfRows}}</div>
+								<button @click="toInsertNumRows++">+</button>
+							</div>
+						</div>						
+						<div class="inv-v-ctrl-container text-center pt-3">
+							<div class="inv-v-ctrl-head">NUMBER OF TRAYS (HORIZONTAL)</div>
+							<div class="inv-v-ctrl-mv">
+								<button @click="warehouseLimitColumnSelector(false)">-</button>
+								<div class="inv-v-zone">{{toInsertNumOfColumns}}</div>
+								<button @click="toInsertNumOfColumns++">+</button>
+							</div>
+						</div>
                     </div>
                 </div>
-
-                <button class="my-2 submit-button" v-on:click="warehouseCreateSubmit()">SUBMIT</button>
+				<div class="row mt-3">
+					<div class="col d-flex justify-content-center">
+						<button class="my-2 submit-button" v-on:click="warehouseCreateSubmit()">SUBMIT</button>
+					</div>
+				</div>
             </div>
-            <hr>
-            <h5 class="h2">Modify</h5>
-            <div class="d-flex col-12 align-items-start justify-content-around flex-wrap">
-                <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
-                    <h5 class="display-5 mt-4 mb-3">SELECT A ZONE</h5>
-                    <div class="scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
-                        <button v-on:click="warehouseFetchBays(zoneName)" v-for="zoneName in warehouseZones">{{zoneName}}</button>
-                    </div>
-                    <h5 v-else class="bg-warning p-2 display-5">NO ZONES</h5>
-                    <h1 v-if="originalData.zone.name != ''" class="display-5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone.name}}</h1>
-                    <h1 v-else class="display-5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</h1>
+			<div class="container-fluid">
+				<hr />
+				<div class="row">
+					<div class="col">
+						<h2 class="text-center">Modify</h2>
+					</div>
+				</div>
+				<div class="row d-flex justify-content-around">
+					<div class="col-sm-3">
+						<div class="cfg-modify-panel">
+							<h3 class="mb-3">SELECT A ZONE</h3>
+							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
+								<button v-on:click="warehouseFetchBays(zoneName)" v-for="zoneName in warehouseZones">{{zoneName}}</button>
+							</div>
+							<p v-else class="bg-warning p-2 h5">NO ZONES</p>
+							<p v-if="originalData.zone.name != ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone.name}}</p>
+							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
 
-                    <div v-if="originalData.zone.name != ''" class="d-flex flex-column">
-                        <input type="text" v-model="modifiedData.zone.name">
-                        <h5 class="display-5">NUMBER OF BAYS</h5>
-                        <div class="d-flex justify-content-center">
-                            <button v-on:click="warehouseChangeNumberOfBays(-1)">-</button>
-                            <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.zone.numberOfBays}}</h1>
-                            <button v-on:click="warehouseChangeNumberOfBays(1)">+</button>
-                        </div>
-                        <button>DELETE ZONE</button>
-                    </div>
-                </div>
-                <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
-                    <h5 class="display-5 mt-4 mb-3">SELECT A BAY</h5>
-                    <div class="scrollable-list text-left border bg-light" v-if="warehouseBays.length > 0">
-                        <button v-on:click="warehouseFetchShelves(bayName)" v-for="bayName in warehouseBays">{{bayName}}</button>
-                    </div>
-                    <h5 v-else class="bg-warning p-2 display-5">NO BAYS</h5>
-                    <h1 v-if="originalData.bay.name != ''" class="display-5 mt-4 mb-3">SELECTED BAY: {{originalData.bay.name}}</h1>
-                    <h1 v-else class="display-5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</h1>
+							<div v-if="originalData.zone.name != ''" class="d-flex flex-column">
+								<input type="text" v-model="modifiedData.zone.name">
+								<h5>NUMBER OF BAYS</h5>
+								<div class="d-flex justify-content-center">
+									<button v-on:click="warehouseChangeNumberOfBays(-1)">-</button>
+									<p class="d-flex align-items-center px-5 h5">{{modifiedData.zone.numberOfBays}}</p>
+									<button v-on:click="warehouseChangeNumberOfBays(1)">+</button>
+								</div>
+								<button>DELETE ZONE</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="cfg-modify-panel">
+							<h3 class="mb-3">SELECT A BAY</h3>
+							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseBays.length > 0">
+								<button v-on:click="warehouseFetchShelves(bayName)" v-for="bayName in warehouseBays">{{bayName}}</button>
+							</div>
+							<p v-else class="bg-warning p-2 h5">NO BAYS</p>
+							<p v-if="originalData.bay.name != ''" class="h5 mt-4 mb-3">SELECTED BAY: {{originalData.bay.name}}</p>
+							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</p>
 
-                    <div v-if="originalData.bay.name != ''" class="d-flex flex-column">
-                        <input type="text" v-model="modifiedData.bay.name">
-                        <h1 class="display-5">NUMBER OF SHELVES</h1>
-                        <div class="d-flex justify-content-center">
-                            <button v-on:click="warehouseChangeNumberOfShelves(-1)">-</button>
-                            <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.bay.numberOfShelves}}</h1>
-                            <button v-on:click="warehouseChangeNumberOfShelves(1)">+</button>
-                        </div>
-                        <button>DELETE BAY</button>
-                    </div>
-                </div>
-                <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
-                    <h1 class="display-5 mt-4 mb-3">SELECT A SHELF</h1>
-                    <div class="scrollable-list text-left border bg-light" v-if="warehouseShelves.length > 0">
-                        <button v-on:click="warehouseFetchRowsColumns(shelfNumber)" v-for="shelfNumber in warehouseShelves">{{shelfNumber}}</button>
-                    </div>
-                    <h5 v-else class="bg-warning p-2 display-5">NO SHELVES</h5>
-                    <h1 class="display-5 mt-4 mb-3" v-if="originalData.shelf.number != -1">SELECTED SHELF: {{originalData.shelf.number}}</h1>
-                    <h1 class="display-5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</h1>
+							<div v-if="originalData.bay.name != ''" class="d-flex flex-column">
+								<input type="text" v-model="modifiedData.bay.name">
+								<h3>NUMBER OF SHELVES</h3>
+								<div class="d-flex justify-content-center">
+									<button v-on:click="warehouseChangeNumberOfShelves(-1)">-</button>
+									<p class="d-flex align-items-center px-5 h5">{{modifiedData.bay.numberOfShelves}}</p>
+									<button v-on:click="warehouseChangeNumberOfShelves(1)">+</button>
+								</div>
+								<button>DELETE BAY</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="cfg-modify-panel">
+							<h3 class="mb-3">SELECT A SHELF</h3>
+							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseShelves.length > 0">
+								<button v-on:click="warehouseFetchRowsColumns(shelf._id)" v-for="shelf in warehouseShelves">{{shelf._id}}</button>
+							</div>
+							<p v-else class="bg-warning p-2 h5">NO SHELVES</p>
+							<p class="h5 mt-4 mb-3" v-if="originalData.shelf.number != -1">SELECTED SHELF: {{originalData.shelf.number}}</p>
+							<p class="h5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</p>
 
-                    <div v-if="originalData.shelf.number != -1" class="d-flex flex-column">
-                        <h1 class="display-5">NUMBER OF TRAYS (VERTICAL)</h1>
-                        <div class="d-flex justify-content-center">
-                            <button v-on:click="warehouseLimitRowSelector(true)">-</button>
-                            <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.shelf.rows}}</h1>
-                            <button v-on:click="modifiedData.shelf.rows++">+</button>
-                        </div>
+							<div v-if="originalData.shelf.number != -1" class="d-flex flex-column">
+								<h3>NUMBER OF TRAYS (VERTICAL)</h3>
+								<div class="d-flex justify-content-center">
+									<button v-on:click="warehouseLimitRowSelector(true)">-</button>
+									<p class="d-flex align-items-center px-5 h5">{{modifiedData.shelf.rows}}</p>
+									<button v-on:click="modifiedData.shelf.rows++">+</button>
+								</div>
 
-                        <h1 class="display-5">NUMBER OF TRAYS (HORIZONTAL)</h1>
-                        <div class="d-flex justify-content-center">
-                            <button v-on:click="warehouseLimitColumnSelector(true)">-</button>
-                            <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.shelf.columns}}</h1>
-                            <button v-on:click="modifiedData.shelf.columns++">+</button>
-                        </div>
-                    </div>
-                </div>
-                <hr class="col-xl-8">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <h1 class="display-5 my-3">BEFORE CHANGES</h1>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{originalData.zone.name}}</h5>
-                            <h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
-                        </div>
-                        <div class="col-4">
-                            <h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{originalData.bay.name}}</h5>
-                            <h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{originalData.bay.numberOfShelves}}</h5>
-                        </div>
-                        <div class="col-4">
-                            <h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{originalData.shelf.number}}</h5>
-                            <h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
-                            <h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
-                        </div>
-                    </div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <h1 class="display-5 my-3">AFTER CHANGES</h1>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{modifiedData.zone.name}}</h5>
-                                <h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
-                            </div>
-                            <div class="col-4">
-                                <h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{modifiedData.bay.name}}</h5>
-                                <h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{modifiedData.bay.numberOfShelves}}</h5>
-                            </div>
-                            <div class="col-4">
-                                <h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{modifiedData.shelf.number}}</h5>
-                                <h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{modifiedData.shelf.rows}}</h5>
-                                <h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{modifiedData.shelf.columns}}</h5>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <button class = "submit-button" v-on:click="warehouseModifySubmit()">SUBMIT CHANGES</button>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
+								<h3>NUMBER OF TRAYS (HORIZONTAL)</h3>
+								<div class="d-flex justify-content-center">
+									<button v-on:click="warehouseLimitColumnSelector(true)">-</button>
+									<p class="d-flex align-items-center px-5 h5">{{modifiedData.shelf.columns}}</p>
+									<button v-on:click="modifiedData.shelf.columns++">+</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<hr />
+					<div class="col-sm-6">
+						<h3 class="my-3 text-center">BEFORE CHANGES</h3>
+						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{originalData.zone.name}}</h5>
+						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
+						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{originalData.bay.name}}</h5>
+						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{originalData.bay.numberOfShelves}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{originalData.shelf.number}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
+					</div>
+					<div class="col-sm-6">
+						<h3 class="my-3 text-center">AFTER CHANGES</h3>
+						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{modifiedData.zone.name}}</h5>
+						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
+						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{modifiedData.bay.name}}</h5>
+						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{modifiedData.bay.numberOfShelves}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{modifiedData.shelf.number}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{modifiedData.shelf.rows}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{modifiedData.shelf.columns}}</h5>
+					</div>
+				</div>
+				<div class="row my-3">
+					<div class="col-12 d-flex justify-content-center">
+						<button class="submit-button" v-on:click="warehouseModifySubmit()">SUBMIT CHANGES</button>
+					</div>
+				</div>
+				</div>
+			</div>
         </div>
         <!-- END OF WAREHOUSE CONFIGURATION -->
 

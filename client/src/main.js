@@ -170,6 +170,7 @@ const shelfieApp = new Vue({
 			}).then((res) => {
 				this.loginUsername = null;
 				this.loginPassword = null;
+				this.inventoryFetchZones(true);
 			}).catch((err) => {
 				if(err.response.data && err.response.data.error) {
 					this.makeToast('Error', err.response.data.error, 'danger');
@@ -731,7 +732,6 @@ const shelfieApp = new Vue({
 		nextTray: function() {
 			const tray = this.selectedTray;
 			if(!tray) return;
-			console.log(tray);
 			if(tray.col - 1 < this.shelfTrays[tray.row - 1].length - 1) {
 				this.selectedTray = this.shelfTrays[tray.row - 1][tray.col];
 			}
@@ -921,25 +921,3 @@ const shelfieApp = new Vue({
 		}
 	}
 });
-
-async function login(){
-    await fetch(shelfieURL + '/auth', {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify({
-            'email': $('#username-input').val(),
-            'password': $('#passwd-input').val()
-        })
-    }).then((res) => {
-        if(res.status === 201){
-            shelfieApp.$data.isLoggedIn = true;
-        } else {
-            shelfieApp.$data.isLoggedIn = false;
-        }
-    }).catch((err) => {
-        shelfieApp.$data.isLoggedIn = false;
-    });
-}
