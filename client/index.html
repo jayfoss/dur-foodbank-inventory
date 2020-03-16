@@ -530,7 +530,7 @@
 					</div>
 				</div>
 				<div class="row d-flex justify-content-around">
-					<div class="col-sm-3">
+					<div class="col-md-4 my-3">
 						<div class="cfg-modify-panel">
 							<h3 class="mb-3">SELECT A ZONE</h3>
 							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
@@ -541,18 +541,22 @@
 							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
 
 							<div v-if="originalData.zone.name != ''" class="d-flex flex-column">
-								<input type="text" v-model="modifiedData.zone.name">
-								<h5>NUMBER OF BAYS</h5>
-								<div class="d-flex justify-content-center">
-									<button v-on:click="warehouseChangeNumberOfBays(-1)">-</button>
-									<p class="d-flex align-items-center px-5 h5">{{modifiedData.zone.numberOfBays}}</p>
-									<button v-on:click="warehouseChangeNumberOfBays(1)">+</button>
+								<div class="form-group">
+									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone.name">
+								</div>
+								<div class="inv-v-ctrl-container text-center pt-3">
+									<div class="inv-v-ctrl-head">NUMBER OF BAYS</div>
+									<div class="inv-v-ctrl-mv">
+										<button @click="warehouseChangeNumberOfBays(-1)">-</button>
+										<div class="inv-v-zone">{{modifiedData.zone.numberOfBays}}</div>
+										<button @click="warehouseChangeNumberOfBays(1)">+</button>
+									</div>
 								</div>
 								<button>DELETE ZONE</button>
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-3">
+					<div class="col-md-4 my-3">
 						<div class="cfg-modify-panel">
 							<h3 class="mb-3">SELECT A BAY</h3>
 							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseBays.length > 0">
@@ -563,18 +567,22 @@
 							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</p>
 
 							<div v-if="originalData.bay.name != ''" class="d-flex flex-column">
-								<input type="text" v-model="modifiedData.bay.name">
-								<h3>NUMBER OF SHELVES</h3>
-								<div class="d-flex justify-content-center">
-									<button v-on:click="warehouseChangeNumberOfShelves(-1)">-</button>
-									<p class="d-flex align-items-center px-5 h5">{{modifiedData.bay.numberOfShelves}}</p>
-									<button v-on:click="warehouseChangeNumberOfShelves(1)">+</button>
+								<div class="form-group">
+									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.bay.name">
+								</div>
+								<div class="inv-v-ctrl-container text-center pt-3">
+									<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
+									<div class="inv-v-ctrl-mv">
+										<button @click="warehouseChangeNumberOfShelves(-1)">-</button>
+										<div class="inv-v-zone">{{modifiedData.bay.numberOfShelves}}</div>
+										<button @click="warehouseChangeNumberOfShelves(1)">+</button>
+									</div>
 								</div>
 								<button>DELETE BAY</button>
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-3">
+					<div class="col-md-4 my-3">
 						<div class="cfg-modify-panel">
 							<h3 class="mb-3">SELECT A SHELF</h3>
 							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseShelves.length > 0">
@@ -585,25 +593,33 @@
 							<p class="h5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</p>
 							
 							<div v-if="originalData.shelf.number != -1" class="d-flex flex-column">
-								<h3>NUMBER OF TRAYS (VERTICAL)</h3>
-								<div class="d-flex justify-content-center">
-									<button v-on:click="warehouseLimitRowSelector(true)">-</button>
-									<p class="d-flex align-items-center px-5 h5">{{modifiedData.shelf.rows}}</p>
-									<button v-on:click="modifiedData.shelf.rows++">+</button>
+								<div class="inv-v-ctrl-container text-center pt-3">
+									<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
+									<div class="inv-v-ctrl-mv">
+										<button @click="warehouseLimitRowSelector(true)">-</button>
+										<div class="inv-v-zone">{{modifiedData.shelf.rows}}</div>
+										<button @click="modifiedData.shelf.rows++">+</button>
+									</div>
 								</div>
-								<h3>NUMBER OF TRAYS (HORIZONTAL)</h3>
-								<div class="d-flex justify-content-center">
-									<button v-on:click="warehouseLimitColumnSelector(true)">-</button>
-									<p class="d-flex align-items-center px-5 h5">{{modifiedData.shelf.columns}}</p>
-									<button v-on:click="modifiedData.shelf.columns++">+</button>
+								<div class="inv-v-ctrl-container text-center pt-3">
+									<div class="inv-v-ctrl-head">NUMBER OF TRAYS (HORIZONTAL)</div>
+									<div class="inv-v-ctrl-mv">
+										<button @click="warehouseLimitColumnSelector(true)">-</button>
+										<div class="inv-v-zone">{{modifiedData.shelf.columns}}</div>
+										<button @click="modifiedData.shelf.columns++">+</button>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
-					<hr />
-					<div class="col-sm-6">
+					<div class="col">
+						<hr />
+					</div>
+				</div>
+				<div class="row justify-content-around">
+					<div class="col-sm-4">
 						<h3 class="my-3 text-center">BEFORE CHANGES</h3>
 						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{originalData.zone.name}}</h5>
 						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
@@ -613,7 +629,7 @@
 						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
 						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
 					</div>
-					<div class="col-sm-6">
+					<div class="col-sm-4">
 						<h3 class="my-3 text-center">AFTER CHANGES</h3>
 						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{modifiedData.zone.name}}</h5>
 						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
