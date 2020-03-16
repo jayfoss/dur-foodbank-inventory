@@ -25,7 +25,6 @@ class Database {
     }
 	
 	getConnection() {
-        console.log(this.connection);
 		if(this.connection === null) {
 			throw new Error('Database connection hasn\'t been created');
 		}

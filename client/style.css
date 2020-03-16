@@ -1,41 +1,108 @@
-* {
-	padding: 0;
-	margin: 0;
+/* ||CONSTANTS||
+FONT-SIZES
+titles: x-large (exact val???)
+buttons: 18px
+subtitles (e.g. navbar): 20px
+...
+
+*/
+
+/* Set a style for all buttons */
+button {
+	background-color: #00506C;
+	color: white;
+	padding: .5em 1em;
+	margin-top: 1em;
+	border: none;
+	cursor: pointer;
+	font-size: 1.25em;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-html{
-	font-family: sans-serif;
+.toast-header button, .toast-header button:hover {
+	background-color: transparent;
+	box-shadow: none;
+	margin-top: 0;
 }
 
-.button
-{
-	height:50px;
-	width:150px;
-	background-color:#f6f6f6;
-	margin-left:50px;
-	margin-top:50px;
-	font-size:15px;
-	border: 1px solid;
+.modal-header button, .modal-header button:hover {
+	background-color: transparent;
+	box-shadow: none;
 }
 
-.button:hover{
-	background-color:#d7d7d7;
-}
-.report
-{
-	margin-left:50px;
-	margin-top:50px;
-	border-collapse: collapse;
-	float: left;
-	text-align:left;
+button:hover {
+	background-color: #072631;
 }
 
-.report th{
-	background-color:#a8d26e;
+.submit-button {
+	font-weight: bold; 
+	background-color: #68B72E;
 }
-.report td, th {
-	border:1px solid #615b57;
-	padding:8px;
+
+#shelfie-app {
+	width: 100%;
+	height: 100%;
+}
+
+.app-container.active {
+	display: initial;
+}
+
+/* WAREHOUSE CONFIG */
+
+.warehouse-config {
+	display: none;
+}
+
+.warehouse-config.active {
+	display: block;
+}
+
+.warehouse-config .scrollable-list {
+	display: inline-block;
+	overflow-x: scroll;
+	width: 400px;
+	white-space: nowrap;
+}
+
+.warehouse-config .scrollable-list > button {
+	margin: 0 1px;
+	height: 75px;
+}
+
+.cfg-modify-panel {
+	background-color: white;
+	padding: 1em;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	height: 100%;
+}
+
+/* END OF WAREHOUSE CONFIG */
+
+/*REPORT PAGE*/
+#report-page{
+	display: none;
+}
+
+#report-page.active{
+	display: flex;
+}
+
+#report-page button {
+	width: 8em;
+	margin: 0 .5em .5em .5em;
+}
+
+#report-page button.disabled {		
+	background-color: #9FAFBB;
+}
+
+#report-table {
+	max-height: 500px;
+}
+
+.exportbtn{
+  background-color: #004040;
 }
 
 .separator{
@@ -52,15 +119,6 @@ html{
 	font-size:15px;
 }
 
-.zone_input{
-	margin-left:50px;
-	margin-top:10px;
-	height:50px;
-	text-align:center;
-	font-size:15px;
-
-}
-
 .info_display{
 	margin-left:50px;
 	margin-top:50px;
@@ -73,147 +131,80 @@ html{
 	float:left;
 }
 
+/*END OF REPORT PAGE*/
+
+
 /* LOGIN PAGE */
-
-	
-.app-container {
+#app-container {
 	width: 100%;
 	height: 100%;
-	display: none;
 }
 
-.login {
-	width: 100%;
-	height: 100%;
-	display: none;
+#login-page {
+	width: 100vw;
+	height: 100vh;
+	font-size: 1.2em;
 }
 
-.login.active{
-	display: initial;
+#login-form {
+	background-color: white;
+	padding: 2em;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-.app-container.active {
-	display: initial;
+#login-page h1 {
+	font-size: 1.75em;
 }
-
-p {
-    margin: 18px 6px 6px 18px;
-    text-align: justify
-}
-
-h2{
-	text-align: center;
-}
-
-div.ex1 {
-    border: 1px;
-    width: 20%;
-    float: left;
-    margin-left: 1%;
-}
-
-div.ex2 {
-    border: 1px;
-    width: 20%;
-    float: left;
-    margin-right: 1%;
-}
-
-div.ex3 {
-    border: 1px;
-    width: 90%;
-    float: left;
-    margin-right: 1%;
-}
-
-/* Full-width inputs */
-input[type=text], input[type=password] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-/* Set a style for all buttons */
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-}
-
-/* Add a hover effect for buttons */
-button:hover {
-  opacity: 0.8;
-}
-
-.container {
-  padding: 16px;
-}
-
-@media screen and (max-width: 300px) {
-  span.psw {
-    display: block;
-    float: none;
-  }
-  .cancelbtn {
-    width: 100%;
-  }
-}
-
-/* END OF LOGIN PAGE */
-
-
 
 /* SIDE BAR CSS */
 
-.sidebar {
-	width: 300px;
+#sidebar {
+	width: 250px;
 	height: 100vh;
 	background-color: #a8d26e;
 	display: block;
 	position: fixed;
 	margin-left: -300px;
 	transition: margin-left 0.3s ease;
+	font-size: 18px;
+	z-index: 10000;
 }
 
-.sidebar .button-list {
+#sidebar .button-list {
 	list-style-type: none;
 	text-align: center;
+	padding: 0;
 }
 
-.sidebar .button-list li {
-	padding: 30px;
+#sidebar .button-list li {
+	padding: 1em 0 1em 0;
 	border-bottom: 1px solid #82bd14;
 	transition: background-color 0.2s ease;
 }
 
-.sidebar .button-list li:hover {
-	padding: 30px;
+#sidebar .button-list li:hover {
 	background-color: #85bd37;
 	cursor: pointer;
 }
 
 .topbar {
 	width: 100%;
-	height: 75px;
+	height: 50px;
 	background-color: #a8d26e;
 }
 
 .hamburger {
     background-color: none;
     height: 100%;
-    display: block;
-    width: 75px;
+    width: 50px;
+	height: 50px;
+	margin-left: .65em;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+	position: fixed;
+	z-index:1000;
 }
 
 .hamburger > section {
@@ -226,7 +217,6 @@ button:hover {
 
 .hamburger:hover {
     cursor: pointer;
-    background-color: #85bd37;
 }
 
 .main {
@@ -235,11 +225,11 @@ button:hover {
 
 }
 
-.main.active {
-	margin-left: 300px;
+#main.active {
+	margin-left: 250px;
 }
 
-.sidebar.active {
+#sidebar.active {
 	margin-left: 0;
 }
 
@@ -261,64 +251,122 @@ button:hover {
 
 /* END OF SIDE BAR CSS */
 
+
 /* DATA VIEW PAGE CSS */
 
-.data-view {
+#data-view {
 	align-items: center;
 	flex-direction: column;
 	display: none;
 	padding: 50px;
+	padding-top: 0px;
 	overflow-x: auto;
 }
 
-.data-view.active {
-	display: flex;
+#data-view.active {
+	display: flex;    /*why is this flex and everything else initial?*/
 }
 
-.data-view table {
+#data-view table {
     border-collapse: collapse;
     text-align: center;
     width: 100%;
     margin: 0 auto;
 }
 
-.data-view table tr, td {
+#data-view table tr, #data-view table tr td {
     padding: 5px;
     border: 1px solid black;
 }
 
-.data-view table th {
+#data-view table th {
     border: 2px solid black;
     padding: 5px;
 }
 
-.data-view table th:hover {
+#data-view table th:hover {
     cursor: pointer;
 }
 
-.data-view .input-filters input {
+#data-view .input-filters input {
 	padding: 10px;
 }
 
-.data-view .input-filters label {
+#data-view .input-filters label {
     margin: 25px;
 }
 
-.data-view .page-control-buttons {
+#data-view .page-control-buttons {
 	display: flex;
-	justify-content: center;
-	margin: 10px;
-}
-
-.data-view .input-filters {
-	display: flex;
-	flex-wrap: wrap;
 	justify-content: center;
 }
 
+#data-view .page-control-buttons button {
+	width: 8em;
+}
+
+.no-click {
+	cursor: default;
+}
 /* END OF DATA VIEW PAGE CSS */
 
+
 /* INVENTORY PAGE CSS */
+
+.button-group {
+	font-size: 0;
+}
+
+/*creating a class for buttons on the inventory page*/
+.invButton {
+	height: 50px;
+	width: 110px;
+	font-weight:bold;
+	margin: 0;
+	padding: 0;
+	border: 1px solid white;
+	cursor: pointer;
+	background-color: #00506C;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	font-size: 12px;
+	cursor: pointer;
+	display: inline-block;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	vertical-align: top;
+}
+
+.invButton.expandable {
+	height: 50px;
+	width: 110px;
+	border: 1px solid white;
+	background-color: #072631;
+	font-size: 10px;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+	opacity: 1;
+	pointer-events: auto;
+	
+}
+
+.invButton.expandable:hover {
+	background-color: white;
+	color: black;
+}
+
+.invButton.expandable.hidden {
+	height: 0;
+	width: 0;
+	border: none;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.invButton:hover {
+	background-color: #072631;
+	color: white;
+}
 
 .inventory {
 	display: none;
@@ -329,42 +377,303 @@ button:hover {
 	display: initial;
 }
 
-.btn-group1 .button {
-    background-color: #4CAF50; /* Green */
-    border: 1px solid green;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    width: 170px;
-    display: block;
-  }
-  .btn-group1 .button:not(:last-child) {
-    border-bottom: none; /* Prevent double borders */
-  } 
-  .btn-group1 .button:hover {
-    background-color: #3e8e41;
-  }
+.inv-v-ctrl-head {
+	/*font-size: 1.25em;*/
+}
 
-.btn-group2 .button {
-    background-color: orange;
-    border: 1px solid green;
-    width: 120px;
-    color: white;
-    font-size: 16px;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: block;
- }
- .btn-group2 .button:not(:last-child) {
-    border-bottom: none; /* Prevent double borders */
-  } 
- .btn-group2 .button:hover {
-    background-color: #FF8C00
-  }
+.inv-v-ctrl-mv {
+	display: flex; 
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
 
+.inv-v-ctrl-mv div {
+	font-size: 2em;
+}
+
+.inv-v-ctrl-mv button {
+	padding: 0;
+	font-size: 2em;
+	width: 1.25em;
+	height: 1.25em;
+	margin: 0;
+	text-align: center;
+	line-height: 0;
+	outline: none;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inv-v-zone {
+	text-transform: uppercase;
+}
+
+.inv-checked {
+	padding: 0;
+	font-size: 2em;
+	width: 1.25em;
+	height: 1.25em;
+	background-color: red;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	direction: ltr;
+}
+
+.inv-checked.selected, .inv-checked.done.selected {
+	background-color: gray;
+}
+
+.inv-checked:after {
+	content:"X";
+}
+
+.inv-checked.done {
+	background-color: green;
+}
+
+.inv-checked.done:after {
+	content:"\1F5F9";
+}
+
+.inv-warehouse-container {
+	padding:.75em;
+	background-color: #68B72E;
+	overflow: scroll;
+	height: 440px;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.inv-w-row {
+	padding: .25em;
+	width: 1250px;
+}
+
+.inv-w-el-tray-note {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 20px 20px 0 0;
+	border-color: #ff0000 transparent transparent transparent;
+}
+
+.inv-w-el {
+	width: 210px;
+	height: 81px;
+	background-color: white;
+	display: inline-flex;
+	align-items: center;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	margin:.25em;
+	-webkit-transform: scale(1, 1);
+	transform: scale(1, 1);
+	position: relative;
+	cursor: pointer;
+	-webkit-transition: all .2s ease-in-out;
+	transition: all .2s ease-in-out;
+	vertical-align: top;
+}
+
+.inv-w-el.selected {
+	box-shadow: 0 20px 30px rgba(0,0,0,0.23), 0 12px 12px rgba(0,0,0,0.27);
+	-webkit-transform: scale(1.2, 1.2);
+	transform: scale(1.2, 1.2);
+	z-index: 100;
+	background-color: #00506C;
+	color: white;
+}
+
+.inv-w-el.selected .inv-w-el-weight input {
+	color: white;
+}
+
+.inv-w-el-tray {
+	font-size: 1.1em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: uppercase;
+	text-align: center;
+	width: 115px;
+	height: 100%;
+}
+
+.inv-w-el-meta {
+	height: 100%;
+	font-size: 1em;
+	display:inline-block;
+	border-left: 1px solid black;
+	width: 95px;
+	position: relative;
+}
+
+.inv-w-el-weight {
+	padding: .5em .75em;
+	border-bottom: 1px solid black;
+	height: 50%;
+	display: flex;
+	align-items: center;
+}
+
+.inv-w-el-weight input {
+	width: 100%;
+	background-color: transparent;
+	border: none;
+	outline: none;
+}
+
+.inv-w-el-expiry {
+	padding: .5em .75em;
+	height: 50%;
+	display: flex;
+	align-items: center;
+}
+
+.exp-cyc-ryy {
+	font-size: .9em;
+}
+
+.exp-cyc-rym {
+	font-size: .8em;
+}
+
+.exp-cyc-yellow {
+	background-color:yellow;
+	color:black;
+}
+
+.exp-cyc-blue {
+	background-color:blue;
+	color:white;
+}
+
+.exp-cyc-pink {
+	background-color:deeppink;
+	color:black;
+}
+
+.exp-cyc-green {
+	background-color:green;
+	color:white;
+}
+
+.inv-v-bay-view {
+	color: white;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	direction: rtl;
+	padding-left: .5em;
+}
+
+.inv-left-controls {
+	display: flex;
+	flex-direction: column;
+}
+
+.note-textarea {
+	width: 100%;
+	height: 100%;
+}
 
 /* END OF INVENTORY PAGE CSS */
+
+
+
+
+/* USER MANAGEMENT */
+.user-view {
+	display: none;
+	padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view-container{
+  width: 95%;
+  align-items: center;
+	flex-direction: column;
+  padding-left: 16px;
+  margin-left: 16px;
+  display: flex;
+}
+
+.user-view.active {
+  display: initial;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px;
+	overflow-x: auto;
+}
+
+.user-view .current-record {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
+  float: left;
+  flex-wrap: wrap;
+}
+
+.user-view .page-control-buttons {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin: 10px;
+}
+
+.user-view .add-update-button {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin: 20px;
+	float: left;
+	font-weight: normal;
+	width: 300px;
+}
+
+.user-view .record-item{
+  float:left;
+  display:flex;
+  vertical-align: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.user-view .text-input{
+	height:38px;
+	width:300px; 
+	margin-bottom: 0px; 
+	border-bottom: 0px; 
+	align-self:right; 
+}
+
+.user-view .input-label{
+	margin-bottom: 0px; 
+	margin-top: 0px; 
+	border-top: 0px; 
+	border-bottom: 0px;
+}
+
+.role-button {
+	background-color: #00506C;
+	color: white;
+	padding: 14px 20px;
+	margin: 3px 0;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	height: 50px;
+	font-size: large;
+}
+
+.role-button:hover{
+	background-color: #072631;
+}
+
+/* END OF USER MANAGEMENT */

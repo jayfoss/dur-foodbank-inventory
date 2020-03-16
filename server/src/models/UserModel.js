@@ -4,6 +4,7 @@ const Validator = require('./Validator');
 class UserModel extends Model {
 	constructor() {
 		super();
+		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.fields = this.buildFields([
 			'_id',
 			'email',
@@ -12,11 +13,11 @@ class UserModel extends Model {
 			'lastName',
 			'canViewData',
 			'canEditData',
-			'canModifyWarehouse'
+			'canModifyWarehouse',
+			'canEditUsers'
 		]);
-		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse'];
+		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers'];
 		this.validator = new Validator('User');
-		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse']);
 		this.protectedFields = ['password'];
 	}
 	

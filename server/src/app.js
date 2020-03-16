@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-//const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const apiRouter = express.Router();
 const config = require('../config');
@@ -32,7 +31,7 @@ const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController(db);
 
 app.use(express.json());
-app.use('/', express.static('../client'));
+app.use('/', express.static('../client', {maxAge: 3600000}));
 
 apiRouter.use(require('cookie-parser')());
 apiRouter.post('/auth', (req, resp) => {
@@ -41,9 +40,11 @@ apiRouter.post('/auth', (req, resp) => {
 apiRouter.delete('/auth', authController.logout);
 
 apiRouter.use(function(req, resp, next) {
-	let token = req.cookies._id;
-	if (token) {
-		jwt.verify(token, config.auth.jwtSecret, function(err, decoded) {
+	const _id = req.cookies._id;
+	const _p = req.cookies._p;
+	if (_id && _p) {
+		const tok = _id.split('.');
+		jwt.verify(tok[0] + '.' + _p + '.' + tok[1], config.auth.jwtSecret, function(err, decoded) {
 			if (err) {
 				return appError.unauthorized(resp, 'Invalid or expired authorization token.');
 			} else {
@@ -52,13 +53,23 @@ apiRouter.use(function(req, resp, next) {
 			}
 		});
 	} else {
-		return appError.unauthorized(resp, 'No authorization token provided.');
+		return appError.unauthorized(resp, 'Missing or incomplete authorization token.');
 	}
 });
 
-apiRouter.get('/users', authController.getUsers);
-apiRouter.post('/users', authController.createUser);
-apiRouter.delete('/users/:userId', authController.deleteUser);
+apiRouter.get('/users', (req, resp) => {
+	authController.getUsers(req, resp);
+});
+apiRouter.post('/users', (req, resp) => {
+	authController.createUser(req, resp);
+});
+apiRouter.delete('/users/:userId', (req, resp) => {
+	authController.deleteUser(req, resp);
+});
+
+apiRouter.get('/report', (req, resp) => {
+	
+});
 
 apiRouter.get('/zones', (req, resp) => {
 	zoneController.getZones(req, resp);
@@ -73,6 +84,12 @@ apiRouter.delete('/zones/:zoneId', (req, resp) => {
 	zoneController.deleteZone(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/insertmany/:numberOfBays', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	bayController.createManyBays(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/deletemany/:numberOfBays', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	bayController.deleteManyBays(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays', (req, resp) => {
 	bayController.getBays(req, resp);
 });
@@ -86,11 +103,20 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId', (req, resp) => {
 	bayController.deleteBay(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/insertmany/:numberOfShelves', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	shelfController.createManyShelves(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/deletemany/:numberOfShelves', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	shelfController.deleteManyShelves(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves', (req, resp) => {
 	shelfController.getShelves(req, resp);
 });
 apiRouter.post('/zones/:zoneId/bays/:bayId/shelves', (req, resp) => {
 	shelfController.createShelf(req, resp);
+});
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
+	shelfController.getShelfInfo(req, resp);
 });
 apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
 	shelfController.modifyShelf(req, resp);
@@ -99,6 +125,12 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
 	shelfController.deleteShelf(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/insertmany/:numberOfRows', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	rowController.createManyRows(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/deletemany/:numberOfRows', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	rowController.deleteManyRows(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows', (req, resp) => {
 	rowController.getRows(req, resp);
 });
@@ -112,6 +144,12 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId', (req
 	rowController.deleteRow(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/insertmany/:numberOfColumns', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	columnController.createManyColumns(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/deletemany/:numberOfColumns', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	columnController.deleteManyColumns(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns', (req, resp) => {
 	columnController.getColumns(req, resp);
 });
@@ -138,6 +176,9 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/column
 	trayController.deleteTray(req, resp);
 });
 
+apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/trays', (req, resp) => {
+	trayController.getTraysOnShelf(req, resp);
+});
 apiRouter.get('/trays', (req, resp) => {
 	trayController.getAllTrays(req, resp);
 });

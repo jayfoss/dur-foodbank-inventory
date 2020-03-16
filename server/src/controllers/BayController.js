@@ -6,6 +6,41 @@ class BayController {
 
     constructor(db){
         this.db = db;
+        this.basicTrayData = {
+            'category': '',
+            'weight': 0.0,
+            'expiryYear': { 'start': null, 'end': null },
+            'expiryMonth': { 'start': null, 'end': null },
+            'lastUpdated': null,
+            'userNote': ''
+        };
+        this.basicShelfData = {
+            '1': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+            '2': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+            '3': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+        };
+        this.basicBayData = {
+            '1': this.basicShelfData,
+            '2': this.basicShelfData,
+            '3': this.basicShelfData,
+            '4': this.basicShelfData,
+            '5': this.basicShelfData
+        };
     }
 
 	async getBays(req, resp) {
@@ -16,7 +51,7 @@ class BayController {
 		resp.status(200);
 		resp.send(bays);
 	}
-	
+
 	async createBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
@@ -26,7 +61,29 @@ class BayController {
 		await this.insertBay(req.params.zoneId, bay.name);
 		resp.status(201);
 		resp.send(bay.fields);
-	}
+    }
+    
+    async createManyBays(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const bay = new BayModel();
+		if(!bay.map(req.body)) return;
+		await this.insertBays(req.params.zoneId, req.params.numberOfBays);
+		resp.status(201);
+		resp.send(bay.fields);
+    }
+
+    async deleteManyBays(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const bay = new BayModel();
+		if(!bay.map(req.body)) return;
+		await this.deleteBays(req.params.zoneId, req.params.numberOfBays);
+		resp.status(201);
+		resp.send(bay.fields);
+    }
 	
 	async modifyBay(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
@@ -74,7 +131,7 @@ class BayController {
     async insertBay(zoneName, newBayName){
         let insertStringLeft = zoneName + '.' + newBayName;
         let filter = {[insertStringLeft]: { $exists: false }};
-        let updateQuery = { $set: { [insertStringLeft]: {} } };
+        let updateQuery = { $set: { [insertStringLeft]: this.basicBayData } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 
@@ -83,6 +140,27 @@ class BayController {
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
+    }
+
+    async deleteBays(zoneName, newNumberOfBays){
+        let originalBays = await this.getBaysFromDb(zoneName);
+        let numOfOrigBays = originalBays.length;
+        if(newNumberOfBays >= numOfOrigBays)
+            return;
+        for(let bayIndex = numOfOrigBays-1; bayIndex >= newNumberOfBays; bayIndex--){
+            this.deleteBayFromDb(zoneName, originalBays[bayIndex]);
+        }
+    }
+
+    async insertBays(zoneName, newNumberOfBays){
+        let originalBays = await this.getBaysFromDb(zoneName);
+        let numOfOrigBays = originalBays.length;
+        if(newNumberOfBays <= numOfOrigBays)
+            return;
+        for(let offset = numOfOrigBays; offset < newNumberOfBays; offset++){
+            let bayName = String.fromCharCode(65 + offset);
+            this.insertBay(zoneName, bayName);
+        }
     }
 }
 

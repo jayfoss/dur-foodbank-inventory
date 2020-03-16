@@ -4,19 +4,21 @@ const Validator = require('./Validator');
 class ShelfModel extends Model {
 	constructor() {
 		super();
+		this.booleanify(['_shelfOk']);
 		this.fields = this.buildFields([
-			'number'
+			'_id',
+			'_shelfOk'
 		]);
-		this.settableFields = ['number'];
+		this.settableFields = ['_id', '_shelfOk'];
 		this.validator = new Validator('Shelf');
 		this.protectedFields = [];
 	}
 	
-	set number(value) {
-		if(!this.validator.isInRangeNN('number', value, 1, 100)){
+	set _id(value) {
+		if(!this.validator.isInRangeNN('_id', value, 1, 100)){
 			return false;
 		}
-		this.fields.number = value;
+		this.fields._id = value;
 		return this;
 	}
 }

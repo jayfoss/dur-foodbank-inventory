@@ -6,6 +6,42 @@ class RowController {
 
     constructor(db){
         this.db = db;
+        this.basicTrayData = {
+            'category': '',
+            'weight': 0.0,
+            'expiryYear': { 'start': null, 'end': null },
+            'expiryMonth': { 'start': null, 'end': null },
+            'lastUpdated': null,
+            'userNote': ''
+        };
+        this.basicRow = {
+            '1': this.basicTrayData,
+            '2': this.basicTrayData,
+            '3': this.basicTrayData,
+            '4': this.basicTrayData,
+        }
+    }
+
+    async createManyRows(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		await this.insertRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
+		resp.status(201);
+		resp.send(row.fields);
+    }
+
+    async deleteManyRows(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		await this.deleteRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
+		resp.status(201);
+		resp.send(row.fields);
     }
 	
 	async getRows(req, resp) {
@@ -75,10 +111,10 @@ class RowController {
     async insertRow(zoneName, bayName, shelfNumber, newRowNumber){
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + newRowNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
-        let updateQuery = { $set: { [insertStringLeft]: {} } };
+        let updateQuery = { $set: { [insertStringLeft]: this.basicRow } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
-
+/*
     async insertRows(zoneName, bayName, shelfNumber, rowNumberMax){
         for(let row = 1; row <= rowNumberMax; row++){
             let toSet = zoneName + '.' + bayName + '.' + shelfNumber + '.' + row;
@@ -87,14 +123,14 @@ class RowController {
             await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
-
+*/
     async deleteRowFromDb(zoneName, bayName, shelfNumber, rowNumber){
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber;
         let filter = {};
         let updateQuery = { $unset: { [deleteStringLeft]: '' } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
-
+/*
     async deleteRows(zoneName, bayName, shelfNumber, rowNumberStart, rowNumberEnd){
         for(let row = rowNumberStart; row <= rowNumberEnd; row++){
             let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber + '.' + row;
@@ -103,6 +139,47 @@ class RowController {
             await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
     }
+*/
+    async deleteRows(zoneName, bayName, shelfNumber, newRowNumber){
+        let originalRows = await this.getRowsFromDb(zoneName, bayName, shelfNumber);
+        let numOfOrigRows = originalRows.length;
+        if(newRowNumber >= numOfOrigRows)
+            return;
+        for(let row = numOfOrigRows; row > newRowNumber; row--){
+            await this.deleteRowFromDb(zoneName, bayName, shelfNumber, row);
+        }
+    }
+
+    async insertRows(zoneName, bayName, shelfNumber, newRowNumber){
+        let originalRows = await this.getRowsFromDb(zoneName, bayName, shelfNumber);
+        let numOfOrigRows = originalRows.length;
+        if(newRowNumber <= numOfOrigRows)
+            return;
+        for(let row = numOfOrigRows + 1; row <= newRowNumber; row++){
+            await this.insertRow(zoneName, bayName, shelfNumber, row);
+        }
+    }
+
+// TEMP
+async deleteShelves(zoneName, bayName, newShelfNumber){
+    let originalShelves = await this.getShelvesFromDb();
+    let numOfOrigShelves = originalShelves.length;
+    if(newShelfNumber >= numOfOrigShelves)
+        return;
+    for(let shelf = numOfOrigShelves; shelf > newShelfNumber; shelf--){
+        this.deleteShelfFromDb(zoneName, bayName, shelf);
+    }
+}
+
+async insertShelves(zoneName, bayName, newShelfNumber){
+    let originalShelves = await this.getShelvesFromDb();
+    let numOfOrigShelves = originalShelves.length;
+    if(newShelfNumber <= numOfOrigShelves)
+        return;
+    for(let shelf = numOfOrigShelves; shelf <= newShelfNumber; shelf++){
+        await this.insertShelf(zoneName, bayName, shelf);
+    }
+}
 }
 
 module.exports = RowController;
