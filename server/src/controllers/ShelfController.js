@@ -6,6 +6,34 @@ class ShelfController {
 
     constructor(db){
         this.db = db;
+        this.basicTrayData = {
+            'category': '',
+            'weight': 0.0,
+            'expiryYear': { 'start': null, 'end': null },
+            'expiryMonth': { 'start': null, 'end': null },
+            'lastUpdated': null,
+            'userNote': ''
+        };
+        this.basicShelfData = {
+            '1': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+            '2': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+            '3': {
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData,
+                '4': this.basicTrayData
+            },
+        };
     }
 
 	async getShelves(req, resp) {
@@ -26,7 +54,29 @@ class ShelfController {
 		await this.insertShelf(req.params.zoneId, req.params.bayId, shelf.number);
 		resp.status(201);
 		resp.send(shelf.fields);
-	}
+    }
+    
+    async createManyShelves(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const shelf = new ShelfModel();
+		if(!shelf.map(req.body)) return;
+		await this.insertShelves(req.params.zoneId, req.params.bayId, req.params.numberOfShelves);
+		resp.status(201);
+		resp.send(shelf.fields);
+    }
+
+    async deleteManyShelves(req, resp){
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const shelf = new ShelfModel();
+		if(!shelf.map(req.body)) return;
+		await this.deleteShelves(req.params.zoneId, req.params.bayId, req.params.numberOfShelves);
+		resp.status(201);
+		resp.send(shelf.fields);
+    }
 	
 	async modifyShelf(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
@@ -76,10 +126,10 @@ class ShelfController {
         
         let insertStringLeft = zoneName + '.' + bayName + '.' + shelfNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
-        let updateQuery = { $set: { [insertStringLeft]: {} } };
+        let updateQuery = { $set: { [insertStringLeft]: this.basicShelfData } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
-
+/*
     async insertShelves(zoneName, bayName, shelfNumberMax){
         for(let shelf = 1; shelf <= shelfNumberMax; shelf++){
             let toSet = zoneName + '.' + bayName + '.' + shelf;
@@ -87,7 +137,7 @@ class ShelfController {
             let updateQuery = {$set : { [toSet]: {}}};
             await this.db.updateDatabase('warehouse', filter, updateQuery);
         }
-    }
+    }*/
 
     async deleteShelfFromDb(zoneName, bayName, shelfNumber){
         let deleteStringLeft = zoneName + '.' + bayName + '.' + shelfNumber;

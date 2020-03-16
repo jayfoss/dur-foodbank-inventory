@@ -6,6 +6,42 @@ class RowController {
 
     constructor(db){
         this.db = db;
+        this.basicTrayData = {
+            'category': '',
+            'weight': 0.0,
+            'expiryYear': { 'start': null, 'end': null },
+            'expiryMonth': { 'start': null, 'end': null },
+            'lastUpdated': null,
+            'userNote': ''
+        };
+        this.basicRow = {
+            '1': this.basicTrayData,
+            '2': this.basicTrayData,
+            '3': this.basicTrayData,
+            '4': this.basicTrayData,
+        }
+    }
+
+    async createManyRows(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		await this.insertRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
+		resp.status(201);
+		resp.send(row.fields);
+    }
+
+    async deleteManyRows(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const row = new RowModel();
+		if(!row.map(req.body)) return;
+		await this.deleteRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
+		resp.status(201);
+		resp.send(row.fields);
     }
 	
 	async getRows(req, resp) {
@@ -75,7 +111,7 @@ class RowController {
     async insertRow(zoneName, bayName, shelfNumber, newRowNumber){
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + newRowNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
-        let updateQuery = { $set: { [insertStringLeft]: {} } };
+        let updateQuery = { $set: { [insertStringLeft]: this.basicRow } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 /*

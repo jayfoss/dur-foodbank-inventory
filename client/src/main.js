@@ -95,6 +95,7 @@ var shelfieApp = new Vue({
         warehouseShelves: [],
         originalData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
         modifiedData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        emptyTray: {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''},
         /* END OF WAREHOUSE CONFIG */
 
         /* INVENTORY */
@@ -200,145 +201,129 @@ var shelfieApp = new Vue({
             if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
                 if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
                     // DELETE SOME COLUMNS
+                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                        axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
+                            withCredentials: true
+                        });
+                    }
                 } else{
                     // ADD SOME COLUMNS
+                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                        axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
+                            withCredentials: true
+                        });
+                    }
                 }
             }
-
-
 
             if(this.modifiedData.shelf.rows != this.originalData.shelf.rows){
                 if(this.modifiedData.shelf.rows < this.originalData.shelf.rows){
                     // DELETE SOME ROWS
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/deletemany/' + this.modifiedData.shelf.rows, {
+                        withCredentials: true
+                    });
                 } else {
                     // ADD SOME ROWS
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/insertmany/' + this.modifiedData.shelf.rows, {
+                        withCredentials: true
+                    });
                 }
             }
 
             // BAY FUNCTIONALITY
             if(this.modifiedData.bay.name != this.originalData.bay.name){
-                // RENAME ZONE
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zones.name + '/bays/' + this.modifiedData.bay.name, {
-                    "name": this.modifiedData.bay.name,
+                // RENAME BAY
+                axios.patch(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
+                    'name': this.modifiedData.bay.name,
                     withCredentials: true
                 });
+            }
+
+            if(this.modifiedData.bay.numberOfShelves != this.originalData.bay.numberOfShelves){
+                if(this.modifiedData.bay.numberOfShelves < this.originalData.bay.numberOfShelves){
+                    // DELETE SOME SHELVES
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/deletemany/' + this.modifiedData.bay.numberOfShelves, {
+                        withCredentials: true
+                    });
+                } else {
+                    // ADD SOME SHELVES
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/insertmany/' + this.modifiedData.bay.numberOfShelves, {
+                        withCredentials: true
+                    });
+                }
             }
             
             // ZONE FUNCTIONALITY
             if(this.modifiedData.zone.numberOfBays != this.originalData.zone.numberOfBays){
                 if(this.modifiedData.zone.numberOfBays < this.originalData.zone.numberOfBays){
                     // DELETE SOME BAYS
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/deletemany/' + this.modifiedData.zone.numberOfBays, {
+                        withCredentials: true
+                    });
                 } else {
                     // ADD SOME BAYS
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/insertmany/' + this.modifiedData.zone.numberOfBays, {
+                        withCredentials: true
+                    });
                 }
             }
 
             if(this.modifiedData.zone.name != this.originalData.zone.name){
                 // RENAME ZONE
                 axios.patch(shelfieURL + '/zones/' + this.originalData.zone.name, {
-                    "name": this.modifiedData.zone.name,
+                    'name': this.modifiedData.zone.name,
                     withCredentials: true
                 });
             }
 
+            // RELOAD THE PAGE HERE
             
+        },
+        warehouseDeleteZone: function(){
+            if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
+                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name, {
+                    withCredentials: true
+                });
+                // RELOAD PAGE HERE
+        },
+        warehouseDeleteBay: function(){
+            if(confirm('Are you sure you want to delete bay ' + this.originalData.bay.name + ' from zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
+                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
+                    withCredentials: true
+                });
+                // RELOAD PAGE HERE
+        },
+        warehouseDeleteShelf: function(){
+            if(confirm('Are you sure you want to delete shelf ' + this.originalData.shelf.number + ' from bay ' + this.originalData.bay.name + ' in zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
+                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
+                    withCredentials: true
+                });
+                // RELOAD PAGE HERE
         },
         warehouseCreateSubmit: function(){
             if(this.toInsertZoneName == '')
                 return;
-            // INSERTS A ZONE
-            axios.post(shelfieURL + '/zones', {
-                "name": this.toInsertZoneName,
-                withCredentials: true
-            }).then(() => {
-                if(this.toInsertBayName != ''){
-                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/', {
-                        "name": this.toInsertBayName,
-                        withCredentials: true
-                    }).then(() => {
-                        if(this.toInsertNumOfShelves > 0 && this.toInsertNumOfRows > 0 && this.toInsertNumOfColumns > 0){
-                            for(let shelf = 1; shelf < this.toInsertNumOfShelves + 1; shelf++){
-                                // INSERTS A SHELF
-                                axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves', {
-                                    "number": shelf,
-                                    withCredentials: true
-                                }).then(() => {
-                                    for(let row = 1; row < this.toInsertNumOfRows + 1; row++){
-                                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows', {
-                                            "row": row,
-                                            withCredentials: true
-                                        }).then(() => {
-                                            for(let col = 1; col < this.toInsertNumOfColumns + 1; col++){
-                                                axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/', {
-                                                    "column": col,
-                                                    withCredentials: true
-                                                }).then(() => {
-                                                    let date = new Date();
-                                                    let dateString = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
-                                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
-                                                        "category": "",
-                                                        "weight": 0.0,
-                                                        "expiryYear": {"start":null, "end":null},
-                                                        "expiryMonth": {"start":null, "end":null},
-                                                        "lastUpdated": dateString,
-                                                        "userNote": ""
-                                                    });
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    });
-                } else if(this.toInsertNumberOfBays != 0){
-                    for(let offset = 0; offset < this.toInsertNumberOfBays; offset++){
-                        let bayName = String.fromCharCode(65 + offset);
-                        // INSERTS A BAY
-                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/', {
-                            "name": bayName,
-                            withCredentials: true
-                        }).then(() => {
-                            if(this.toInsertNumOfShelves > 0 && this.toInsertNumOfRows > 0 && this.toInsertNumOfColumns > 0){
-                                for(let shelf = 1; shelf < this.toInsertNumOfShelves + 1; shelf++){
-                                    // INSERTS A SHELF
-                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves', {
-                                        "number": shelf,
-                                        withCredentials: true
-                                    }).then(() => {
-                                        for(let row = 1; row < this.toInsertNumOfRows + 1; row++){
-                                            axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows', {
-                                                "row": row,
-                                                withCredentials: true
-                                            }).then(() => {
-                                                for(let col = 1; col < this.toInsertNumOfColumns + 1; col++){
-                                                    axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/', {
-                                                        "column": col,
-                                                        withCredentials: true
-                                                    }).then(() => {
-                                                        let date = new Date();
-                                                        let dateString = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
-                                                        axios.post(shelfieURL + '/zones/' + this.toInsertZoneName + '/bays/' + bayName + '/shelves/' + shelf + '/rows/' + row + '/columns/' + col + '/tray', {
-                                                            "category": "",
-                                                            "weight": 0.0,
-                                                            "expiryYear": {"start":null, "end":null},
-                                                            "expiryMonth": {"start":null, "end":null},
-                                                            "lastUpdated": dateString,
-                                                            "userNote": ""
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                } else{
-                    return;
-                }
-            });
+
+            if(this.toInsertNumberOfBays > 0){
+                axios.post(shelfieURL + '/zones/', {
+                    name: this.toInsertZoneName,
+                    bays: this.toInsertNumberOfBays,
+                    shelves: this.toInsertNumOfShelves,
+                    rows: this.toInsertNumOfRows,
+                    columns: this.toInsertNumOfColumns,
+                    withCredentials: true
+                });
+            } else if(this.toInsertBayName != ''){
+                axios.post(shelfieURL + '/zones/', {
+                    name: this.toInsertZoneName,
+                    bays: this.toInsertBayName,
+                    shelves: this.toInsertNumOfShelves,
+                    rows: this.toInsertNumOfRows,
+                    columns: this.toInsertNumOfColumns,
+                    withCredentials: true
+                });
+            }
+
             
         },
         warehouseFetchZones: function(){

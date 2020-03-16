@@ -6,6 +6,36 @@ class ColumnController {
 
     constructor(db){
         this.db = db;
+        this.basicTrayData = {
+            'category': '',
+            'weight': 0.0,
+            'expiryYear': { 'start': null, 'end': null },
+            'expiryMonth': { 'start': null, 'end': null },
+            'lastUpdated': null,
+            'userNote': ''
+        };
+    }
+
+    async createManyColumns(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
+		await this.insertColumns(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.numberOfColumns);
+		resp.status(201);
+		resp.send(column.fields);
+    }
+
+    async deleteManyColumns(req, resp) {
+        if(!req.jwtDecoded.canModifyWarehouse) {
+			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		}
+		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
+		await this.deleteColumns(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.numberOfColumns);
+		resp.status(201);
+		resp.send(column.fields);
     }
 
 	async getColumns(req, resp) {
@@ -76,14 +106,7 @@ class ColumnController {
         let date = new Date();
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + newColumnNumber;
         let filter = {[insertStringLeft]: { $exists: false }};
-        let updateQuery = { $set: { [insertStringLeft]: { 
-            "category":"",
-            "weight": 0.0,
-            "expiryYear": {"start": null, "end": null},
-            "expiryMonth": {"start": null, "end": null},
-            "lastUpdated": date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear(),
-            "userNote": ""
-         } } };
+        let updateQuery = { $set: { [insertStringLeft]: this.basicTrayData } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 /*
@@ -116,10 +139,10 @@ class ColumnController {
     async deleteColumns(zoneName, bayName, shelfNumber, rowNumber, newColumnNumber){
         let originalColumns = await this.getColumnsFromDb(zoneName, bayName, shelfNumber, rowNumber);
         let numOfOrigColumns = originalColumns.length;
-        if(newRowNumber >= numOfOrigColumns)
+        if(newColumnNumber >= numOfOrigColumns)
             return;
         for(let column = numOfOrigColumns; column > newColumnNumber; column--){
-            await this.deleteColumn(zoneName, bayName, shelfNumber, rowNumber, columnNumber);
+            await this.deleteColumn(zoneName, bayName, shelfNumber, rowNumber, column);
         }
     }
 

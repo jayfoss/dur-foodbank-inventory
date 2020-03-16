@@ -5,7 +5,8 @@ const ZoneModel = require('../models/ZoneModel');
 class ZoneController {
 
     constructor(db){
-        this.db = db;
+		this.db = db;
+		this.emptyTray = {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''};
     }
 
 	async getZones(req, resp) {
@@ -23,7 +24,37 @@ class ZoneController {
 		}
 		const zone = new ZoneModel();
 		if(!zone.map(req.body)) return;
-		await this.insertZone(zone.name);
+		let zoneObj = {};
+		if(req.body.name && req.body.bays && req.body.shelves && req.body.rows && req.body.columns){
+            zoneObj = {};
+            if(isNaN(req.body.bays)){
+                zoneObj[req.body.bays] = {};
+                for(let shelf = 1; shelf <= req.body.shelves; shelf++){
+                    zoneObj[req.body.bays][shelf] = {};
+                    for(let row = 1; row <= req.body.rows; row++){
+                        zoneObj[req.body.bays][shelf][row] = {};
+                        for(let column = 1; column <= req.body.columns; column++){
+                            zoneObj[req.body.bays][shelf][row][column] = this.emptyTray;
+                        }
+                    }
+                }
+            } else {
+                for(let bay = 0; bay < req.body.bays; bay++){
+                    let bayStr = String.fromCharCode(65 + bay);
+                    zoneObj[bayStr] = {};
+                    for(let shelf = 1; shelf <= req.body.shelves; shelf++){
+                        zoneObj[bayStr][shelf] = {};
+                        for(let row = 1; row <= req.body.rows; row++){
+                            zoneObj[bayStr][shelf][row] = {};
+                            for(let column = 1; column <= req.body.columns; column++){
+                                zoneObj[bayStr][shelf][row][column] = this.emptyTray;
+                            }
+                        }
+                    }
+                }
+            }
+		}
+		await this.insertZone(zone.name, zoneObj);
 		resp.status(201);
 		resp.send(zone.fields);
 	}
@@ -65,9 +96,9 @@ class ZoneController {
         return zones;
     }
 
-    async insertZone(zoneName) {
+    async insertZone(zoneName, settableObject={}) {
         let filter = {[zoneName]: { $exists: false }};
-        let updateQuery = { $set: { [zoneName]: {} } };
+        let updateQuery = { $set: { [zoneName]: settableObject } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
     }
 

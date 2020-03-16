@@ -545,7 +545,7 @@
                             <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.zone.numberOfBays}}</h1>
                             <button v-on:click="warehouseChangeNumberOfBays(1)">+</button>
                         </div>
-                        <button>DELETE ZONE</button>
+                        <button v-on:click="warehouseDeleteZone()">DELETE ZONE</button>
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
@@ -565,7 +565,7 @@
                             <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.bay.numberOfShelves}}</h1>
                             <button v-on:click="warehouseChangeNumberOfShelves(1)">+</button>
                         </div>
-                        <button>DELETE BAY</button>
+                        <button v-on:click="warehouseDeleteBay()">DELETE BAY</button>
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-center justify-content-around px-2 m-3 col-3 border border-dark" style="min-width: 450px;">
@@ -591,6 +591,7 @@
                             <h1 class="d-flex align-items-center px-5 display-5">{{modifiedData.shelf.columns}}</h1>
                             <button v-on:click="modifiedData.shelf.columns++">+</button>
                         </div>
+                        <button v-on:click="warehouseDeleteShelf()">DELETE SHELF</button>
                     </div>
                 </div>
                 <hr class="col-xl-8">
