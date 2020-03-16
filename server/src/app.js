@@ -67,6 +67,10 @@ apiRouter.delete('/users/:userId', (req, resp) => {
 	authController.deleteUser(req, resp);
 });
 
+apiRouter.get('/report', (req, resp) => {
+	
+});
+
 apiRouter.get('/zones', (req, resp) => {
 	zoneController.getZones(req, resp);
 });
@@ -80,6 +84,12 @@ apiRouter.delete('/zones/:zoneId', (req, resp) => {
 	zoneController.deleteZone(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/insertmany/:numberOfBays', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	bayController.createManyBays(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/deletemany/:numberOfBays', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	bayController.deleteManyBays(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays', (req, resp) => {
 	bayController.getBays(req, resp);
 });
@@ -93,6 +103,12 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId', (req, resp) => {
 	bayController.deleteBay(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/insertmany/:numberOfShelves', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	shelfController.createManyShelves(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/deletemany/:numberOfShelves', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	shelfController.deleteManyShelves(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves', (req, resp) => {
 	shelfController.getShelves(req, resp);
 });
@@ -109,6 +125,12 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId', (req, resp) => {
 	shelfController.deleteShelf(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/insertmany/:numberOfRows', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	rowController.createManyRows(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/deletemany/:numberOfRows', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	rowController.deleteManyRows(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows', (req, resp) => {
 	rowController.getRows(req, resp);
 });
@@ -122,6 +144,12 @@ apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId', (req
 	rowController.deleteRow(req, resp);
 });
 
+apiRouter.post('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/insertmany/:numberOfColumns', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	columnController.createManyColumns(req, resp);
+});
+apiRouter.delete('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns/deletemany/:numberOfColumns', (req, resp) => { // TEMPORARY ROUTE (TESTING)
+	columnController.deleteManyColumns(req, resp);
+});
 apiRouter.get('/zones/:zoneId/bays/:bayId/shelves/:shelfId/rows/:rowId/columns', (req, resp) => {
 	columnController.getColumns(req, resp);
 });

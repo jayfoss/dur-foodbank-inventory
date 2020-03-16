@@ -80,6 +80,34 @@ class TrayController {
         return tray;
     }
 
+    async getReportData(){
+        let trays = await this.getAllTraysFromDb();
+        let filteredTrays = {};
+        trays.forEach((tray) => {
+            if(tray.category != ''){
+                if(!filteredTrays[tray.zone]){
+                    filteredTrays[tray.zone] = {};
+                }
+                if(!filteredTrays[tray.zone][tray.category]){
+                    filteredTrays[tray.zone][tray.category] = 0;
+                }
+                filteredTrays[tray.zone][tray.category] += 1;
+            }
+        });
+        /*
+            filteredTrays = {
+                'purple':{
+                    'beans': 0,
+                    'pasta': 0
+                },
+                'orange':{
+                    'beans': 0,
+                    'pasta': 0
+                }
+            }
+        */
+    }
+
     async getAllTraysFromDb(){
         let trays = [];
 
