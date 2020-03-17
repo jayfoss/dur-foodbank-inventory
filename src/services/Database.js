@@ -6,13 +6,16 @@ class Database {
     constructor(){
         this.databaseName = 'foodbank';
         this.databaseURL = 'mongodb://' + config.db.host + ':' + config.db.port;
+		if(config.env === 'production') {
+			this.databaseURL = 'mongodb+srv://' + config.db.username + ':' + config.db.password + '@' + config.db.host;
+		}
 		this.connection = null;
     }
 
     createConnection(){
 		const dbc = this;
 		return new Promise((resolve, reject) => {
-			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true}, (err, db) => {
+			mongoClient.connect(this.databaseURL, {useUnifiedTopology: true, useNewUrlParser: true}, (err, db) => {
 				if(err) {
 					console.log('The database setup failed initially');
 					reject(err);

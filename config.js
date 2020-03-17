@@ -3,11 +3,11 @@ const env = process.env.NODE_ENV || 'development';
 const development = {
 	env: env,
 	app: {
-		port: 8080,
+		port: process.env.port || 8080,
 		host: 'localhost'
 	},
 	auth: {
-		jwtSecret: '123',
+		jwtSecret: '0d6581d4b2584100ee759e1cea29dcd353ae8dfa41785a293e6541c6b364adcee3e91e8e660c2f5602ff1a84373f9b89213e4f32806bbf5eafc6e6e8f1a85e42',
 		secureCookie: false,
 		maxAge: 3600
 	},
@@ -20,7 +20,22 @@ const development = {
 };
 
 const production = {
-	env: env
+	env: env,
+	app: {
+		port: process.env.port,
+		host: 'localhost'
+	},
+	auth: {
+		jwtSecret: process.env.JWT_SECRET,
+		secureCookie: true,
+		maxAge: 3600
+	},
+	db: {
+		host: process.env.MLAB_HOST,
+		port: 27017,
+		username: process.env.MLAB_USERNAME,
+		password: process.env.MLAB_PASSWORD
+	}
 };
 
 const config = {
