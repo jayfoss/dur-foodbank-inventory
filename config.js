@@ -3,7 +3,7 @@ const env = process.env.NODE_ENV || 'development';
 const development = {
 	env: env,
 	app: {
-		port: process.env.port || 8080,
+		port: process.env.PORT || 8080,
 		host: 'localhost'
 	},
 	auth: {
@@ -22,7 +22,7 @@ const development = {
 const production = {
 	env: env,
 	app: {
-		port: process.env.port,
+		port: process.env.PORT,
 		host: 'localhost'
 	},
 	auth: {
