@@ -1,4 +1,4 @@
-const shelfieURL = 'http://localhost:8080/api/v1';
+const shelfieURL = 'https://shelfiec.herokuapp.com/api/v1';
 
 function getAuthInfo() {
 	const cookieStrings = document.cookie.split(';');
