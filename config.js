@@ -23,7 +23,7 @@ const production = {
 	env: env,
 	app: {
 		port: process.env.PORT,
-		host: 'localhost'
+		host: process.env.HOST || '0.0.0.0'
 	},
 	auth: {
 		jwtSecret: process.env.JWT_SECRET,
