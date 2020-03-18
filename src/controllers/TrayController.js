@@ -41,7 +41,7 @@ class TrayController {
 		}
 		const tray = new TrayModel();
 		if(!tray.map(req.body)) return;
-		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
+		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnI, tray.fields);
 		resp.status(201);
 		resp.send(tray);
 	}

@@ -7,7 +7,7 @@ class UserModel extends Model {
 		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.fields = this.buildFields([
 			'_id',
-			'email',
+			'username',
 			'password',
 			'firstName',
 			'lastName',
@@ -16,19 +16,20 @@ class UserModel extends Model {
 			'canModifyWarehouse',
 			'canEditUsers'
 		]);
-		this.settableFields = ['email', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers'];
+		this.settableFields = ['username', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers'];
 		this.validator = new Validator('User');
+		//this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.protectedFields = ['password'];
 	}
 	
-	set email(value){
-		if(!this.validator.isValidLengthNN('email', value, 3, 254)){
+	set username(value){
+		if(!this.validator.isValidLengthNN('username', value, 3, 254)){
 			return false;
 		}
-		if(value.indexOf('@') < 0){
-			return this.validator.err('User', 'email', {'name':'format', 'type':'email'}, 'User email address must contain an \'@\' symbol.');
-		}
-		this.fields.email = value;
+		// if(value.indexOf('@') < 0){
+		// 	return this.validator.err('User', 'username', {'name':'format', 'type':'username'}, 'User username address must contain an \'@\' symbol.');
+		// }
+		this.fields.username = value;
 		return this;
 	}
 	
