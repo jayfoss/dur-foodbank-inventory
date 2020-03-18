@@ -48,6 +48,15 @@ button:hover {
 	display: initial;
 }
 
+/*mainly used for remember me checkbox*/
+input[type=checkbox] {
+  transform: scale(2.5);
+  margin-right: 1.5%;
+}
+
+/*END OF GLOBAL*/
+
+
 /* WAREHOUSE CONFIG */
 
 .warehouse-config {
@@ -368,6 +377,11 @@ button:hover {
 	color: white;
 }
 
+#save-trays {
+	width: 220px;
+	background-color: var(--red);
+}
+
 .inventory {
 	display: none;
 	overflow-x: auto;
@@ -672,8 +686,17 @@ button:hover {
 	font-size: large;
 }
 
+.role-button-selected{
+	background-color: #68B72E;
+}
+
 .role-button:hover{
-	background-color: #072631;
+	background-color: #68B72E;
+}
+
+.tableSelected{
+	background-color: blue;
+	color: #FFF;
 }
 
 /* END OF USER MANAGEMENT */

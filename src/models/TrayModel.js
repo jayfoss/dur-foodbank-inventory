@@ -27,13 +27,13 @@ class TrayModel extends Model {
 	}
 	
 	set weight(value) {
-		if(!this.validator.isIntegerNN('weight', value)) {
+		if(!this.validator.isNumberNN('weight', value)) {
 			return false;
 		}
-		if(!this.validator.isInRange('weight', value, 1, 5)){
+		if(!this.validator.isInRange('weight', value, 0, 5)){
 			return false;
 		}
-		this.fields.weight = value;
+		this.fields.weight = parseFloat(value);
 		return this;
 	}
 	

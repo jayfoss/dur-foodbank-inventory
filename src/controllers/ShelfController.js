@@ -149,15 +149,16 @@ class ShelfController {
         return shelf;
 	}
 	
-	async updateShelf(zoneName, bayName, shelfNumber, shelfData){
+	async updateShelf(zoneName, bayName, shelfId, shelfData){
 		if(shelfData._id) {
 			let filter = {};
-			let renameStringLeft = zoneName + '.' + bayName + '.' + oldShelfName;
-			let renameStringRight = zoneName + '.' + bayName + '.' + newShelfName;
+			let renameStringLeft = zoneName + '.' + bayName + '.' + shelfId;
+			let renameStringRight = zoneName + '.' + bayName + '.' + shelfData._id;
 			let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
 			await this.db.updateDatabase('warehouse', filter, updateQuery);
+			shelfId = shelfData._id;
 		}
-        let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber;
+        let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfId;
         let filter = {[insertStringLeft]:{$exists: true}};
         let setObj = {}
         for(let key in shelfData){

@@ -111,6 +111,9 @@ class BayController {
             let cursor = await this.db.queryDatabase('warehouse', {});
             await cursor.forEach(function(result){
                 for(let key in result[zone]){
+					if(key.startsWith('_')) {
+						continue;
+					}
                     bays.push(key);
                 }
             });
