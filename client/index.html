@@ -21,13 +21,12 @@
 <body class="bg-light">
   <div id="shelfie-app" ref="app">
         <div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
-			<img style="width: 50%; display:block; margin-left: auto; margin-right: auto;" src="./src/assets/shelfie.png">
 			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-md-8 col-xs-10">
 						<form id="login-form" @submit="login">
 							<div>
-								<h1>Welcome! Please enter your details</h1>
+								<h1>Welcome!</h1>
 							</div>
 							<div class="form-group">
 								<label for="username">Username</label>
