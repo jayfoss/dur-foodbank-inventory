@@ -82,7 +82,7 @@
 									<div class="inv-v-ctrl-head">Zone</div>
 									<div class="inv-v-ctrl-mv">
 										<button @click="sectionSelect('zone', false)">&#129092;</button>
-										<div class="inv-v-zone">{{inventoryZones[selectedZone]}}</div>
+										<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
 										<button @click="sectionSelect('zone', true)">&#129094;</button>
 									</div>
 								</div>
@@ -115,7 +115,7 @@
 								</div>
 							</div>
 							<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
-								<div class="inv-warehouse-container">
+								<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
 									<div class="inv-w-row" v-for="row in shelfTrays.slice()">
 										<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
 											<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
@@ -534,15 +534,15 @@
 						<div class="cfg-modify-panel">
 							<h3 class="mb-3">SELECT A ZONE</h3>
 							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
-								<button v-on:click="warehouseFetchBays(zoneName)" v-for="zoneName in warehouseZones">{{zoneName}}</button>
+								<button v-on:click="warehouseFetchBays(zone._id)" v-for="zone in warehouseZones">{{zone._id}}</button>
 							</div>
 							<p v-else class="bg-warning p-2 h5">NO ZONES</p>
-							<p v-if="originalData.zone.name != ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone.name}}</p>
+							<p v-if="originalData.zone._id !== ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone._id}}</p>
 							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
 
-							<div v-if="originalData.zone.name != ''" class="d-flex flex-column">
+							<div v-if="originalData.zone._id != ''" class="d-flex flex-column">
 								<div class="form-group">
-									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone.name">
+									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone._id">
 								</div>
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF BAYS</div>
@@ -589,10 +589,10 @@
 								<button v-on:click="warehouseFetchRowsColumns(shelf._id)" v-for="shelf in warehouseShelves">{{shelf._id}}</button>
 							</div>
 							<p v-else class="bg-warning p-2 h5">NO SHELVES</p>
-							<p class="h5 mt-4 mb-3" v-if="originalData.shelf.number != -1">SELECTED SHELF: {{originalData.shelf.number}}</p>
+							<p class="h5 mt-4 mb-3" v-if="originalData.shelf._id != -1">SELECTED SHELF: {{originalData.shelf._id}}</p>
 							<p class="h5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</p>
 							
-							<div v-if="originalData.shelf.number != -1" class="d-flex flex-column">
+							<div v-if="originalData.shelf._id != -1" class="d-flex flex-column">
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
 									<div class="inv-v-ctrl-mv">
@@ -621,21 +621,21 @@
 				<div class="row justify-content-around">
 					<div class="col-sm-4">
 						<h3 class="my-3 text-center">BEFORE CHANGES</h3>
-						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{originalData.zone.name}}</h5>
+						<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{originalData.zone._id}}</h5>
 						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
 						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{originalData.bay.name}}</h5>
 						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{originalData.bay.numberOfShelves}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{originalData.shelf.number}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{originalData.shelf._id}}</h5>
 						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
 						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
 					</div>
 					<div class="col-sm-4">
 						<h3 class="my-3 text-center">AFTER CHANGES</h3>
-						<h5 class="display-5" v-if="originalData.zone.name != ''">Zone Name: {{modifiedData.zone.name}}</h5>
+						<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{modifiedData.zone._id}}</h5>
 						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
 						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{modifiedData.bay.name}}</h5>
 						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{modifiedData.bay.numberOfShelves}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.number != -1">Shelf: {{modifiedData.shelf.number}}</h5>
+						<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{modifiedData.shelf._id}}</h5>
 						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{modifiedData.shelf.rows}}</h5>
 						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{modifiedData.shelf.columns}}</h5>
 					</div>

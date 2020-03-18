@@ -5,15 +5,16 @@ class ZoneModel extends Model {
 	constructor() {
 		super();
 		this.fields = this.buildFields([
-			'name'
+			'_id',
+			'_color'
 		]);
-		this.settableFields = ['name'];
+		this.settableFields = ['_id', '_color'];
 		this.validator = new Validator('Zone');
 		this.protectedFields = [];
 	}
 	
-	set name(value) {
-		if(!this.validator.isValidLengthNN('name', value, 1, 25)){
+	set _id(value) {
+		if(!this.validator.isValidLengthNN('_id', value, 1, 25)){
 			return false;
 		}
 		this.fields.name = value;

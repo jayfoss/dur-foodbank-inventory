@@ -18,6 +18,15 @@ class ZoneController {
 		resp.send(zones);		
 	}
 	
+	async getZoneInfo(req, resp) {
+		if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
+		const zonw = await this.getZoneFromDb(req.params.zoneId);
+		resp.status(200);
+		resp.send(zone);
+	}
+	
 	async createZone(req, resp) {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
@@ -87,7 +96,13 @@ class ZoneController {
             await cursor.forEach(function(result){
                 for(let key in result){
 					if(key === '_id') continue;
-                    zones.push(key);
+					const zoneData = {_id: key};
+					for(let zoneInfoKey in result[key]) {
+						if(zoneInfoKey.startsWith('_')) {
+							zoneData[zoneInfoKey] = result[key][zoneInfoKey];
+						}
+					}
+                    zones.push(zoneData);
                 }
             });
         } catch (err){
@@ -95,11 +110,53 @@ class ZoneController {
 		}
         return zones;
     }
+	
+	async getZoneFromDb(zoneId) {
+		let zone = {};
+		
+		const query = '{\'' + zoneId + '\' : {$exists: true}}';
+
+        try {
+            let cursor = await this.db.queryDatabase('warehouse', query);
+            await cursor.forEach(function(result){
+                for(let key in result[zoneId]){
+                    if(key.startsWith('_')) {
+						zone[key] = result[zoneId][key];
+					}
+                }
+            });
+        } catch (err){
+            console.log(err);
+        }
+        return shelf;
+	}
 
     async insertZone(zoneName, settableObject={}) {
         let filter = {[zoneName]: { $exists: false }};
         let updateQuery = { $set: { [zoneName]: settableObject } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);
+    }
+
+	async updateShelf(zoneId, zoneData){
+		if(zoneData._id) {
+			let filter = {};
+			let renameStringLeft = zoneId;
+			let renameStringRight = zoneData._id;
+			let updateQuery = { $rename : { [renameStringLeft] : renameStringRight}}
+			await this.db.updateDatabase('warehouse', filter, updateQuery);
+			zoneId = zoneData._id;
+		}
+        let insertStringLeft =  zoneName + '.' + bayName + '.' + zoneId;
+        let filter = {[insertStringLeft]:{$exists: true}};
+        let setObj = {}
+        for(let key in shelfData){
+			if(key === '_id') continue;
+            setObj[insertStringLeft + '.' + key] = zoneData[key];
+        }
+		if(Object.keys(setObj).length > 0) {
+			let updateQuery = {$set: setObj};
+			await this.db.updateDatabase('warehouse', filter, updateQuery);
+		}
     }
 
     async changeZoneName(oldZoneName, newZoneName) {
