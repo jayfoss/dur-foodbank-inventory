@@ -70,6 +70,7 @@ class TrayController {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
 		}
 		const tray = new TrayModel();
+		
 		if(!tray.map(req.body)) return appError.badRequest(resp, 'Invalid data in tray', tray.validator.errors);
 		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
 		resp.status(201);
@@ -124,18 +125,6 @@ class TrayController {
                 filteredTrays[tray.zone][tray.category] += 1;
             }
         });
-        /*
-            filteredTrays = {
-                'purple':{
-                    'beans': 0,
-                    'pasta': 0
-                },
-                'orange':{
-                    'beans': 0,
-                    'pasta': 0
-                }
-            }
-        */
     }
 
     async getAllTraysFromDb(){
