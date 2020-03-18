@@ -76,6 +76,9 @@ apiRouter.get('/report', (req, resp) => {
 apiRouter.get('/zones', (req, resp) => {
 	zoneController.getZones(req, resp);
 });
+apiRouter.get('/zones/:zoneId', (req, resp) => {
+	zoneController.getZoneInfo(req, resp);
+});
 apiRouter.post('/zones', (req, resp) => {
 	zoneController.createZone(req, resp);
 });

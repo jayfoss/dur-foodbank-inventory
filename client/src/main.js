@@ -107,8 +107,8 @@ const shelfieApp = new Vue({
         warehouseZones: [],
         warehouseBays: [],
         warehouseShelves: [],
-        originalData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
-        modifiedData: {"zone":{"name":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"number":-1, "rows":-1, "columns":-1}},
+        originalData: {"zone":{"_id":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"_id":-1, "rows":-1, "columns":-1}},
+        modifiedData: {"zone":{"_id":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"_id":-1, "rows":-1, "columns":-1}},
         emptyTray: {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''},
         /* END OF WAREHOUSE CONFIG */
 
@@ -148,6 +148,7 @@ const shelfieApp = new Vue({
         categoryFilter: '',
         weightFilter: '',
         trays: [],
+		zoneBgColor: '#68B72E',
         /* END OF DATA VIEW */
 		
 		/* REPORT PAGE */
@@ -262,14 +263,14 @@ const shelfieApp = new Vue({
                 if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
                     // DELETE SOME COLUMNS
                     for(let row = 1; row <= this.originalData.shelf.rows; row++){
-                        axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
+                        axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
                     }
                 } else{
                     // ADD SOME COLUMNS
                     for(let row = 1; row <= this.originalData.shelf.rows; row++){
-                        axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
+                        axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
                     }
@@ -279,12 +280,12 @@ const shelfieApp = new Vue({
             if(this.modifiedData.shelf.rows != this.originalData.shelf.rows){
                 if(this.modifiedData.shelf.rows < this.originalData.shelf.rows){
                     // DELETE SOME ROWS
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/deletemany/' + this.modifiedData.shelf.rows, {
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/deletemany/' + this.modifiedData.shelf.rows, {
                         withCredentials: true
                     });
                 } else {
                     // ADD SOME ROWS
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number + '/rows/insertmany/' + this.modifiedData.shelf.rows, {
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/insertmany/' + this.modifiedData.shelf.rows, {
                         withCredentials: true
                     });
                 }
@@ -293,7 +294,7 @@ const shelfieApp = new Vue({
             // BAY FUNCTIONALITY
             if(this.modifiedData.bay.name != this.originalData.bay.name){
                 // RENAME BAY
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
+                axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name, {
                     'name': this.modifiedData.bay.name,
                     withCredentials: true
                 });
@@ -302,12 +303,12 @@ const shelfieApp = new Vue({
             if(this.modifiedData.bay.numberOfShelves != this.originalData.bay.numberOfShelves){
                 if(this.modifiedData.bay.numberOfShelves < this.originalData.bay.numberOfShelves){
                     // DELETE SOME SHELVES
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/deletemany/' + this.modifiedData.bay.numberOfShelves, {
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/deletemany/' + this.modifiedData.bay.numberOfShelves, {
                         withCredentials: true
                     });
                 } else {
                     // ADD SOME SHELVES
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/insertmany/' + this.modifiedData.bay.numberOfShelves, {
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/insertmany/' + this.modifiedData.bay.numberOfShelves, {
                         withCredentials: true
                     });
                 }
@@ -317,21 +318,21 @@ const shelfieApp = new Vue({
             if(this.modifiedData.zone.numberOfBays != this.originalData.zone.numberOfBays){
                 if(this.modifiedData.zone.numberOfBays < this.originalData.zone.numberOfBays){
                     // DELETE SOME BAYS
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/deletemany/' + this.modifiedData.zone.numberOfBays, {
+                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/deletemany/' + this.modifiedData.zone.numberOfBays, {
                         withCredentials: true
                     });
                 } else {
                     // ADD SOME BAYS
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/insertmany/' + this.modifiedData.zone.numberOfBays, {
+                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/insertmany/' + this.modifiedData.zone.numberOfBays, {
                         withCredentials: true
                     });
                 }
             }
 
-            if(this.modifiedData.zone.name != this.originalData.zone.name){
+            if(this.modifiedData.zone._id !== this.originalData.zone._id){
                 // RENAME ZONE
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zone.name, {
-                    'name': this.modifiedData.zone.name,
+                axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id, {
+                    '_id': this.modifiedData.zone._id,
                     withCredentials: true
                 });
             }
@@ -366,7 +367,7 @@ const shelfieApp = new Vue({
 
             if(this.toInsertNumberOfBays > 0){
                 axios.post(shelfieURL + '/zones/', {
-                    name: this.toInsertZoneName,
+                    _id: this.toInsertZoneName,
                     bays: this.toInsertNumberOfBays,
                     shelves: this.toInsertNumOfShelves,
                     rows: this.toInsertNumOfRows,
@@ -375,7 +376,7 @@ const shelfieApp = new Vue({
                 });
             } else if(this.toInsertBayName != ''){
                 axios.post(shelfieURL + '/zones/', {
-                    name: this.toInsertZoneName,
+                    _id: this.toInsertZoneName,
                     bays: this.toInsertBayName,
                     shelves: this.toInsertNumOfShelves,
                     rows: this.toInsertNumOfRows,
@@ -390,9 +391,9 @@ const shelfieApp = new Vue({
             this.warehouseZones = [];
             this.warehouseBays = [];
             this.warehouseShelves = [];
-            this.originalData.zone.name = this.modifiedData.zone.name = "";
+            this.originalData.zone._id = this.modifiedData.zone._id = "";
             this.originalData.bay.name = this.modifiedData.bay.name = "";
-            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
             
@@ -402,16 +403,16 @@ const shelfieApp = new Vue({
                 this.warehouseZones = [];
             });
         },
-        warehouseFetchBays: function(zoneName){
-            this.originalData.zone.name = this.modifiedData.zone.name = zoneName;
+        warehouseFetchBays: function(zoneId){
+            this.originalData.zone._id = this.modifiedData.zone._id = zoneId;
             this.warehouseBays = [];
             this.warehouseShelves = [];
             this.originalData.bay.name = this.modifiedData.bay.name = "";
-            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
 
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays', {withCredentials: true}).then((res) => {
                 this.warehouseBays = res.data;
                 this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = this.warehouseBays.length;
             }).catch((err) => {
@@ -423,11 +424,11 @@ const shelfieApp = new Vue({
         warehouseFetchShelves: function(bayName){
             this.originalData.bay.name = this.modifiedData.bay.name = bayName;
             this.warehouseShelves = [];
-            this.originalData.shelf.number = this.modifiedData.shelf.number = -1;
+            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
 
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
                 this.warehouseShelves = res.data;
                 this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = this.warehouseShelves.length;
             }).catch((err) => {
@@ -436,15 +437,15 @@ const shelfieApp = new Vue({
             });
 
         },
-        warehouseFetchRowsColumns(shelfNumber){
-            this.originalData.shelf.number = this.modifiedData.shelf.number = shelfNumber;
+        warehouseFetchRowsColumns(shelfId){
+            this.originalData.shelf._id = this.modifiedData.shelf._id = shelfId;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfNumber + '/rows', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows', {withCredentials: true}).then((res) => {
                 let rows = res.data.length;
                 this.originalData.shelf.rows = this.modifiedData.shelf.rows = rows;
 
-                axios.get(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfNumber + '/rows/1/columns', {withCredentials: true}).then((res) => {
+                axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows/1/columns', {withCredentials: true}).then((res) => {
                     let columns = res.data.length;
                     this.originalData.shelf.columns = this.modifiedData.shelf.columns = columns;
                 }).catch((err) => {
@@ -473,7 +474,10 @@ const shelfieApp = new Vue({
         inventoryFetchZones: function(selectFirst=false){
             axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
                 this.inventoryZones = res.data;
-				if(this.inventoryZones.length > 0 && selectFirst) this.selectedZone = 0;
+				if(this.inventoryZones.length > 0 && selectFirst) {
+					this.selectedZone = 0;
+					this.zoneBgColor = this.inventoryZones[this.selectedZone]._color ? '#' + this.inventoryZones[this.selectedZone]._color : '#68B72E';
+				}
             }).catch((err) => {
                 this.inventoryZones = [];
             });
@@ -483,7 +487,7 @@ const shelfieApp = new Vue({
                 this.inventoryBays = [];
                 return;
             }
-            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays', {withCredentials: true}).then((res) => {
                 this.inventoryBays = res.data.sort();
 				if(this.inventoryBays.length > 0 && selectFirst) this.selectedBay = 0;
             }).catch((err) => {
@@ -495,7 +499,7 @@ const shelfieApp = new Vue({
                 this.inventoryShelves = [];
                 return;
             }
-            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves', {withCredentials: true}).then((res) => {
                 this.inventoryShelves = res.data.sort();
 				if(this.inventoryShelves.length > 0 && selectFirst) this.selectedShelf = 0;
             }).catch((err) => {
@@ -503,7 +507,7 @@ const shelfieApp = new Vue({
             });
         },
 		inventoryFetchShelfTrays: function() {
-			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
+			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
                 this.shelfTrays = res.data;
             }).catch((err) => {
                 this.shelfTrays = [];
@@ -676,6 +680,7 @@ const shelfieApp = new Vue({
 			if(forward) i++;
 			else i--;
 			this[t] = (i % this[s].length + this[s].length) % this[s].length;
+			if(section === 'zone') this.zoneBgColor = this.inventoryZones[this.selectedZone]._color ? '#' + this.inventoryZones[this.selectedZone]._color : '#68B72E';
 		},
 		fillShelf: function() {
 			if(this.selectedTray === null) { 
@@ -705,7 +710,7 @@ const shelfieApp = new Vue({
 		},
 		shelfOk: function() {
 			if(!this.inventoryShelves[this.selectedShelf]) return;
-			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone] + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
+			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
 				{_shelfOk: true},
 				{withCredentials: true})
 			.then((res) => {
