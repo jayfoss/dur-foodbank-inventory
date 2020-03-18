@@ -105,6 +105,7 @@ input[type=checkbox] {
 
 /*END OF GLOBAL*/
 
+
 /* WAREHOUSE CONFIG */
 
 .warehouse-config {
@@ -771,8 +772,17 @@ input[type=text], input[type=password] {
 	font-size: large;
 }
 
+.role-button-selected{
+	background-color: #68B72E;
+}
+
 .role-button:hover{
-	background-color: #072631;
+	background-color: #68B72E;
+}
+
+.tableSelected{
+	background-color: blue;
+	color: #FFF;
 }
 
 /* END OF USER MANAGEMENT */

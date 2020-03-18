@@ -26,6 +26,7 @@
 <body class="bg-light">
   <div style="width: 100%; height: 100%;" id="shelfie-app">
         <div class="login" v-bind:class="{active: !isLoggedIn()}">
+            <img style="width: 50%; display:block; margin-left: auto; margin-right: auto;" src="./src/assets/shelfie.png">
             <p>
                 <h1>Welcome! Please Login</h1>
             </p>
@@ -267,6 +268,7 @@
         
         </div>
 
+        <!-- DATA VIEW PAGE -->
         <div v-bind:class="{active: isDataViewActive}" class="data-view">
             <h4 class="display-4">Data View</h4>
             <hr>
@@ -658,102 +660,76 @@
                 <hr>
                 <div>	
                     <h5 class="h2">All Users</h5>
-                    <table class="table" style="text-align: center;"> <!-- TO DO: read from DB-->
-                        <tr>
-                            <th>FIRST NAME</th>
-                            <th>LAST NAME</th>
-                            <th>EMAIL</th>
-                            <th>ROLE</th>
-                            <th>CAN VIEW DATA</th>
-                            <th>CAN EDIT DATA</th>
-                            <th>CAN MODIFY WAREHOUSE</th>
-                            <th>CAN MODIFY USERS</th>
-
-                        </tr>
-                        <tr style="font-weight:bold; color: white;" class="bg-primary">
-                            <td>Aidan</td>
-                            <td>Williamson</td>
-                            <td>Aidan@AidansEmail.com</td>
-                            <td>Manager</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Eve</td>
-                            <td>Jackson</td>
-                            <td>EveJackson@OutkastsHub.co.uk</td>
-                            <td>Team Leader</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                        </tr>
-                        <tr>
-                        <tr>
-                            <td>Davis</td>
-                            <td>McGregor</td>
-                            <td>McDavidson@ntlLand.com</td>
-                            <td>Stock Mover</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                        </tr>
-                            <td>Roxanne</td>
-                            <td>Harriet</td>
-                            <td>RoxaneRoxanneson@googly.com</td>
-                            <td>Designated Volunteer</td>
-                            <td><input type="checkbox" disabled checked/>  Yes</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                            <td><input type="checkbox" disabled/>  No</td>
-                        </tr>
-                    </table>    
+                    <table class="table" style="text-align: center;" id="userTable">
+                        <tbody id = "userTableBody">
+                            <tr>
+                                <th>FIRST NAME</th>
+                                <th>LAST NAME</th>
+                                <th>USERNAME</th>
+                                <th>ROLE</th>
+                                <th>CAN VIEW DATA</th>
+                                <th>CAN EDIT DATA</th>
+                                <th>CAN MODIFY WAREHOUSE</th>
+                                <th>CAN MODIFY USERS</th>
+                            </tr>
+                            <tr v-for="user in sortedUsers">
+                                <td>{{ user.firstName }}</td>
+                                <td>{{ user.lastName }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.role }}</td>
+                                <td> {{ user.canViewData }} </td>
+                                <td> {{user.canEditData}} </td>
+                                <td> {{user.canModifyWarehouse}}</td>
+                                <td> {{user.canModifyUsers}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="page-control-buttons" style="margin-bottom: 0px;">
                     <button @click="prevPage" class = "Button" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
-                    <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;"type="button">Next</button>
-                    <button @click="fetchAllTrays" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
+                    <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Next</button>
+                    <!--<button @click="addRows" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>-->
                 </div>
 
                 <div class="page-control-buttons" style="margin-top: 0px; margin-bottom: 0px;">
-                    <button class="add-update-button submit-button" type="button">EDIT SELECTED USER</button>
-                    <button class="add-update-button submit-button" type="button">ADD USER</button>
+                    <button @click="editUser" class="add-update-button submit-button" type="button">EDIT SELECTED USER</button>
+                    <button @click="emptyFields" class="add-update-button submit-button" type="button">ADD USER</button>
                 </div>
 
-                <h5 class="h2">Selected User</h5>
-                    <div class="current-record" style="margin-left: 0px;">
+                <h5 class="h2" style="visibility: hidden;" id="userFieldsTitle">User Details</h5>
+                    <div class="current-record" style="margin-left: 0px; visibility: hidden;" id="userFields">
                         <div>
-                            <h5 class="input-label display-5">FIRST NAME:
-                            <input type="text" class="text-input form-control" placeholder="Aidan"></h5>
+                            <h5 class="input-label display-5" >FIRST NAME:
+                                <input type="text" class="text-input form-control" id="fNameInput" placeholder="Type here"></h5>
                             <h5 class="input-label display-5">LAST NAME:
-                            <input type="text" class="text-input form-control" style="margin-left: 2px;" placeholder="Williamson"></h5>
-                            <h5 class="input-label display-5">EMAIL:
-                            <input type="text" class="text-input form-control" style="margin-left: 52px;" placeholder="Aidan@AidansEmail.com"></h5>
+                                <input type="text" class="text-input form-control" style="margin-left: 2px;" id="lNameInput" placeholder="Type here"></h5>
+                            <h5 class="input-label display-5">USERNAME:
+                                <input type="text" class="text-input form-control" style="margin-left: 5px;" id="uNameInput" placeholder="Type here"></h5>
+                            <h5 class="input-label display-5" id="passwordContainer" style="visibility: hidden;">PASSWORD:
+                                <input type="password" class="text-input form-control" style="margin-left: 3px;" id="passwordInput" placeholder="Type here"></h5>
                         </div>
                         <div class="record-item">
                             <h5 class = "display-5">ROLE: </h5>
                             <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
-                                <button class="role-button" style="background-color: #497E92;">MANAGER</button>
-                                <button class="role-button" >TEAM LEADER</button>
-                                <button class="role-button" >STOCK MOVER</button>
-                                <button class="role-button" >SORTING VOLUNTEER</button>
+                                <button @click="managerSelected" class="role-button" id="managerButton">MANAGER</button>
+                                <button @click="teamleaderSelected" class="role-button" id="teamleaderButton">TEAM LEADER</button>
+                                <button @click="stockmoverSelected" class="role-button" id="stockmoverButton">STOCK MOVER</button>
+                                <button @click="sortingvolunteerSelected" class="role-button" id="sortingvolunteerButton">SORTING VOLUNTEER</button>
                             </div>
                         </div>
                         <div class="record-item">
                             <h5 class="display-5">PERMISSIONS: </h5>
                             <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-                                <h3><input type="checkbox" value="true" checked disabled/> Can View Data </h3>
-                                <h3><input type="checkbox" value="true" checked disabled/> Can Edit Data</h3>
-                                <h3><input type="checkbox" value="true" checked disabled/> Can Modify Warehouse</h3>
-                                <h3><input type="checkbox" value="true" checked disabled/> Can Modify Users</h3>
+                                <h3><input type="checkbox" value="true" disabled id="viewdataCheck"/> Can View Data </h3>
+                                <h3><input type="checkbox" value="true" disabled id="editdataCheck"/> Can Edit Data</h3>
+                                <h3><input type="checkbox" value="true" disabled id="modifywarehouseCheck"/> Can Modify Warehouse</h3>
+                                <h3><input type="checkbox" value="true" disabled id="modifyusersCheck"/> Can Modify Users</h3>
                             </div>
                         </div>
                     </div>
-                    <button class="submit-button Button" style="width:600px;">UPDATE RECORD</button>
+                    <button @click="updateUser" class="submit-button Button" style="width:600px; visibility: hidden;" id="updateRecordButton">UPDATE RECORD</button>
+                    <button @click="submitUser" class="submit-button Button" style="width:600px; visibility: hidden;" id="addUserButton">ADD USER</button>
                 </div>
             </div>
         </div>
