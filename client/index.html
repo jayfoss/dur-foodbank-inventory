@@ -19,7 +19,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
 </head>
 <body class="bg-light">
-  <div id="shelfie-app">
+  <div id="shelfie-app" ref="app">
         <div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
 			<div class="container">
 				<div class="row justify-content-center">
@@ -196,6 +196,7 @@
 								<button class="invButton" @click="trayContent('MISC')">MISC</button>
 								<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
 								<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
+								<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 							</div>
 							<div class="button-group col-lg-3">
 								<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
@@ -203,7 +204,6 @@
 							</div>
 						</div>
 					</div>
-                    <input type="submit" value="Submit" @click="inventorySubmitNewTrays"> 
                 </div>
             </div>        
         </div>

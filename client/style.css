@@ -368,6 +368,11 @@ button:hover {
 	color: white;
 }
 
+#save-trays {
+	width: 220px;
+	background-color: var(--red);
+}
+
 .inventory {
 	display: none;
 	overflow-x: auto;

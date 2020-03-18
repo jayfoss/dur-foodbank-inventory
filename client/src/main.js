@@ -69,18 +69,6 @@ function getExpiryColor(tray) {
 	return getYearColor(y);
 }
 
-axios.interceptors.response.use((resp) => {
-	return resp
-}, (err) => {
-	if(err.response.data && err.response.data.error) {
-		this.makeToast('Error', err.response.data.error, 'danger');
-	}
-	else {
-		this.makeToast('Error', 'A request failed. This may be a connection issue.', 'danger');
-	}
-	return Promise.reject(err);
-});
-
 const shelfieApp = new Vue({
 	el: '#shelfie-app',
     data: {
@@ -118,19 +106,11 @@ const shelfieApp = new Vue({
         inventoryShelves: [],
         inventoryRows: [],
         inventoryColumns: [],
-        select_year: '',
-        select_month: '',
-        stock_taken_date: '',
         selectedZone: -1,
         selectedBay: -1,
         selectedShelf: -1,
-        enter_weight:'',
-        tray_category:'',
-        tray_position:'',
         shelfTrays: [],
 		selectedTray:null,
-        inventoryTrays: [],
-        inventoryTraysNew: [],
 		expandableItemGroups: {'baby':false, 'cleaning':false, 'christmas':false},
         /* END OF INVENTORY *
 
@@ -255,14 +235,14 @@ const shelfieApp = new Vue({
             if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
                 if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
                     // DELETE SOME COLUMNS
-                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                    for(let row = 0; row < this.originalData.shelf.rows; row++){
                         axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
                     }
                 } else{
                     // ADD SOME COLUMNS
-                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                    for(let row = 0; row < this.originalData.shelf.rows; row++){
                         axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
@@ -506,76 +486,13 @@ const shelfieApp = new Vue({
                 this.shelfTrays = [];
             });
 		},
-        inventoryFetchRowsAndColumns: function(){
-            let zoneName = this.select_zone;
-            let bayName = this.select_bay;
-            let shelfNum = this.select_shelf;
-            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows', {withCredentials: true}).then((res) => {
-                this.inventoryRows = res.data.sort();
-                console.log('Rows: ' + res.data.sort())
-                if(this.inventoryRows[0] !== undefined){
-                    axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + this.inventoryRows[0] + '/columns', {withCredentials: true}).then((res) => {
-                        console.log('Columns: ' + res.data);
-                        this.inventoryColumns = res.data.sort();
-                        this.inventoryTrays = [];
-                        this.inventoryTraysNew = [];
-                        
-
-                        
-                        for(let row in this.inventoryRows){
-                            for(let column in this.inventoryColumns){
-                                let col = this.inventoryColumns[column];
-                                let ro = this.inventoryRows[row];
-                                axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + ro + '/columns/' + col + '/tray', {withCredentials: true}).then((res) => {
-                                    let tray = res.data;
-                                    tray['row'] = ro;
-                                    tray['column'] = col;
-                                    this.inventoryTrays.push(tray);
-                                });
-                            }
-                        }
-                        console.log(this.inventoryTrays);
-                    });
-                }
-            }).catch((err) => {
-                this.inventoryRows = [];
-            });
-        },
-        inventorySetSelectedTray: function(row, col){
-            this.selectedTrayColumn = col;
-            this.selectedTrayRow = row;
-            let tray = {'category': this.tray_category, 'weight': this.enter_weight, 'expiryYear': {'start': this.select_year, 'end': this.select_year}, 'expiryMonth': {'start': this.select_month, 'end': this.select_month}, 'lastUpdated': this.stock_taken_date, 'userNote': '', 'row': row, 'column': col};
-            let existingIndex = 0;
-            let alreadyExists = false;
-            for(let tr in this.inventoryTraysNew){
-                let tra = this.inventoryTraysNew[tr];
-                if(tra['row'] === row  && tra['column'] === col){
-                    alreadyExists = true;
-                    existingIndex = tr;
-                }
-            }
-
-            if(alreadyExists){
-                this.inventoryTraysNew[existingIndex] = tray;
-            } else {
-                this.inventoryTraysNew.push(tray);
-            }
-            
-        },
-        inventorySubmitNewTrays: function(){
-            let zoneName = this.select_zone;
-            let bayName = this.select_bay;
-            let shelfNum = this.select_shelf;
-            for(let index in this.inventoryTraysNew){
-                let trayToSubmit = this.inventoryTraysNew[index];
-                let row = trayToSubmit['row'];
-                let column = trayToSubmit['column'];
-                delete trayToSubmit['row'];
-                delete trayToSubmit['column'];
-                axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray',
-                    trayToSubmit, {withCredentials: true}
-                );
-            }
+        inventorySubmitTrays: function(){
+			const self = this;
+            axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
+                this.shelfTrays, {withCredentials: true}
+            ).then((res) => {
+				self.makeToast('Success', 'Trays saved', 'success');
+			});
         },
         checkForm: function (e) {
             if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_shelf && this.enter_weight &&this.food_type) {
@@ -722,11 +639,11 @@ const shelfieApp = new Vue({
 		nextTray: function() {
 			const tray = this.selectedTray;
 			if(!tray) return;
-			if(tray.col - 1 < this.shelfTrays[tray.row - 1].length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row - 1][tray.col];
+			if(tray.col < this.shelfTrays[tray.row].length - 1) {
+				this.selectedTray = this.shelfTrays[tray.row][+tray.col + 1];
 			}
-			else if(tray.col - 1 === this.shelfTrays[tray.row - 1].length - 1 && tray.row - 1 < this.shelfTrays.length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row][0];
+			else if(tray.col === this.shelfTrays[tray.row].length - 1 && tray.row < this.shelfTrays.length - 1) {
+				this.selectedTray = this.shelfTrays[+tray.row + 1][0];
 			}
 			else {
 				this.selectedTray = this.shelfTrays[0][0];
@@ -797,10 +714,9 @@ const shelfieApp = new Vue({
 		},
         monthYearButtons: function() {
 			const start = luxon.DateTime.local().minus({months: 1});
-			const end = luxon.DateTime.local().plus({months: 11});
 			const yearMonths = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 12; i++) {
 				const c = current.toObject();
 				const ym = {y: {start: c.year, end: c.year}, m: {start: c.month, end: c.month}, mt: current.toFormat('MMM').toUpperCase()};
 				yearMonths.push(ym);
@@ -810,10 +726,9 @@ const shelfieApp = new Vue({
 		},
 		yearButtons: function() {
 			const start = luxon.DateTime.local();
-			const end = luxon.DateTime.local().plus({years: 3});
 			const years = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 4; i++) {
 				years.push(current.toObject().year);
 				current = current.plus({years: 1});
 			}
@@ -821,10 +736,9 @@ const shelfieApp = new Vue({
 		},
 		quarterButtons: function() {
 			const start = luxon.DateTime.local().startOf('quarter').minus({months: 3});
-			const end = luxon.DateTime.local().plus({months: 12});
 			const quarters = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 4; i++) {
 				const c = current.toObject();
 				const p = current.plus({months: 2});
 				quarters.push({y: {start: c.year, end: c.year}, m: {start: c.month, end: p.toObject().month}, mt: {start: current.toFormat('MMM').toUpperCase(), end: p.toFormat('MMM').toUpperCase()}});
@@ -909,5 +823,24 @@ const shelfieApp = new Vue({
 		if(this.isLoggedIn()) {
 			this.inventoryFetchZones(true);
 		}
+		const self = this;
+		axios.interceptors.response.use((resp) => {
+			return resp
+		}, (err) => {
+			if(err.response.data && err.response.data.error) {
+				if(err.response.data.data) {
+					for(let i = 0; i < err.response.data.data.length; i++) {
+						self.makeToast('Error', err.response.data.error + ' : ' + err.response.data.data[i].message, 'danger');
+					}
+				}
+				else {
+					self.makeToast('Error', err.response.data.error, 'danger');
+				}
+			}
+			else {
+				self.makeToast('Error', 'A request failed. This may be a connection issue.', 'danger');
+			}
+			return Promise.reject(err);
+		});
 	}
 });
