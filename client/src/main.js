@@ -88,7 +88,7 @@ const shelfieApp = new Vue({
         /* WAREHOUSE CONFIG */
         toInsertZoneName: '',
         toInsertBayName: '',
-        toInsertNumberOfBays: 0,
+        toInsertNumberOfBays: 1,
         toInsertNumOfShelves: 4,
         toInsertNumOfRows: 3,
         toInsertNumOfColumns: 4,
@@ -232,8 +232,8 @@ const shelfieApp = new Vue({
         },
         warehouseChangeNumberOfBaysInsert: function(offset){
             this.toInsertNumberOfBays += offset;
-            if (this.toInsertNumberOfBays < 0)
-                this.toInsertNumberOfBays = 0;
+            if (this.toInsertNumberOfBays < 1)
+                this.toInsertNumberOfBays = 1;
             else if(this.toInsertNumberOfBays > 26)
                 this.toInsertNumberOfBays = 26;
         },
@@ -271,15 +271,6 @@ const shelfieApp = new Vue({
                 }
             }
 
-            // BAY FUNCTIONALITY
-            if(this.modifiedData.bay.name != this.originalData.bay.name){
-                // RENAME BAY
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name, {
-                    'name': this.modifiedData.bay.name,
-                    withCredentials: true
-                });
-            }
-
             if(this.modifiedData.bay.numberOfShelves != this.originalData.bay.numberOfShelves){
                 if(this.modifiedData.bay.numberOfShelves < this.originalData.bay.numberOfShelves){
                     // DELETE SOME SHELVES
@@ -311,8 +302,10 @@ const shelfieApp = new Vue({
 
             if(this.modifiedData.zone._id !== this.originalData.zone._id){
                 // RENAME ZONE
+                console.log(this.modifiedData.zone._id);
                 axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id, {
                     '_id': this.modifiedData.zone._id,
+                    '_color': 'FFFFFF',
                     withCredentials: true
                 });
             }
@@ -321,9 +314,13 @@ const shelfieApp = new Vue({
             
         },
         warehouseDeleteZone: function(){
-            if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
-                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name, {
+            if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone._id + '?\nThis action is irreversible.'))
+                axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id, {
                     withCredentials: true
+                }).then((resp) => {
+                    this.makeToast('Success', 'Successfuly deleted the zone.', 'success');
+                }).catch((err) => {
+                    this.makeToast('Error', 'Could not delete zone.\n' + err + '\nPlease try again.', 'danger');
                 });
                 // RELOAD PAGE HERE
         },
@@ -331,6 +328,10 @@ const shelfieApp = new Vue({
             if(confirm('Are you sure you want to delete bay ' + this.originalData.bay.name + ' from zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
                 axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
                     withCredentials: true
+                }).then((resp) => {
+                    this.makeToast('Success', 'Successfuly deleted the bay.', 'success');
+                }).catch((err) => {
+                    this.makeToast('Error', 'Could not delete bay.\n' + err + '\nPlease try again.', 'danger');
                 });
                 // RELOAD PAGE HERE
         },
@@ -338,34 +339,36 @@ const shelfieApp = new Vue({
             if(confirm('Are you sure you want to delete shelf ' + this.originalData.shelf.number + ' from bay ' + this.originalData.bay.name + ' in zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
                 axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
                     withCredentials: true
+                }).then((resp) => {
+                    this.makeToast('Success', 'Successfuly deleted the shelf.', 'success');
+                }).catch((err) => {
+                    this.modifiedData.bay.numberOfShelves = 1
+                    this.makeToast('Error', 'Could not delete shelf.\n' + err + '\nPlease try again.', 'danger');
                 });
                 // RELOAD PAGE HERE
         },
         warehouseCreateSubmit: function(){
-            if(this.toInsertZoneName == '')
+            if(this.toInsertZoneName == ''){
+                this.makeToast('Error', 'Zone name must not be empty', 'danger');
                 return;
-
-            if(this.toInsertNumberOfBays > 0){
-                axios.post(shelfieURL + '/zones/', {
-                    _id: this.toInsertZoneName,
-                    bays: this.toInsertNumberOfBays,
-                    shelves: this.toInsertNumOfShelves,
-                    rows: this.toInsertNumOfRows,
-                    columns: this.toInsertNumOfColumns,
-                    withCredentials: true
-                });
-            } else if(this.toInsertBayName != ''){
-                axios.post(shelfieURL + '/zones/', {
-                    _id: this.toInsertZoneName,
-                    bays: this.toInsertBayName,
-                    shelves: this.toInsertNumOfShelves,
-                    rows: this.toInsertNumOfRows,
-                    columns: this.toInsertNumOfColumns,
-                    withCredentials: true
-                });
             }
-
-            
+                
+            let color = document.getElementById('zoneColor').value;
+            color = color.substring(1);
+            axios.post(shelfieURL + '/zones/', {
+                _id: this.toInsertZoneName,
+                _color: color,
+                bays: this.toInsertNumberOfBays,
+                shelves: this.toInsertNumOfShelves,
+                rows: this.toInsertNumOfRows,
+                columns: this.toInsertNumOfColumns,
+                withCredentials: true
+            }).then((resp) => {
+                this.makeToast('Success', 'Successfuly created the warehouse layout.', 'success');
+            }).catch((err) => {
+                this.makeToast('Error', 'Could not create zone.\n' + err + '\nplease try again.', 'danger');
+                return;
+            });
         },
         warehouseFetchZones: function(){
             this.warehouseZones = [];
@@ -376,10 +379,10 @@ const shelfieApp = new Vue({
             this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-            
             axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
                 this.warehouseZones = res.data;
             }).catch((err) => {
+                this.makeToast('Error', 'Could not fetch zones.\n' + err, 'danger');
                 this.warehouseZones = [];
             });
         },
@@ -393,9 +396,14 @@ const shelfieApp = new Vue({
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
 
             axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays', {withCredentials: true}).then((res) => {
-                this.warehouseBays = res.data;
+                this.warehouseBays = [];
+                for(let index in res.data){
+                    if(res.data[index] != '_color')
+                        this.warehouseBays.push(res.data[index]);
+                }
                 this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = this.warehouseBays.length;
             }).catch((err) => {
+                this.makeToast('Error', 'Could not fetch bays.\n' + err, 'danger');
                 this.warehouseBays = [];
                 this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = 0;
             });
@@ -412,6 +420,7 @@ const shelfieApp = new Vue({
                 this.warehouseShelves = res.data;
                 this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = this.warehouseShelves.length;
             }).catch((err) => {
+                this.makeToast('Error', 'Could not fetch shelves.\n' + err, 'danger');
                 this.warehouseShelves = [];
                 this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = 0;
             });
@@ -422,31 +431,35 @@ const shelfieApp = new Vue({
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
             axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows', {withCredentials: true}).then((res) => {
-                let rows = res.data.length;
+                let rows = res.data.length-1;
                 this.originalData.shelf.rows = this.modifiedData.shelf.rows = rows;
-
-                axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows/1/columns', {withCredentials: true}).then((res) => {
+                axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows/0/columns', {withCredentials: true}).then((res) => {
                     let columns = res.data.length;
                     this.originalData.shelf.columns = this.modifiedData.shelf.columns = columns;
                 }).catch((err) => {
+                    this.makeToast('Error', 'Could not fetch columns.\n' + err, 'danger');
                     this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
                 });
                 
-                
             }).catch((err) => {
+                this.makeToast('Error', 'Could not fetch rows.\n' + err, 'danger');
                 this.originalData.shelf.rows = this.modifiedData.shelf.rows = 0;
                 this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
             });
         },
         warehouseChangeNumberOfBays: function(offset){
             this.modifiedData.zone.numberOfBays += offset
-            if(this.modifiedData.zone.numberOfBays < 1)
+            if(this.modifiedData.zone.numberOfBays < 1){
                 this.modifiedData.zone.numberOfBays = 1
+                this.makeToast('Error', 'There must be 1 or more bays', 'danger');
+            }
         },
         warehouseChangeNumberOfShelves: function(offset){
             this.modifiedData.bay.numberOfShelves += offset
-            if(this.modifiedData.bay.numberOfShelves < 1)
+            if(this.modifiedData.bay.numberOfShelves < 1){
                 this.modifiedData.bay.numberOfShelves = 1
+                this.makeToast('Error', 'There must be 1 or more shelves', 'danger');
+            }
         },
         /* END OF WAREHOUSE CONFIG */
 
@@ -499,6 +512,7 @@ const shelfieApp = new Vue({
                 this.shelfTrays, {withCredentials: true}
             ).then((res) => {
 				self.makeToast('Success', 'Trays saved', 'success');
+				this.shelfOk(false);
 			});
         },
         checkForm: function (e) {
@@ -625,14 +639,14 @@ const shelfieApp = new Vue({
 			this.selectedTray.expiryMonth = {start: null, end: null};
 			this.selectedTray.userNote = '';
 		},
-		shelfOk: function() {
+		shelfOk: function(ok = true) {
 			if(!this.inventoryShelves[this.selectedShelf]) return;
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
-				{_shelfOk: true},
+				{_shelfOk: ok},
 				{withCredentials: true})
 			.then((res) => {
-				this.inventoryShelves[this.selectedShelf]._shelfOk = true;
-                this.makeToast('Success', 'Shelf marked OK', 'success');
+				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
+				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
             });
 		},
 		isShelfOk: function(shelf) {
