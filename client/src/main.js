@@ -732,6 +732,9 @@ const shelfieApp = new Vue({
             document.getElementById("updateRecordButton").style.visibility = 'hidden';   
             document.getElementById("addUserButton").style.visibility = 'visible';
             $('#userTable tr').removeClass("tableSelected");
+<<<<<<< HEAD
+>>>>>>> parent of b8b0551... minor fixes
+=======
 >>>>>>> parent of b8b0551... minor fixes
             //deselect current user from table...
             this.populateFields();
@@ -878,6 +881,7 @@ const shelfieApp = new Vue({
             this.updateCurrentUser();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
         },
 		fetchAllUsers: function(){
@@ -897,6 +901,10 @@ const shelfieApp = new Vue({
             // }
             return this.UMusers;
         },
+=======
+            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
+        }
+>>>>>>> parent of b8b0551... minor fixes
 =======
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
         }
@@ -1079,7 +1087,11 @@ const shelfieApp = new Vue({
 	}
 });
 
+<<<<<<< HEAD
 //$('userTable tr').click(userTableClicked($(this)));
+=======
+//$("userTable tr").click(userTableClicked($(this)));
+>>>>>>> parent of b8b0551... minor fixes
 
 $("#userTable tr").click(function() {               //should probably be transformed into a function like above
     var table = document.getElementById('userTable');
