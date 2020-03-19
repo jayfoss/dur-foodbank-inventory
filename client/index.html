@@ -17,7 +17,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.js" integrity="sha256-Rg0qQCADTRyTZPkSVnItp1nSpSP0ZtYjTh/bNchzS+E=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of b8b0551... minor fixes
 </head>
 <body class="bg-light">
   <div id="shelfie-app" ref="app">
@@ -662,7 +665,7 @@
                     <h5 class="h2">All Users</h5>
                     <table class="table" style="text-align: center;" id="userTable">
                         <tbody id = "userTableBody">
-                            <tr @click="rowClicked(tr)">
+                            <tr>
                                 <th>FIRST NAME</th>
                                 <th>LAST NAME</th>
                                 <th>USERNAME</th>
@@ -672,7 +675,11 @@
                                 <th>CAN MODIFY WAREHOUSE</th>
                                 <th>CAN MODIFY USERS</th>
                             </tr>
+<<<<<<< HEAD
                             <tr v-for="user in sortedUsers"> <!--<tr v-for="(user, index) in sortedUsers" @click="rowClicked(index)"></tr>-->
+=======
+                            <tr v-for="user in sortedUsers">
+>>>>>>> parent of b8b0551... minor fixes
                                 <td>{{ user.firstName }}</td>
                                 <td>{{ user.lastName }}</td>
                                 <td>{{ user.username }}</td>
