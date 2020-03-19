@@ -868,7 +868,6 @@ const shelfieApp = new Vue({
 
         updateUser: function(){
             this.updateCurrentUser();
-
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
         },
 		fetchAllUsers: function(){
@@ -888,8 +887,6 @@ const shelfieApp = new Vue({
             // }
             return this.UMusers;
         },
-
-
     },
     computed:{
         /* INVENTORY */
