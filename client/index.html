@@ -476,11 +476,11 @@
 							<input class="form-control" type="text" placeholder="Zone Name" v-model="toInsertZoneName">
 						</div>
 						<div class="form-group">
-							<label>BAY NAME</label>
-							<input class="form-control" type="text" placeholder="Bay Name" v-model="toInsertBayName">
+							<label>COLOUR</label>
+							<input type="color" id="zoneColor" style="width: 100%; height: 35px;">
 						</div>
 						<div class="inv-v-ctrl-container text-center pt-3">
-							<div class="inv-v-ctrl-head">OR NUMBER OF BAYS</div>
+							<div class="inv-v-ctrl-head">NUMBER OF BAYS</div>
 							<div class="inv-v-ctrl-mv">
 								<button @click="warehouseChangeNumberOfBaysInsert(-1)">-</button>
 								<div class="inv-v-zone">{{toInsertNumberOfBays}}</div>
@@ -503,7 +503,7 @@
 							<div class="inv-v-ctrl-mv">
 								<button @click="warehouseLimitRowSelector(false)">-</button>
 								<div class="inv-v-zone">{{toInsertNumOfRows}}</div>
-								<button @click="toInsertNumRows++">+</button>
+								<button @click="toInsertNumOfRows++">+</button>
 							</div>
 						</div>						
 						<div class="inv-v-ctrl-container text-center pt-3">
@@ -552,7 +552,7 @@
 										<button @click="warehouseChangeNumberOfBays(1)">+</button>
 									</div>
 								</div>
-								<button>DELETE ZONE</button>
+								<button v-on:click="warehouseDeleteZone()">DELETE ZONE</button>
 							</div>
 						</div>
 					</div>
@@ -567,9 +567,6 @@
 							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</p>
 
 							<div v-if="originalData.bay.name != ''" class="d-flex flex-column">
-								<div class="form-group">
-									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.bay.name">
-								</div>
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
 									<div class="inv-v-ctrl-mv">
@@ -578,7 +575,6 @@
 										<button @click="warehouseChangeNumberOfShelves(1)">+</button>
 									</div>
 								</div>
-								<button>DELETE BAY</button>
 							</div>
 						</div>
 					</div>

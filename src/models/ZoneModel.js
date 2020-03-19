@@ -17,7 +17,15 @@ class ZoneModel extends Model {
 		if(!this.validator.isValidLengthNN('_id', value, 1, 25)){
 			return false;
 		}
-		this.fields.name = value;
+		this.fields._id = value;
+		return this;
+	}
+
+	set _color(value) {
+		if(!this.validator.isValidLengthNN('_color', value, 1, 6)){
+			return false;
+		}
+		this.fields._color = value;
 		return this;
 	}
 }

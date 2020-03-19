@@ -70,7 +70,7 @@ apiRouter.delete('/users/:userId', (req, resp) => {
 });
 
 apiRouter.get('/report', (req, resp) => {
-	
+	trayController.getReportData(req, resp);
 });
 
 apiRouter.get('/zones', (req, resp) => {
@@ -100,9 +100,6 @@ apiRouter.get('/zones/:zoneId/bays', (req, resp) => {
 });
 apiRouter.post('/zones/:zoneId/bays', (req, resp) => {
 	bayController.createBay(req, resp);
-});
-apiRouter.patch('/zones/:zoneId/bays/:bayId', (req, resp) => {
-	bayController.modifyBay(req, resp);
 });
 apiRouter.delete('/zones/:zoneId/bays/:bayId', (req, resp) => {
 	bayController.deleteBay(req, resp);
