@@ -718,24 +718,12 @@ const shelfieApp = new Vue({
         },
 
         emptyFields: function(){
-<<<<<<< HEAD
             this.UMcurrentUser = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
             //document.getElementById('userTable').rows.classList.remove('tableSelected');
             document.getElementById('passwordContainer').style.visibility = 'visible';
             document.getElementById('updateRecordButton').style.visibility = 'hidden';   
             document.getElementById('addUserButton').style.visibility = 'visible';
-            $('#userTable tr').removeClass('tableSelected');
-=======
-            this.UMcurrentUser = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-            //document.getElementById("userTable").rows.classList.remove("tableSelected");
-            document.getElementById("passwordContainer").style.visibility = 'visible';
-            document.getElementById("updateRecordButton").style.visibility = 'hidden';   
-            document.getElementById("addUserButton").style.visibility = 'visible';
-            $('#userTable tr').removeClass("tableSelected");
-<<<<<<< HEAD
->>>>>>> parent of b8b0551... minor fixes
-=======
->>>>>>> parent of b8b0551... minor fixes
+            //$('#userTable tr').removeClass('tableSelected');
             //deselect current user from table...
             this.populateFields();
         },
@@ -879,9 +867,6 @@ const shelfieApp = new Vue({
 
         updateUser: function(){
             this.updateCurrentUser();
-
-<<<<<<< HEAD
-<<<<<<< HEAD
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
         },
 		fetchAllUsers: function(){
@@ -901,14 +886,6 @@ const shelfieApp = new Vue({
             // }
             return this.UMusers;
         },
-=======
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
-        }
->>>>>>> parent of b8b0551... minor fixes
-=======
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
-        }
->>>>>>> parent of b8b0551... minor fixes
 
 
     },
@@ -1087,38 +1064,35 @@ const shelfieApp = new Vue({
 	}
 });
 
-<<<<<<< HEAD
 //$('userTable tr').click(userTableClicked($(this)));
-=======
-//$("userTable tr").click(userTableClicked($(this)));
->>>>>>> parent of b8b0551... minor fixes
 
-$("#userTable tr").click(function() {               //should probably be transformed into a function like above
-    var table = document.getElementById('userTable');
-    var row = $(this);
-    var i = 0;
-    var cItem = "";
-    var userDict = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-    row.addClass('tableSelected').siblings().removeClass('tableSelected');    
-    row.children().each(function(item) {
-        cItem = $(this).html();
-        // if (cItem.substring(0,1) == " ") {
-        //     cItem=cItem(1); //removes the space, happens 
-        // };
-        if (cItem.toLowerCase() == "true" || cItem.toLocaleLowerCase == " true"){           //so this doesn't work, all elements of a dict must be same type (I assume)
-            userDict[Object.keys(userDict)[i]] = true;
-        }
-        else if (cItem.toLowerCase() == "false" || cItem.toLocaleLowerCase == " false"){
-            userDict[Object.keys(userDict)[i]] = false;
-        }
-        else{
-            userDict[Object.keys(userDict)[i]] = cItem;
-        }
-        i++;
-    });
-    shelfieApp.UMcurrentUser = userDict;
-    console.log(shelfieApp.UMcurrentUser);
-});
+
+// $("#userTable tr").click(function() {               //should probably be transformed into a function like above
+//     var table = document.getElementById('userTable');
+//     var row = $(this);
+//     var i = 0;
+//     var cItem = "";
+//     var userDict = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
+//     row.addClass('tableSelected').siblings().removeClass('tableSelected');    
+//     row.children().each(function(item) {
+//         cItem = $(this).html();
+//         // if (cItem.substring(0,1) == " ") {
+//         //     cItem=cItem(1); //removes the space, happens 
+//         // };
+//         if (cItem.toLowerCase() == "true" || cItem.toLocaleLowerCase == " true"){           //so this doesn't work, all elements of a dict must be same type (I assume)
+//             userDict[Object.keys(userDict)[i]] = true;
+//         }
+//         else if (cItem.toLowerCase() == "false" || cItem.toLocaleLowerCase == " false"){
+//             userDict[Object.keys(userDict)[i]] = false;
+//         }
+//         else{
+//             userDict[Object.keys(userDict)[i]] = cItem;
+//         }
+//         i++;
+//     });
+//     shelfieApp.UMcurrentUser = userDict;
+//     console.log(shelfieApp.UMcurrentUser);
+// });
 
 async function login(){
     await fetch(shelfieURL + '/auth', {
