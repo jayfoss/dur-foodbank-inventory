@@ -69,18 +69,6 @@ function getExpiryColor(tray) {
 	return getYearColor(y);
 }
 
-axios.interceptors.response.use((resp) => {
-	return resp
-}, (err) => {
-	if(err.response.data && err.response.data.error) {
-		this.makeToast('Error', err.response.data.error, 'danger');
-	}
-	else {
-		this.makeToast('Error', 'A request failed. This may be a connection issue.', 'danger');
-	}
-	return Promise.reject(err);
-});
-
 const shelfieApp = new Vue({
 	el: '#shelfie-app',
     data: {
@@ -98,8 +86,8 @@ const shelfieApp = new Vue({
         /* END OF NAV CONTROL */
 
         /* WAREHOUSE CONFIG */
-        toInsertZoneName: "",
-        toInsertBayName: "",
+        toInsertZoneName: '',
+        toInsertBayName: '',
         toInsertNumberOfBays: 0,
         toInsertNumOfShelves: 4,
         toInsertNumOfRows: 3,
@@ -107,8 +95,8 @@ const shelfieApp = new Vue({
         warehouseZones: [],
         warehouseBays: [],
         warehouseShelves: [],
-        originalData: {"zone":{"_id":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"_id":-1, "rows":-1, "columns":-1}},
-        modifiedData: {"zone":{"_id":"", "numberOfBays":-1}, "bay":{"name":"", "numberOfShelves":-1}, "shelf":{"_id":-1, "rows":-1, "columns":-1}},
+        originalData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
+        modifiedData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
         emptyTray: {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''},
         /* END OF WAREHOUSE CONFIG */
 
@@ -118,19 +106,11 @@ const shelfieApp = new Vue({
         inventoryShelves: [],
         inventoryRows: [],
         inventoryColumns: [],
-        select_year: '',
-        select_month: '',
-        stock_taken_date: '',
         selectedZone: -1,
         selectedBay: -1,
         selectedShelf: -1,
-        enter_weight:'',
-        tray_category:'',
-        tray_position:'',
         shelfTrays: [],
 		selectedTray:null,
-        inventoryTrays: [],
-        inventoryTraysNew: [],
 		expandableItemGroups: {'baby':false, 'cleaning':false, 'christmas':false},
         /* END OF INVENTORY *
 
@@ -158,9 +138,9 @@ const shelfieApp = new Vue({
         /* USER MANAGEMENT (UM) */
         UMcurrentSort: 'fName',
         UMcurrentSortDir: 'asc',
-        UMusers: ["error: no users loaded"],
-        UMcurrentUser: {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false, password:""},
-        UMroleSelected: ""
+        UMusers: ['error: no users loaded'],
+        UMcurrentUser: {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false, password:''},
+        UMroleSelected: ''
     },
     methods:{
 		makeToast(title, msg, variant = null) {
@@ -262,14 +242,14 @@ const shelfieApp = new Vue({
             if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
                 if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
                     // DELETE SOME COLUMNS
-                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                    for(let row = 0; row < this.originalData.shelf.rows; row++){
                         axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
                     }
                 } else{
                     // ADD SOME COLUMNS
-                    for(let row = 1; row <= this.originalData.shelf.rows; row++){
+                    for(let row = 0; row < this.originalData.shelf.rows; row++){
                         axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
                             withCredentials: true
                         });
@@ -391,8 +371,8 @@ const shelfieApp = new Vue({
             this.warehouseZones = [];
             this.warehouseBays = [];
             this.warehouseShelves = [];
-            this.originalData.zone._id = this.modifiedData.zone._id = "";
-            this.originalData.bay.name = this.modifiedData.bay.name = "";
+            this.originalData.zone._id = this.modifiedData.zone._id = '';
+            this.originalData.bay.name = this.modifiedData.bay.name = '';
             this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
@@ -407,7 +387,7 @@ const shelfieApp = new Vue({
             this.originalData.zone._id = this.modifiedData.zone._id = zoneId;
             this.warehouseBays = [];
             this.warehouseShelves = [];
-            this.originalData.bay.name = this.modifiedData.bay.name = "";
+            this.originalData.bay.name = this.modifiedData.bay.name = '';
             this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
             this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
             this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
@@ -513,76 +493,13 @@ const shelfieApp = new Vue({
                 this.shelfTrays = [];
             });
 		},
-        inventoryFetchRowsAndColumns: function(){
-            let zoneName = this.select_zone;
-            let bayName = this.select_bay;
-            let shelfNum = this.select_shelf;
-            axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows', {withCredentials: true}).then((res) => {
-                this.inventoryRows = res.data.sort();
-                console.log('Rows: ' + res.data.sort())
-                if(this.inventoryRows[0] !== undefined){
-                    axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + this.inventoryRows[0] + '/columns', {withCredentials: true}).then((res) => {
-                        console.log('Columns: ' + res.data);
-                        this.inventoryColumns = res.data.sort();
-                        this.inventoryTrays = [];
-                        this.inventoryTraysNew = [];
-                        
-
-                        
-                        for(let row in this.inventoryRows){
-                            for(let column in this.inventoryColumns){
-                                let col = this.inventoryColumns[column];
-                                let ro = this.inventoryRows[row];
-                                axios.get(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + ro + '/columns/' + col + '/tray', {withCredentials: true}).then((res) => {
-                                    let tray = res.data;
-                                    tray['row'] = ro;
-                                    tray['column'] = col;
-                                    this.inventoryTrays.push(tray);
-                                });
-                            }
-                        }
-                        console.log(this.inventoryTrays);
-                    });
-                }
-            }).catch((err) => {
-                this.inventoryRows = [];
-            });
-        },
-        inventorySetSelectedTray: function(row, col){
-            this.selectedTrayColumn = col;
-            this.selectedTrayRow = row;
-            let tray = {'category': this.tray_category, 'weight': this.enter_weight, 'expiryYear': {'start': this.select_year, 'end': this.select_year}, 'expiryMonth': {'start': this.select_month, 'end': this.select_month}, 'lastUpdated': this.stock_taken_date, 'userNote': '', 'row': row, 'column': col};
-            let existingIndex = 0;
-            let alreadyExists = false;
-            for(let tr in this.inventoryTraysNew){
-                let tra = this.inventoryTraysNew[tr];
-                if(tra['row'] === row  && tra['column'] === col){
-                    alreadyExists = true;
-                    existingIndex = tr;
-                }
-            }
-
-            if(alreadyExists){
-                this.inventoryTraysNew[existingIndex] = tray;
-            } else {
-                this.inventoryTraysNew.push(tray);
-            }
-            
-        },
-        inventorySubmitNewTrays: function(){
-            let zoneName = this.select_zone;
-            let bayName = this.select_bay;
-            let shelfNum = this.select_shelf;
-            for(let index in this.inventoryTraysNew){
-                let trayToSubmit = this.inventoryTraysNew[index];
-                let row = trayToSubmit['row'];
-                let column = trayToSubmit['column'];
-                delete trayToSubmit['row'];
-                delete trayToSubmit['column'];
-                axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray',
-                    trayToSubmit, {withCredentials: true}
-                );
-            }
+        inventorySubmitTrays: function(){
+			const self = this;
+            axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
+                this.shelfTrays, {withCredentials: true}
+            ).then((res) => {
+				self.makeToast('Success', 'Trays saved', 'success');
+			});
         },
         checkForm: function (e) {
             if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_shelf && this.enter_weight &&this.food_type) {
@@ -729,11 +646,11 @@ const shelfieApp = new Vue({
 		nextTray: function() {
 			const tray = this.selectedTray;
 			if(!tray) return;
-			if(tray.col - 1 < this.shelfTrays[tray.row - 1].length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row - 1][tray.col];
+			if(tray.col < this.shelfTrays[tray.row].length - 1) {
+				this.selectedTray = this.shelfTrays[tray.row][+tray.col + 1];
 			}
-			else if(tray.col - 1 === this.shelfTrays[tray.row - 1].length - 1 && tray.row - 1 < this.shelfTrays.length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row][0];
+			else if(tray.col === this.shelfTrays[tray.row].length - 1 && tray.row < this.shelfTrays.length - 1) {
+				this.selectedTray = this.shelfTrays[+tray.row + 1][0];
 			}
 			else {
 				this.selectedTray = this.shelfTrays[0][0];
@@ -793,44 +710,44 @@ const shelfieApp = new Vue({
             var data;
             var row;
             this.UMUsers = this.fetchAllUsers;
-            uTable = document.getElementById("userTableBody");
+            uTable = document.getElementById('userTableBody');
             for (i=0; i < this.UMUsers.length; i++){
                 data = this.UMUsers[i];
                 row = $('<tr><td>ahhhtesettttt</td><td>test1</td></tr>');
-                //document.getElementById("userTableBody").append(row);
+                //document.getElementById('userTableBody').append(row);
                 uTable.append($('<tr><td>ahhh</td><td>ahhh</td></tr>'));
             }
         },
 
         emptyFields: function(){
-            this.UMcurrentUser = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-            //document.getElementById("userTable").rows.classList.remove("tableSelected");
-            document.getElementById("passwordContainer").style.visibility = 'visible';
-            document.getElementById("updateRecordButton").style.visibility = 'hidden';   
-            document.getElementById("addUserButton").style.visibility = 'visible';
-            $('#userTable tr').removeClass("tableSelected"); //TO FIX
+            this.UMcurrentUser = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
+            //document.getElementById('userTable').rows.classList.remove('tableSelected');
+            document.getElementById('passwordContainer').style.visibility = 'visible';
+            document.getElementById('updateRecordButton').style.visibility = 'hidden';   
+            document.getElementById('addUserButton').style.visibility = 'visible';
+            $('#userTable tr').removeClass('tableSelected');
             //deselect current user from table...
             this.populateFields();
         },
 
         resetRoleButtons: function(){
-            document.getElementById("managerButton").classList.remove("role-button-selected");
-            document.getElementById("teamleaderButton").classList.remove("role-button-selected");
-            document.getElementById("stockmoverButton").classList.remove("role-button-selected");
-            document.getElementById("sortingvolunteerButton").classList.remove("role-button-selected");
+            document.getElementById('managerButton').classList.remove('role-button-selected');
+            document.getElementById('teamleaderButton').classList.remove('role-button-selected');
+            document.getElementById('stockmoverButton').classList.remove('role-button-selected');
+            document.getElementById('sortingvolunteerButton').classList.remove('role-button-selected');
         },
 
         updatePermissionChecks: function(){
-            document.getElementById("viewdataCheck").checked = this.UMcurrentUser["canViewData"];
-            document.getElementById("editdataCheck").checked = this.UMcurrentUser["canEditData"];
-            document.getElementById("modifywarehouseCheck").checked = this.UMcurrentUser["canModifyWarehouse"];
-            document.getElementById("modifyusersCheck").checked = this.UMcurrentUser["canModifyUsers"];
+            document.getElementById('viewdataCheck').checked = this.UMcurrentUser['canViewData'];
+            document.getElementById('editdataCheck').checked = this.UMcurrentUser['canEditData'];
+            document.getElementById('modifywarehouseCheck').checked = this.UMcurrentUser['canModifyWarehouse'];
+            document.getElementById('modifyusersCheck').checked = this.UMcurrentUser['canModifyUsers'];
         },
 
         editUser: function(){
-            document.getElementById("passwordContainer").style.visibility = 'hidden';   
-            document.getElementById("updateRecordButton").style.visibility = 'visible';   
-            document.getElementById("addUserButton").style.visibility = 'hidden';
+            document.getElementById('passwordContainer').style.visibility = 'hidden';   
+            document.getElementById('updateRecordButton').style.visibility = 'visible';   
+            document.getElementById('addUserButton').style.visibility = 'hidden';
             this.populateFields();
         },
 
@@ -840,100 +757,100 @@ const shelfieApp = new Vue({
             var currentRole;
             console.log(this.UMcurrentUser);
 
-            document.getElementById("userFields").style.visibility='visible';
-            document.getElementById("userFieldsTitle").style.visibility='visible';
+            document.getElementById('userFields').style.visibility='visible';
+            document.getElementById('userFieldsTitle').style.visibility='visible';
 
-            document.getElementById("fNameInput").value = this.UMcurrentUser["firstName"];
-            document.getElementById("fNameInput").visible = false;
-            document.getElementById("lNameInput").value = this.UMcurrentUser["lastName"];
-            document.getElementById("uNameInput").value = this.UMcurrentUser["username"];
+            document.getElementById('fNameInput').value = this.UMcurrentUser['firstName'];
+            document.getElementById('fNameInput').visible = false;
+            document.getElementById('lNameInput').value = this.UMcurrentUser['lastName'];
+            document.getElementById('uNameInput').value = this.UMcurrentUser['username'];
             
             this.resetRoleButtons();
-            console.log("roles reset, current role");
-            console.log(this.UMcurrentUser["role"]);
-            currentRole = this.UMcurrentUser["role"].toLocaleLowerCase();
-            if (currentRole == "manager"){
-                document.getElementById("managerButton").classList.add("role-button-selected");
-                //document.getElementById("managerButton").siblings().removeClass('role-button-selected'); NOT WORKING
+            console.log('roles reset, current role');
+            console.log(this.UMcurrentUser['role']);
+            currentRole = this.UMcurrentUser['role'].toLocaleLowerCase();
+            if (currentRole == 'manager'){
+                document.getElementById('managerButton').classList.add('role-button-selected');
+                //document.getElementById('managerButton').siblings().removeClass('role-button-selected'); NOT WORKING
             }
-            else if (currentRole == "team leader"){
-                document.getElementById("teamleaderButton").classList.add("role-button-selected");
+            else if (currentRole == 'team leader'){
+                document.getElementById('teamleaderButton').classList.add('role-button-selected');
             }
-            else if (currentRole == "stock mover"){
-                document.getElementById("stockmoverButton").classList.add("role-button-selected");
+            else if (currentRole == 'stock mover'){
+                document.getElementById('stockmoverButton').classList.add('role-button-selected');
             }
-            else if (currentRole == "sorting volunteer"){
-                document.getElementById("sortingvolunteerButton").classList.add("role-button-selected");
+            else if (currentRole == 'sorting volunteer'){
+                document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
             }
 
             this.updatePermissionChecks();
-            //console.log(this.UMcurrentUser["canEditData"]);
-            //document.getElementById("managerButton").addClass("role-button-selected");  //to add dynamability
+            //console.log(this.UMcurrentUser['canEditData']);
+            //document.getElementById('managerButton').addClass('role-button-selected');  //to add dynamability
             //to convert the strings to bool before thingy
         },
 
         managerSelected: function(){
             this.resetRoleButtons();
-            document.getElementById("managerButton").classList.add("role-button-selected");
+            document.getElementById('managerButton').classList.add('role-button-selected');
 
-            this.UMcurrentUser["canViewData"] = true;
-            this.UMcurrentUser["canEditData"] = true;
-            this.UMcurrentUser["canModifyWarehouse"] = true;
-            this.UMcurrentUser["canModifyUsers"] = true;
+            this.UMcurrentUser['canViewData'] = true;
+            this.UMcurrentUser['canEditData'] = true;
+            this.UMcurrentUser['canModifyWarehouse'] = true;
+            this.UMcurrentUser['canModifyUsers'] = true;
 
             this.updatePermissionChecks();
 
-            this.UMroleSelected = "Manager";
+            this.UMroleSelected = 'Manager';
         },
 
         teamleaderSelected: function(){
             this.resetRoleButtons();
-            document.getElementById("teamleaderButton").classList.add("role-button-selected");
+            document.getElementById('teamleaderButton').classList.add('role-button-selected');
 
-            this.UMcurrentUser["canViewData"] = true;
-            this.UMcurrentUser["canEditData"] = true;
-            this.UMcurrentUser["canModifyWarehouse"] = false;
-            this.UMcurrentUser["canModifyUsers"] = false;
+            this.UMcurrentUser['canViewData'] = true;
+            this.UMcurrentUser['canEditData'] = true;
+            this.UMcurrentUser['canModifyWarehouse'] = false;
+            this.UMcurrentUser['canModifyUsers'] = false;
 
             this.updatePermissionChecks();
 
-            this.UMroleSelected = "Team Leader";
+            this.UMroleSelected = 'Team Leader';
         },
 
         stockmoverSelected: function(){
             this.resetRoleButtons();
-            document.getElementById("stockmoverButton").classList.add("role-button-selected");
+            document.getElementById('stockmoverButton').classList.add('role-button-selected');
 
-            this.UMcurrentUser["canViewData"] = true;
-            this.UMcurrentUser["canEditData"] = true;
-            this.UMcurrentUser["canModifyWarehouse"] = false;
-            this.UMcurrentUser["canModifyUsers"] = false;
+            this.UMcurrentUser['canViewData'] = true;
+            this.UMcurrentUser['canEditData'] = true;
+            this.UMcurrentUser['canModifyWarehouse'] = false;
+            this.UMcurrentUser['canModifyUsers'] = false;
 
             this.updatePermissionChecks();
 
-            this.UMroleSelected = "Stock Mover";
+            this.UMroleSelected = 'Stock Mover';
         },
 
         sortingvolunteerSelected: function(){
             this.resetRoleButtons();
-            document.getElementById("sortingvolunteerButton").classList.add("role-button-selected");
+            document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
 
-            this.UMcurrentUser["canViewData"] = true;
-            this.UMcurrentUser["canEditData"] = false;
-            this.UMcurrentUser["canModifyWarehouse"] = false;
-            this.UMcurrentUser["canModifyUsers"] = false;
+            this.UMcurrentUser['canViewData'] = true;
+            this.UMcurrentUser['canEditData'] = false;
+            this.UMcurrentUser['canModifyWarehouse'] = false;
+            this.UMcurrentUser['canModifyUsers'] = false;
 
             this.updatePermissionChecks();
 
-            this.UMroleSelected = "Sorting Volunteer";
+            this.UMroleSelected = 'Sorting Volunteer';
         },
 
         updateCurrentUser: function(){
-            this.UMcurrentUser["firstName"] = document.getElementById("fNameInput").value;
-            this.UMcurrentUser["lastName"] = document.getElementById("lNameInput").value;
-            this.UMcurrentUser["username"] = document.getElementById("uNameInput").value;
-            this.UMcurrentUser["password"] = document.getElementById("passwordInput").value;
-            this.UMcurrentUser["role"] = this.UMroleSelected;       //needs to be reset at the end of function
+            this.UMcurrentUser['firstName'] = document.getElementById('fNameInput').value;
+            this.UMcurrentUser['lastName'] = document.getElementById('lNameInput').value;
+            this.UMcurrentUser['username'] = document.getElementById('uNameInput').value;
+            this.UMcurrentUser['password'] = document.getElementById('passwordInput').value;
+            this.UMcurrentUser['role'] = this.UMroleSelected;       //needs to be reset at the end of function
             //role values will already be in the dictionary
         },
 
@@ -944,16 +861,33 @@ const shelfieApp = new Vue({
             console.log(this.UMcurrentUser);
             console.log(this.UMroleSelected);
             //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
-            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
+            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
 
 
-            //this.UMcurrentUser["role"] = "";
+            //this.UMcurrentUser['role'] = '';
         },
 
         updateUser: function(){
             this.updateCurrentUser();
 
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
+            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
+        },
+		fetchAllUsers: function(){
+            // var uTable;
+            // var data;
+            // var row;
+            axios.get(shelfieURL + '/users1', {withCredentials: true}).then((res) => {
+                this.UMusers = res.data;
+            }).catch((err) => {
+                this.UMusers = ['error retrieving data'];
+            });
+            // uTable = document.getElementById('userTable');
+            // for (i = 0; i<this.UMusers.length; i++){
+            //     data = this.UMusers[i];
+            //     row = $('<tr><td>ahhhtesettttt</td></tr>');
+            //     uTable.append(row);
+            // }
+            return this.UMusers;
         },
 
         rowClicked: function(rowIndex){  //how to pass row? $this?
@@ -1005,10 +939,9 @@ const shelfieApp = new Vue({
 		},
         monthYearButtons: function() {
 			const start = luxon.DateTime.local().minus({months: 1});
-			const end = luxon.DateTime.local().plus({months: 11});
 			const yearMonths = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 12; i++) {
 				const c = current.toObject();
 				const ym = {y: {start: c.year, end: c.year}, m: {start: c.month, end: c.month}, mt: current.toFormat('MMM').toUpperCase()};
 				yearMonths.push(ym);
@@ -1018,10 +951,9 @@ const shelfieApp = new Vue({
 		},
 		yearButtons: function() {
 			const start = luxon.DateTime.local();
-			const end = luxon.DateTime.local().plus({years: 3});
 			const years = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 4; i++) {
 				years.push(current.toObject().year);
 				current = current.plus({years: 1});
 			}
@@ -1029,10 +961,9 @@ const shelfieApp = new Vue({
 		},
 		quarterButtons: function() {
 			const start = luxon.DateTime.local().startOf('quarter').minus({months: 3});
-			const end = luxon.DateTime.local().plus({months: 12});
 			const quarters = [];
 			let current = start;
-			while(current < end) {
+			for(let i = 0; i < 4; i++) {
 				const c = current.toObject();
 				const p = current.plus({months: 2});
 				quarters.push({y: {start: c.year, end: c.year}, m: {start: c.month, end: p.toObject().month}, mt: {start: current.toFormat('MMM').toUpperCase(), end: p.toFormat('MMM').toUpperCase()}});
@@ -1042,24 +973,7 @@ const shelfieApp = new Vue({
 		},
         /* END OF INVENTORY */
 
-        /* USER MANAGEMENT PAGE     remember UMusers, UMcurrentSort, UMcurrentSortDir*/
-        fetchAllUsers: function(){
-            // var uTable;
-            // var data;
-            // var row;
-            axios.get(shelfieURL + '/users1', {withCredentials: true}).then((res) => {
-                this.UMusers = res.data;
-            }).catch((err) => {
-                this.UMusers = ["error retrieving data"];
-            });
-            // uTable = document.getElementById("userTable");
-            // for (i = 0; i<this.UMusers.length; i++){
-            //     data = this.UMusers[i];
-            //     row = $('<tr><td>ahhhtesettttt</td></tr>');
-            //     uTable.append(row);
-            // }
-            return this.UMusers;
-        },
+        /* USER MANAGEMENT PAGE */
 
         sortedUsers: function(){
             //to sort later
@@ -1071,7 +985,7 @@ const shelfieApp = new Vue({
         //     var data;
         //     var row;
         //     this.UMUsers = this.fetchAllUsers;
-        //     uTable = document.getElementById("userTable");
+        //     uTable = document.getElementById('userTable');
         //     for (i=0; i < this.UMUsers.length; i++){
         //         data = this.UMUsers[i]
         //         row = $('<tr><td>ahhhtesettttt</td></tr>');
@@ -1087,7 +1001,6 @@ const shelfieApp = new Vue({
         /* DATA VIEW PAGE */
         sortedTrays:function() {
             this.skippedRows = 0;
-            console.log(this.currentPage)
             return this.trays.sort((a,b) => {
                 let modifier = 1;
                 if(this.currentSortDir === 'desc') modifier = -1;
@@ -1115,7 +1028,6 @@ const shelfieApp = new Vue({
                 let tmpIndex = index - this.skippedRows;
                 if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated){
                     this.skippedRows ++;
-                    console.log(object)
                     return false;
                 }
                 if(tmpIndex >= start && tmpIndex < end) {
@@ -1159,10 +1071,29 @@ const shelfieApp = new Vue({
 		if(this.isLoggedIn()) {
 			this.inventoryFetchZones(true);
 		}
+		const self = this;
+		axios.interceptors.response.use((resp) => {
+			return resp
+		}, (err) => {
+			if(err.response.data && err.response.data.error) {
+				if(err.response.data.data) {
+					for(let i = 0; i < err.response.data.data.length; i++) {
+						self.makeToast('Error', err.response.data.error + ' : ' + err.response.data.data[i].message, 'danger');
+					}
+				}
+				else {
+					self.makeToast('Error', err.response.data.error, 'danger');
+				}
+			}
+			else {
+				self.makeToast('Error', 'A request failed. This may be a connection issue.', 'danger');
+			}
+			return Promise.reject(err);
+		});
 	}
 });
 
-//$("userTable tr").click(userTableClicked($(this)));
+//$('userTable tr').click(userTableClicked($(this)));
 
 // $("#userTable tr").click(function() {               //should probably be transformed into a function like above
 //     var table = document.getElementById('userTable');

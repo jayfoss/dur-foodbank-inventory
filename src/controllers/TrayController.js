@@ -26,6 +26,36 @@ class TrayController {
 		resp.send(trays);
 	}
 	
+	async updateTraysOnShelf(req, resp) {
+		if(!req.jwtDecoded.canEditData) {
+			return appError.forbidden(resp, 'You do not have permission to edit data');
+		}
+		const traysOnShelf = await this.getTraysOnShelfFromDb(req.params.zoneId, req.params.bayId, req.params.shelfId);
+		if(req.body.length !== traysOnShelf.length) {
+			return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf.length + ' rows, you gave ' + req.body.length + '.');
+		}
+		const newTrays = [];
+		const updateTime = new Date();
+		for(let row in req.body) {
+			if(req.body[row].length !== traysOnShelf[row].length) {
+				return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf[row].length + ' columns, you gave ' + req.body[row].length + ' on row ' + row + '.');
+			}
+			const newRow = [];
+			for(let col in req.body[row]) {
+				const tray = new TrayModel();
+				if(!tray.map(req.body[row][col])) {
+					return appError.badRequest(resp, 'You passed an invalid tray', tray.validator.errors);
+				}
+				tray.fields.lastUpdated = updateTime.getTime();
+				newRow.push(tray.fields);
+			}
+			newTrays.push(newRow);
+		}
+		await this.updateTraysOnShelfInDb(req.params.zoneId, req.params.bayId, req.params.shelfId, newTrays);
+		resp.status(200);
+		resp.send(newTrays);
+	}
+	
 	async getTray(req, resp) {
 		if(!req.jwtDecoded.canViewData) {
 			return appError.forbidden(resp, 'You do not have permission to view data');
@@ -40,8 +70,9 @@ class TrayController {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
 		}
 		const tray = new TrayModel();
-		if(!tray.map(req.body)) return;
-		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnI, tray.fields);
+		
+		if(!tray.map(req.body)) return appError.badRequest(resp, 'Invalid data in tray', tray.validator.errors);
+		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
 		resp.status(201);
 		resp.send(tray);
 	}
@@ -51,8 +82,8 @@ class TrayController {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
 		}
 		const tray = new TrayModel();
-		if(!tray.map(req.body)) return;
-		await this.insertTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
+		if(!tray.map(req.body)) return appError.badRequest(resp, 'Invalid data in tray', tray.validator.errors);
+		await this.updateTray(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.columnId, tray.fields);
 		resp.status(200);
 		resp.send(tray);
 	}
@@ -94,18 +125,6 @@ class TrayController {
                 filteredTrays[tray.zone][tray.category] += 1;
             }
         });
-        /*
-            filteredTrays = {
-                'purple':{
-                    'beans': 0,
-                    'pasta': 0
-                },
-                'orange':{
-                    'beans': 0,
-                    'pasta': 0
-                }
-            }
-        */
     }
 
     async getAllTraysFromDb(){
@@ -152,7 +171,7 @@ class TrayController {
                 let numOfRows = Object.keys(result[zoneName][bayName][shelfNumber]).length;
                 let numOfColumns = 0;
                 if(numOfRows > 0) {
-                    numOfColumns = Object.keys(result[zoneName][bayName][shelfNumber][1]).length;
+                    numOfColumns = Object.keys(result[zoneName][bayName][shelfNumber][0]).length;
                 }
 
                 for(let rowNumber in result[zoneName][bayName][shelfNumber]){
@@ -161,8 +180,8 @@ class TrayController {
 						continue;
 					}
                     for(let columnNumber in result[zoneName][bayName][shelfNumber][rowNumber]){
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = rowNumber;
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = columnNumber;
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = parseInt(rowNumber);
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = parseInt(columnNumber);
                         row.push(result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]);
                     }
 					shelf.push(row);
@@ -175,6 +194,14 @@ class TrayController {
             return null;
         }
     }
+	
+	async updateTraysOnShelfInDb(zoneId, bayId, shelfId, body) {
+		let insertStringLeft =  zoneId + '.' + bayId + '.' + shelfId;
+        let filter = {[insertStringLeft]: { $exists: true }};
+        let updateQuery = { $set: { [insertStringLeft]: body } };
+        await this.db.updateDatabase('warehouse', filter, updateQuery);
+		return body;
+	}
 
     async setTrayCategory(zoneName, bayName, shelfNumber, rowNumber, columnNumber, newCategory) {
         let insertStringLeft =  zoneName + '.' + bayName + '.' + shelfNumber + '.' + rowNumber + '.' + columnNumber + '.category';

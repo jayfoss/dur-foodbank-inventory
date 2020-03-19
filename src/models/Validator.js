@@ -43,6 +43,14 @@ class Validator {
 		return true;
 	}
 	
+	isNumber(id, value) {
+		const num = '' + value;
+		if(!(!isNaN(num) && !isNaN(parseFloat(num)))) {
+			return this.err(this.resource, id, {'name':'isNumber'}, this.resource + ' ' + id + ' must be a number.');
+		}
+		return true
+	}
+	
 	isInteger(id, value) {
 		if(!Number.isInteger(value)) {
 			return this.err(this.resource, id, {'name':'isInteger'}, this.resource + ' ' + id + ' must be a whole number.');
@@ -71,6 +79,10 @@ class Validator {
 	
 	isInRangeNN(id, value, min, max) {
 		return this.isNotNull(id, value) && this.isInRange(id, value, min, max);
+	}
+	
+	isNumberNN(id, value) {
+		return this.isNotNull(id, value) && this.isNumber(id, value);
 	}
 	
 	isIntegerNN(id, value) {
