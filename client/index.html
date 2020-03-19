@@ -110,7 +110,7 @@
 										<button class="invButton" @click="viewNote()">View Note</button>
 									</div>
 									<div class="inv-v-bay-view">
-										<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
+										<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
 									</div>
 								</div>
 							</div>
@@ -672,14 +672,14 @@
                                 <th>CAN MODIFY USERS</th>
                             </tr>
                             <tr v-for="user in sortedUsers">
-                                <td>{{ user.firstName }}</td>
-                                <td>{{ user.lastName }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.role }}</td>
-                                <td> {{ user.canViewData }} </td>
-                                <td> {{user.canEditData}} </td>
-                                <td> {{user.canModifyWarehouse}}</td>
-                                <td> {{user.canModifyUsers}}</td>
+                                <td>{{user.firstName}}</td>
+                                <td>{{user.lastName}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.role}}</td>
+                                <td>{{user.canViewData}} </td>
+                                <td>{{user.canEditData}} </td>
+                                <td>{{user.canModifyWarehouse}}</td>
+                                <td>{{user.canModifyUsers}}</td>
                             </tr>
                         </tbody>
                     </table>

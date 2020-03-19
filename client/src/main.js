@@ -499,6 +499,7 @@ const shelfieApp = new Vue({
                 this.shelfTrays, {withCredentials: true}
             ).then((res) => {
 				self.makeToast('Success', 'Trays saved', 'success');
+				this.shelfOk(false);
 			});
         },
         checkForm: function (e) {
@@ -625,14 +626,14 @@ const shelfieApp = new Vue({
 			this.selectedTray.expiryMonth = {start: null, end: null};
 			this.selectedTray.userNote = '';
 		},
-		shelfOk: function() {
+		shelfOk: function(ok = true) {
 			if(!this.inventoryShelves[this.selectedShelf]) return;
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
-				{_shelfOk: true},
+				{_shelfOk: ok},
 				{withCredentials: true})
 			.then((res) => {
-				this.inventoryShelves[this.selectedShelf]._shelfOk = true;
-                this.makeToast('Success', 'Shelf marked OK', 'success');
+				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
+				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
             });
 		},
 		isShelfOk: function(shelf) {
@@ -1063,33 +1064,4 @@ const shelfieApp = new Vue({
 			return Promise.reject(err);
 		});
 	}
-});
-
-//$('userTable tr').click(userTableClicked($(this)));
-
-$('#userTable tr').click(function() {               //should probably be transformed into a function like above
-    var table = document.getElementById('userTable');
-    var row = $(this);
-    var i = 0;
-    var cItem = '';
-    var userDict = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-    row.addClass('tableSelected').siblings().removeClass('tableSelected');    
-    row.children().each(function(item) {
-        cItem = $(this).html();
-        // if (cItem.substring(0,1) == ' ') {
-        //     cItem=cItem(1); //removes the space, happens 
-        // };
-        if (cItem.toLowerCase() == 'true' || cItem.toLocaleLowerCase == ' true'){           //so this doesn't work, all elements of a dict must be same type (I assume)
-            userDict[Object.keys(userDict)[i]] = true;
-        }
-        else if (cItem.toLowerCase() == 'false' || cItem.toLocaleLowerCase == ' false'){
-            userDict[Object.keys(userDict)[i]] = false;
-        }
-        else{
-            userDict[Object.keys(userDict)[i]] = cItem;
-        }
-        i++;
-    });
-    shelfieApp.UMcurrentUser = userDict;
-    console.log(shelfieApp.UMcurrentUser);
 });

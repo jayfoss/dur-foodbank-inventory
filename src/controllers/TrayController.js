@@ -34,22 +34,22 @@ class TrayController {
 		if(req.body.length !== traysOnShelf.length) {
 			return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf.length + ' rows, you gave ' + req.body.length + '.');
 		}
-		const newTrays = [];
+		const newTrays = {};
 		const updateTime = new Date();
 		for(let row in req.body) {
 			if(req.body[row].length !== traysOnShelf[row].length) {
 				return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf[row].length + ' columns, you gave ' + req.body[row].length + ' on row ' + row + '.');
 			}
-			const newRow = [];
+			const newRow = {};
 			for(let col in req.body[row]) {
 				const tray = new TrayModel();
 				if(!tray.map(req.body[row][col])) {
 					return appError.badRequest(resp, 'You passed an invalid tray', tray.validator.errors);
 				}
 				tray.fields.lastUpdated = updateTime.getTime();
-				newRow.push(tray.fields);
+				newRow['' + col] = tray.fields;
 			}
-			newTrays.push(newRow);
+			newTrays['' + row] = newRow;
 		}
 		await this.updateTraysOnShelfInDb(req.params.zoneId, req.params.bayId, req.params.shelfId, newTrays);
 		resp.status(200);
@@ -180,8 +180,8 @@ class TrayController {
 						continue;
 					}
                     for(let columnNumber in result[zoneName][bayName][shelfNumber][rowNumber]){
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = parseInt(rowNumber);
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = parseInt(columnNumber);
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = '' + rowNumber;
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = '' + columnNumber;
                         row.push(result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]);
                     }
 					shelf.push(row);
