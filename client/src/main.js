@@ -786,7 +786,9 @@ const shelfieApp = new Vue({
         /* END OF REPORT PAGE TESTING */
         
         /* USER MANAGEMENT */
-        addRows: function(){        //doesn't work and I don't know why
+
+
+        addRows: function(){        //doesn't work and I don't know why BUT WE DON'T NEED IT
             var uTable;
             var data;
             var row;
@@ -806,7 +808,7 @@ const shelfieApp = new Vue({
             document.getElementById("passwordContainer").style.visibility = 'visible';
             document.getElementById("updateRecordButton").style.visibility = 'hidden';   
             document.getElementById("addUserButton").style.visibility = 'visible';
-            $('#userTable tr').removeClass("tableSelected");
+            $('#userTable tr').removeClass("tableSelected"); //TO FIX
             //deselect current user from table...
             this.populateFields();
         },
@@ -952,8 +954,34 @@ const shelfieApp = new Vue({
             this.updateCurrentUser();
 
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser["role"] = "");
-        }
+        },
 
+        rowClicked: function(rowIndex){  //how to pass row? $this?
+            var i = 0;
+            var cItem = "";
+            var userDict = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
+            row = document.getElementById('userTable').rows.index(rowIndex);
+            console.log(row);
+            row.html().addClass('tableSelected').siblings().removeClass('tableSelected');    
+            row.children().each(function(item) {
+                cItem = row.html();
+                // if (cItem.substring(0,1) == " ") {
+                //     cItem=cItem(1); //removes the space, happens 
+                // };
+                if (cItem.toLowerCase() == "true" || cItem.toLocaleLowerCase == " true"){           //so this doesn't work, all elements of a dict must be same type (I assume)
+                    userDict[Object.keys(userDict)[i]] = true;
+                }
+                else if (cItem.toLowerCase() == "false" || cItem.toLocaleLowerCase == " false"){
+                    userDict[Object.keys(userDict)[i]] = false;
+                }
+                else{
+                    userDict[Object.keys(userDict)[i]] = cItem;
+                }
+                i++;
+            });
+            this.UMcurrentUser = userDict;
+            console.log(shelfieApp.UMcurrentUser);
+        },
 
     },
     computed:{
@@ -1136,32 +1164,32 @@ const shelfieApp = new Vue({
 
 //$("userTable tr").click(userTableClicked($(this)));
 
-$("#userTable tr").click(function() {               //should probably be transformed into a function like above
-    var table = document.getElementById('userTable');
-    var row = $(this);
-    var i = 0;
-    var cItem = "";
-    var userDict = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-    row.addClass('tableSelected').siblings().removeClass('tableSelected');    
-    row.children().each(function(item) {
-        cItem = $(this).html();
-        // if (cItem.substring(0,1) == " ") {
-        //     cItem=cItem(1); //removes the space, happens 
-        // };
-        if (cItem.toLowerCase() == "true" || cItem.toLocaleLowerCase == " true"){           //so this doesn't work, all elements of a dict must be same type (I assume)
-            userDict[Object.keys(userDict)[i]] = true;
-        }
-        else if (cItem.toLowerCase() == "false" || cItem.toLocaleLowerCase == " false"){
-            userDict[Object.keys(userDict)[i]] = false;
-        }
-        else{
-            userDict[Object.keys(userDict)[i]] = cItem;
-        }
-        i++;
-    });
-    shelfieApp.UMcurrentUser = userDict;
-    console.log(shelfieApp.UMcurrentUser);
-});
+// $("#userTable tr").click(function() {               //should probably be transformed into a function like above
+//     var table = document.getElementById('userTable');
+//     var row = $(this);
+//     var i = 0;
+//     var cItem = "";
+//     var userDict = {firstName: "", lastName:"", username:"", role:"", canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
+//     row.addClass('tableSelected').siblings().removeClass('tableSelected');    
+//     row.children().each(function(item) {
+//         cItem = $(this).html();
+//         // if (cItem.substring(0,1) == " ") {
+//         //     cItem=cItem(1); //removes the space, happens 
+//         // };
+//         if (cItem.toLowerCase() == "true" || cItem.toLocaleLowerCase == " true"){           //so this doesn't work, all elements of a dict must be same type (I assume)
+//             userDict[Object.keys(userDict)[i]] = true;
+//         }
+//         else if (cItem.toLowerCase() == "false" || cItem.toLocaleLowerCase == " false"){
+//             userDict[Object.keys(userDict)[i]] = false;
+//         }
+//         else{
+//             userDict[Object.keys(userDict)[i]] = cItem;
+//         }
+//         i++;
+//     });
+//     shelfieApp.UMcurrentUser = userDict;
+//     console.log(shelfieApp.UMcurrentUser);
+// });
 
 async function login(){
     await fetch(shelfieURL + '/auth', {
@@ -1209,15 +1237,15 @@ shelfieApp.fetchAllTrays();
 shelfieApp.inventoryFetchZones();
 */
 /* INVENTORY PAGE */
-$(function () {
-    $('#datetimepicker').datetimepicker({
-        format: 'd-m-Y',
-        timepicker:false
-    });
-});
+// $(function () {
+//     $('#datetimepicker').datetimepicker({
+//         format: 'd-m-Y',
+//         timepicker:false
+//     });
+// });
 
-$('#button').click(function(e){
-    e.preventDefault();
-});
+// $('#button').click(function(e){
+//     e.preventDefault();
+// });
 /* END OF INVENTORY PAGE */
 
