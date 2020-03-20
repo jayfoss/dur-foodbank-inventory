@@ -57,7 +57,7 @@
             <li @click="activatePage('viewData')">View Data</li>
             <li @click="activatePage('report')">Report Generator</li>
             <li @click="activatePage('warehouseConfig')">Warehouse Config</li>
-            <li @click="activatePage('userManagement')">User Management</li>
+            <li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
 			<li @click="logout()">Logout</li>
         </ul>
         </nav>
@@ -685,7 +685,7 @@
                 <div class="page-control-buttons" style="margin-bottom: 0px;">
                     <button @click="prevPage" class = "Button" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
                     <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Next</button>
-                    <!--<button @click="addRows" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>-->
+                    <button @click="fetchAllUsers" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>
                 </div>
 
                 <div class="page-control-buttons" style="margin-top: 0px; margin-bottom: 0px;">
@@ -712,7 +712,7 @@
                         </div>
                         <div class="record-item">
                             <h5 class = "display-5">ROLE: </h5>
-                            <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
+                            <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 5%;">
                                 <button @click="managerSelected" class="role-button" id="managerButton">MANAGER</button>
                                 <button @click="teamleaderSelected" class="role-button" id="teamleaderButton">TEAM LEADER</button>
                                 <button @click="stockmoverSelected" class="role-button" id="stockmoverButton">STOCK MOVER</button>
@@ -721,11 +721,11 @@
                         </div>
                         <div class="record-item">
                             <h5 class="display-5">PERMISSIONS: </h5>
-                            <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-                                <h3><input type="checkbox" value="true" disabled id="viewdataCheck"/> Can View Data </h3>
-                                <h3><input type="checkbox" value="true" disabled id="editdataCheck"/> Can Edit Data</h3>
-                                <h3><input type="checkbox" value="true" disabled id="modifywarehouseCheck"/> Can Modify Warehouse</h3>
-                                <h3><input type="checkbox" value="true" disabled id="modifyusersCheck"/> Can Modify Users</h3>
+							<div class="button-group" style="vertical-align: centre; width:275px; margin-left: 7.5%;">
+                                <h5 style="text-align: justify" class="display-5"><input type="checkbox" value="true" disabled id="viewdataCheck"/> Can View Data</h5>
+                                <h5 style="text-align: justify" class="display-5"><input type="checkbox" value="true" disabled id="editdataCheck"/> Can Edit Data</h5>
+                                <h5 style="text-align: justify" class="display-5"><input type="checkbox" value="true" disabled id="modifywarehouseCheck"/> Can Modify Warehouse</h5>
+                                <h5 style="text-align: justify" class="display-5"><input type="checkbox" value="true" disabled id="modifyusersCheck"/> Can Modify Users</h5>
                             </div>
                         </div>
                     </div>

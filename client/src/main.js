@@ -202,6 +202,7 @@ const shelfieApp = new Vue({
 			} else if(page === 'warehouseConfig'){
 				this.isWarehouseConfigActive = true;
 			} else if(page === 'userManagement'){
+                this.fetchAllUsers();
 				this.isUserManagementActive = true;
 			}
         },
@@ -874,7 +875,7 @@ const shelfieApp = new Vue({
             console.log(this.UMroleSelected);
             //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
             axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-
+            this.fetchAllUsers();
 
             //this.UMcurrentUser['role'] = '';
         },
@@ -882,7 +883,9 @@ const shelfieApp = new Vue({
         updateUser: function(){
             this.updateCurrentUser();
             axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
+            this.fetchAllUsers();
         },
+
 		fetchAllUsers: function(){
             // var uTable;
             // var data;
@@ -963,6 +966,7 @@ const shelfieApp = new Vue({
         sortedUsers: function(){
             //to sort later
             this.UMUsers = this.fetchAllUsers;
+            console.log(this.UMUsers);
             return this.UMusers //to populate later
         },
         // addRows: function(){

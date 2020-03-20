@@ -1,6 +1,7 @@
 const AppError = require('../errors/AppError');
 const appError = new AppError();
 const UserModel = require('../models/UserModel');
+const argon2 = require('argon2');
 //const UserModel...
 
 class UserController{
@@ -75,10 +76,21 @@ class UserController{
         if(!req.jwtDecoded.canEditData) {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
         };
-        await this.insertUser(req.body.firstName, req.body.lastName, req.body.username, req.body.password, req.body.role, req.body.canViewData, req.body.canEditData, req.body.canModifyWarehouse, req.body.canModifyUsers);
+        var password = await this.createPassword(resp, req.body.password);
+        console.log(password);
+        await this.insertUser(req.body.firstName, req.body.lastName, req.body.username, password, req.body.role, req.body.canViewData, req.body.canEditData, req.body.canModifyWarehouse, req.body.canModifyUsers);
         resp.status(201);
         resp.send(req.body);
     }
+
+    async createPassword(resp, password) {
+		try {
+			return await argon2.hash(password, {type: argon2.argon2id});
+		}
+		catch(err) {
+			return appError.internalServerError(resp, 'Hashing password failed', err);
+		}
+	}
 
     async insertUser(firstName, lastName, username, password, role, canViewData, canEditData, canModifyWarehouse, canModifyUsers){
         let connection = this.db.getConnection();

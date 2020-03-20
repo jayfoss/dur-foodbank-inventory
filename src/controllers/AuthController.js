@@ -75,16 +75,6 @@ class AuthController {
 	deleteUser(req, resp) {
 		
 	}
-	
-	async createPassword(resp, password) {
-		try {
-			return await argon2.hash(password, {type: argon2.argon2id});
-		}
-		catch(err) {
-			return appError.internalServerError(resp, 'Hashing password failed', err);
-		}
-	}
-	
 	async passwordMatches(resp, password, hash) {
 		try {
 			return await argon2.verify(hash, password);
