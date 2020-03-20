@@ -736,6 +736,7 @@ const shelfieApp = new Vue({
             this.UMcurrentUser = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
             //document.getElementById('userTable').rows.classList.remove('tableSelected');
             document.getElementById('passwordContainer').style.visibility = 'visible';
+            document.getElementById('passwordContainer').value = "";   //ok so this isn't working...
             document.getElementById('updateRecordButton').style.visibility = 'hidden';   
             document.getElementById('addUserButton').style.visibility = 'visible';
             //$('#userTable tr').removeClass('tableSelected');
@@ -876,9 +877,8 @@ const shelfieApp = new Vue({
             //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
             axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => {
                 this.UMcurrentUser['role'] = '';
-                console.log("here");
                 this.fetchAllUsers();
-                //TO RESET FIELDS
+                this.emptyFields();
             });
 
 
@@ -887,7 +887,11 @@ const shelfieApp = new Vue({
 
         updateUser: function(){
             this.updateCurrentUser();
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
+            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+                this.UMcurrentUser['role'] = '';
+                this.fetchAllUsers();
+                this.emptyFields();
+            });
             this.fetchAllUsers();
         },
 
