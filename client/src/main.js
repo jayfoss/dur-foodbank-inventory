@@ -874,8 +874,13 @@ const shelfieApp = new Vue({
             console.log(this.UMcurrentUser);
             console.log(this.UMroleSelected);
             //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
-            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-            this.fetchAllUsers();
+            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+                this.UMcurrentUser['role'] = '';
+                console.log("here");
+                this.fetchAllUsers();
+                //TO RESET FIELDS
+            });
+
 
             //this.UMcurrentUser['role'] = '';
         },

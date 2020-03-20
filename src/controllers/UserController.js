@@ -76,6 +76,10 @@ class UserController{
         if(!req.jwtDecoded.canEditData) {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
         };
+        const user = new UserModel();
+        if(!user.map(req.body)){
+            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors)
+        };
         var password = await this.createPassword(resp, req.body.password);
         console.log(password);
         await this.insertUser(req.body.firstName, req.body.lastName, req.body.username, password, req.body.role, req.body.canViewData, req.body.canEditData, req.body.canModifyWarehouse, req.body.canModifyUsers);
@@ -102,6 +106,10 @@ class UserController{
     async updateUser(req, resp){
         if(!req.jwtDecoded.canEditData) {
 			return appError.forbidden(resp, 'You do not have permission to edit data');
+        };
+        const user = new UserModel();
+        if(!user.map(req.body)){
+            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors)
         };
         await this.updateUserFromDb(req.body.username, req.body.firstName, req.body.lastName, req.body.role, req.body.canViewData, req.body.canEditData, req.body.canModifyWarehouse, req.body.canModifyUsers);
         resp.status(201);
