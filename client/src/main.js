@@ -154,7 +154,7 @@ const shelfieApp = new Vue({
 		},
 		login: function(e) {
 			axios.post(shelfieURL + '/auth', {
-				email: this.loginUsername,
+				username: this.loginUsername,
 				password: this.loginPassword
 			}).then((res) => {
 				this.loginUsername = null;
@@ -737,7 +737,7 @@ const shelfieApp = new Vue({
 			}
 		},
         submitUser: function(){
-            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+            axios.post(shelfieURL + '/users', this.UMcurrentUser, {withCredentials: true}).then((res) => {
                 this.fetchAllUsers();
 				this.makeToast('Success', 'User created', 'success');
             });
@@ -757,14 +757,22 @@ const shelfieApp = new Vue({
 			}
 		},
         updateUser: function(){
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+            axios.patch(shelfieURL + '/users/' + this.UMcurrentUser._id, this.UMcurrentUser, {withCredentials: true}).then((res) => {
                 this.fetchAllUsers();
+				this.UMcurrentUser = null;
 				this.makeToast('Success', 'User updated', 'success');
             });
         },
-
+		deleteUser: function() {
+			if(!confirm('Are you sure you want to delete the selected user?')) return;
+			axios.delete(shelfieURL + '/users/' + this.UMcurrentUser._id, {withCredentials: true}).then((res) => {
+                this.fetchAllUsers();
+				this.UMcurrentUser = null;
+				this.makeToast('Success', 'User deleted', 'success');
+            });
+		},
 		fetchAllUsers: function(){
-            axios.get(shelfieURL + '/users1', {withCredentials: true}).then((res) => {
+            axios.get(shelfieURL + '/users', {withCredentials: true}).then((res) => {
 				const l = [];
 				for(let i in res.data) {
 					if(!res.data[i].role) {
@@ -936,7 +944,7 @@ const shelfieApp = new Vue({
 		}
 		const self = this;
 		axios.interceptors.response.use((resp) => {
-			return resp
+			return resp;
 		}, (err) => {
 			if(err.response.data && err.response.data.error) {
 				if(err.response.data.data) {

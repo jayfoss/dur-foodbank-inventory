@@ -668,7 +668,7 @@
 											<th scope="col">CAN MODIFY WAREHOUSE</th>
 											<th scope="col">CAN MODIFY USERS</th>
 										</tr>
-										<tr v-for="user in sortedUsers" @click="UMcurrentUser = user" class="user-el" :class="{selected: UMcurrentUser === user}">
+										<tr v-for="user in sortedUsers" @click="UMcurrentUser = user; UMcreateMode = false" class="user-el" :class="{selected: UMcurrentUser === user}">
 											<td>{{user.firstName}}</td>
 											<td>{{user.lastName}}</td>
 											<td>{{user.username}}</td>
@@ -716,7 +716,7 @@
 								</div>
 								<div v-if="UMcreateMode" class="form-group">
 									<label class="d-inline">PASSWORD:</label>
-									<input type="password" class="d-inline form-control" placeholder="Enter password">
+									<input type="password" class="d-inline form-control" v-model="UMcurrentUser.password" placeholder="Enter password">
 								</div>
 							</div>
 							<div class="col-md-4">
@@ -743,6 +743,7 @@
 								<div class="d-flex justify-content-center">
 									<button v-if="!UMcreateMode" @click="updateUser" class="submit-button">UPDATE RECORD</button>
 									<button v-if="UMcreateMode" @click="submitUser" class="submit-button">ADD USER</button>
+									<button v-if="!UMcreateMode" @click="deleteUser" class="ml-3 bg-danger">DELETE USER</button>
 								</div>
 							</div>
 						</div>

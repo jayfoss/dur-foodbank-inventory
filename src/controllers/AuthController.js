@@ -4,6 +4,7 @@ const argon2 = require('argon2');
 const AppError = require('../errors/AppError');
 const appError = new AppError();
 const UserModel = require('../models/UserModel');
+const ObjectID = require('mongodb').ObjectID;
 
 class AuthController {
 	constructor(db){
@@ -13,7 +14,7 @@ class AuthController {
 	async login(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
-		let user = await this.getUser(req.body.email);
+		let user = await this.getUserFromDb(req.body.username);
 		if(!user) {
 			return appError.unauthorized(resp, 'Invalid email or password');
 		}
@@ -47,7 +48,7 @@ class AuthController {
 			canViewData: user.canViewData,
 			canEditData: user.canEditData,
 			canModifyWarehouse: user.canModifyWarehouse,
-			canEditUsers: user.canEditUsers
+			canModifyUsers: user.canModifyUsers
 		};
 		let token = jwt.sign(payload, config.auth.jwtSecret, {
 			expiresIn: config.auth.maxAge
@@ -63,18 +64,69 @@ class AuthController {
 		return a;
 	}
 	
-	getUsers(req, resp) {
-		
+	async getUsers(req, resp) {
+		if(!req.jwtDecoded.canModifyUsers) {
+			return appError.forbidden(resp, 'You do not have permission to modify users');
+        }
+        const users = await this.getUsersFromDb();
+		for(let i in users) {
+			delete users[i].password;
+		}
+        resp.status(200);
+        resp.send(users);
 	}
 	
-	createUser(req, resp) {
+	async createUser(req, resp) {
+		if(!req.jwtDecoded.canModifyUsers) {
+			return appError.forbidden(resp, 'You do not have permission to modify users');
+        }
 		const user = new UserModel();
-		if(!user.map(req.body)) return;
+		if(!user.map(req.body)){
+            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors);
+        };
+		const password = await this.createPassword(resp, req.body.password);
+		user.fields.password = password;
+        const inserted = await this.insertUserIntoDb(user.fields);
+		if(!inserted) {
+			return appError.unprocessableEntity(resp, 'Failed to create user. Username may already exist');
+		}
+        resp.status(201);
+        resp.send(user);
 	}
 	
-	deleteUser(req, resp) {
-		
+	async updateUser(req, resp){
+        if(!req.jwtDecoded.canModifyUsers) {
+			return appError.forbidden(resp, 'You do not have permission to modify users');
+        };
+        const user = new UserModel();
+        if(!user.update(req.body)){
+            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors);
+        };
+        await this.updateUserFromDb(req.params.userId, user.fields);
+        resp.status(200);
+        resp.send(user);
+    }
+	
+	async deleteUser(req, resp) {
+		if(!req.jwtDecoded.canModifyUsers) {
+			return appError.forbidden(resp, 'You do not have permission to modify users');
+		}
+		if(req.params.userId === req.jwtDecoded.id) {
+			return appError.forbidden(resp, 'You cannot delete the user you are logged in as');
+		}
+		this.deleteUserFromDb(req.params.userId);
+		resp.sendStatus(204);
 	}
+	
+	async createPassword(resp, password) {
+		try {
+			return await argon2.hash(password, {type: argon2.argon2id});
+		}
+		catch(err) {
+			return appError.internalServerError(resp, 'Hashing password failed', err);
+		}
+	}
+	
 	async passwordMatches(resp, password, hash) {
 		try {
 			return await argon2.verify(hash, password);
@@ -84,57 +136,67 @@ class AuthController {
 		}
 	}
 
-	async insertUser(userObj){
-		const connection = await this.db.getConnection();
+	async getUsersFromDb(){
+        let users = [];
+        try{
+            let cursor = await this.db.queryDatabase('users');
+            await cursor.forEach((user) => {
+                users.push(user);
+            });
+        }catch(err){
+            console.log(err);
+        }
+        return users;
+    }
+	
+	async insertUserIntoDb(userObj){
+		const db = await this.db.getDb();
 
 		try {
-			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			let doesUserExist = await collection.findOne({'email' : userObj['email']});
-			if(doesUserExist) return; // THE USER ALREADY EXISTS WITH THAT EMAIL
+			let doesUserExist = await collection.findOne({'username' : userObj.username});
+			if(doesUserExist) return false; // THE USER ALREADY EXISTS WITH THAT EMAIL
 			await collection.insertOne(userObj);
+			return true;
 		} catch (err){
 			console.log(err);
-		} finally {
-			connection.close();
 		}
 	}
 
-	async getUser(userEmail) {
-		let connection = this.db.getConnection();
+	async getUserFromDb(username) {
+		const db = await this.db.getDb();
 		let user = null;
 		try {
-			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			user = await collection.findOne({'email': userEmail});
+			user = await collection.findOne({'username': username});
 		} catch (err) {
 			console.log(err);
 		}
-		return user
+		return user;
 	}
 
-	async updateUser(userEmail, updateObj) {
-		let connection = this.db.getConnection();
+	async updateUserFromDb(id, updateObj) {
+		delete updateObj._id;
+		delete updateObj.password;
+		const db = await this.db.getDb();
 		try {
-			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			console.log(updateObj);
-			await collection.updateOne({'email': userEmail}, {$set:updateObj});
+			const user = await collection.findOne({'_id': ObjectID(id)});
+			if(!user) return false;
+			updateObj.password = user.password;
+			await collection.updateOne({'_id': ObjectID(id)}, {$set:updateObj});
 		} catch(err) {
 			console.log(err);
 		}
 	}
 
-	async deleteUser(connection, userEmail){
-		if(!connection) return;
-		try{
-			const db = connection.db("foodbank");
-			const collection = db.collection("users");
-			collection.deleteOne({"email": userEmail});
+	async deleteUserFromDb(id){
+		const db = await this.db.getDb();
+		try {
+			const collection = db.collection('users');
+			collection.deleteOne({'_id': ObjectID(id)});
 		} catch (err){
 			console.log(err);
-		} finally{
-			connection.close();
 		}
 	}
 }
