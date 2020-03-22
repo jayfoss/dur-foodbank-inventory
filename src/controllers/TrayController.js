@@ -123,9 +123,11 @@ class TrayController {
                     filteredTrays[tray.zone] = {};
                 }
                 if(!filteredTrays[tray.zone][tray.category]){
-                    filteredTrays[tray.zone][tray.category] = 0;
+                    filteredTrays[tray.zone][tray.category] = { totalWeight: 0, numberOfTrays: 0 };
                 }
-                filteredTrays[tray.zone][tray.category] += 1;
+                filteredTrays[tray.zone][tray.category][numberOfTrays] += 1;
+                filteredTrays[tray.zone][tray.category][totalWeight] += tray.weight;
+
             }
         });
         resp.status(200);
@@ -193,7 +195,6 @@ class TrayController {
                     }
 					shelf.push(row);
                 }
-                console.log(shelf);
             });
             return shelf;
             
