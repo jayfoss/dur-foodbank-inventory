@@ -332,6 +332,8 @@
 													<th>Total Weight (kg)</th>
 												</tr>
 											</thead>
+											<tr v-for="
+											<!--
 											<tr>
 												<td>BEANS</td>
 												<td>121</td>
@@ -437,15 +439,18 @@
 												<td>1000</td>
 												<td>10000.0</td>
 											</tr>
+											-->
 										</table>
 									</div>
 								</div>
 								<div class="col-sm-6 order-0 order-sm-1">
 									<h2 class="text-center">Selected Zones</h2>
 									<div class="d-flex justify-content-center flex-wrap">
-										<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+										<button v-on:click = "fetchReportZones()">Generate Full Report</button> 
+										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
 										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
+										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone)}" v-on:click="myFilter(zone)">{{ zone }}</button>
 										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 									</div>
 								</div>

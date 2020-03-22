@@ -132,7 +132,8 @@ const shelfieApp = new Vue({
         /* END OF DATA VIEW */
 		
 		/* REPORT PAGE */
-		isSelected:['red','blue','pink'],
+		allzones:[],
+		isSelected:[],
         /* END OF REPORT PAGE */
         
         /* USER MANAGEMENT (UM) */
@@ -704,7 +705,22 @@ const shelfieApp = new Vue({
 
         /* END OF DATA VIEW PAGE */
         
-		/* REPORT PAGE TESTING */
+		/* REPORT PAGE */
+		fetchReportZones: function() {
+			this.allzones = [];
+			this.isSelected = [];
+			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
+                this.allzones = res.data;
+            }).catch((err) => {
+                this.allzones = [];
+            });
+			axios.get(shelfieURL + '/report', {withCredentials: true}).then((res) => {
+				this.isSelected = res.data;
+			}).catch((err) => {
+				this.isSelected = [];
+			})
+			
+		},
 		myFilter:function(reportzone) {
 			/*this.isSelected = !this.isSelected;*/
 			if(this.isSelected.includes(reportzone)){
@@ -715,7 +731,7 @@ const shelfieApp = new Vue({
 				this.isSelected.push(reportzone);
 			}
 		},
-        /* END OF REPORT PAGE TESTING */
+        /* END OF REPORT PAGE */
         
         /* USER MANAGEMENT */
         setUserRole: function(role) {
