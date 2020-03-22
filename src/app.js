@@ -29,8 +29,6 @@ const ColumnController = require('./controllers/ColumnController');
 const columnController = new ColumnController(db);
 const TrayController = require('./controllers/TrayController');
 const trayController = new TrayController(db);
-const UserController = require('./controllers/UserController');
-const userController = new UserController(db);
 
 app.use(express.json());
 app.use('/', express.static('./client', {maxAge: 3600000}));
@@ -62,8 +60,14 @@ apiRouter.use(function(req, resp, next) {
 apiRouter.get('/users', (req, resp) => {
 	authController.getUsers(req, resp);
 });
+apiRouter.get('/users/:userId', (req, resp) => {
+	authController.getUser(req, resp);
+});
 apiRouter.post('/users', (req, resp) => {
 	authController.createUser(req, resp);
+});
+apiRouter.patch('/users/:userId', (req, resp) => {
+	authController.updateUser(req, resp);
 });
 apiRouter.delete('/users/:userId', (req, resp) => {
 	authController.deleteUser(req, resp);
@@ -186,18 +190,6 @@ apiRouter.patch('/zones/:zoneId/bays/:bayId/shelves/:shelfId/trays', (req, resp)
 });
 apiRouter.get('/trays', (req, resp) => {
 	trayController.getAllTrays(req, resp);
-});
-
-apiRouter.get('/users1', (req, resp) => {
-	userController.getAllUsers(req, resp);
-});
-
-apiRouter.post('/users1', (req, resp) => {		//adding new user
-	userController.addUser(req, resp);
-});
-
-apiRouter.patch('/users1', (req, resp) => {		//updating current user
-	userController.updateUser(req, resp);
 });
 
 app.use('/api/v1', apiRouter);

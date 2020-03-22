@@ -138,9 +138,9 @@ const shelfieApp = new Vue({
         /* USER MANAGEMENT (UM) */
         UMcurrentSort: 'fName',
         UMcurrentSortDir: 'asc',
-        UMusers: ['error: no users loaded'],
-        UMcurrentUser: {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false, password:''},
-        UMroleSelected: ''
+        UMusers: [],
+        UMcurrentUser: null,
+		UMcreateMode: false
     },
     methods:{
 		makeToast(title, msg, variant = null) {
@@ -154,7 +154,7 @@ const shelfieApp = new Vue({
 		},
 		login: function(e) {
 			axios.post(shelfieURL + '/auth', {
-				email: this.loginUsername,
+				username: this.loginUsername,
 				password: this.loginPassword
 			}).then((res) => {
 				this.loginUsername = null;
@@ -202,6 +202,7 @@ const shelfieApp = new Vue({
 			} else if(page === 'warehouseConfig'){
 				this.isWarehouseConfigActive = true;
 			} else if(page === 'userManagement'){
+                this.fetchAllUsers();
 				this.isUserManagementActive = true;
 			}
         },
@@ -717,189 +718,76 @@ const shelfieApp = new Vue({
         /* END OF REPORT PAGE TESTING */
         
         /* USER MANAGEMENT */
-        addRows: function(){        //doesn't work and I don't know why
-            var uTable;
-            var data;
-            var row;
-            this.UMUsers = this.fetchAllUsers;
-            uTable = document.getElementById('userTableBody');
-            for (i=0; i < this.UMUsers.length; i++){
-                data = this.UMUsers[i];
-                row = $('<tr><td>ahhhtesettttt</td><td>test1</td></tr>');
-                //document.getElementById('userTableBody').append(row);
-                uTable.append($('<tr><td>ahhh</td><td>ahhh</td></tr>'));
-            }
-        },
-
-        emptyFields: function(){
-            this.UMcurrentUser = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-            //document.getElementById('userTable').rows.classList.remove('tableSelected');
-            document.getElementById('passwordContainer').style.visibility = 'visible';
-            document.getElementById('updateRecordButton').style.visibility = 'hidden';   
-            document.getElementById('addUserButton').style.visibility = 'visible';
-            $('#userTable tr').removeClass('tableSelected');
-            //deselect current user from table...
-            this.populateFields();
-        },
-
-        resetRoleButtons: function(){
-            document.getElementById('managerButton').classList.remove('role-button-selected');
-            document.getElementById('teamleaderButton').classList.remove('role-button-selected');
-            document.getElementById('stockmoverButton').classList.remove('role-button-selected');
-            document.getElementById('sortingvolunteerButton').classList.remove('role-button-selected');
-        },
-
-        updatePermissionChecks: function(){
-            document.getElementById('viewdataCheck').checked = this.UMcurrentUser['canViewData'];
-            document.getElementById('editdataCheck').checked = this.UMcurrentUser['canEditData'];
-            document.getElementById('modifywarehouseCheck').checked = this.UMcurrentUser['canModifyWarehouse'];
-            document.getElementById('modifyusersCheck').checked = this.UMcurrentUser['canModifyUsers'];
-        },
-
-        editUser: function(){
-            document.getElementById('passwordContainer').style.visibility = 'hidden';   
-            document.getElementById('updateRecordButton').style.visibility = 'visible';   
-            document.getElementById('addUserButton').style.visibility = 'hidden';
-            this.populateFields();
-        },
-
-        populateFields: function(){
-            //make it visible
-            //IF ADDING USER, HAVE A BOOL SAYING SO AND EMPTY UMCURRENTUSER
-            var currentRole;
-            console.log(this.UMcurrentUser);
-
-            document.getElementById('userFields').style.visibility='visible';
-            document.getElementById('userFieldsTitle').style.visibility='visible';
-
-            document.getElementById('fNameInput').value = this.UMcurrentUser['firstName'];
-            document.getElementById('fNameInput').visible = false;
-            document.getElementById('lNameInput').value = this.UMcurrentUser['lastName'];
-            document.getElementById('uNameInput').value = this.UMcurrentUser['username'];
-            
-            this.resetRoleButtons();
-            console.log('roles reset, current role');
-            console.log(this.UMcurrentUser['role']);
-            currentRole = this.UMcurrentUser['role'].toLocaleLowerCase();
-            if (currentRole == 'manager'){
-                document.getElementById('managerButton').classList.add('role-button-selected');
-                //document.getElementById('managerButton').siblings().removeClass('role-button-selected'); NOT WORKING
-            }
-            else if (currentRole == 'team leader'){
-                document.getElementById('teamleaderButton').classList.add('role-button-selected');
-            }
-            else if (currentRole == 'stock mover'){
-                document.getElementById('stockmoverButton').classList.add('role-button-selected');
-            }
-            else if (currentRole == 'sorting volunteer'){
-                document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
-            }
-
-            this.updatePermissionChecks();
-            //console.log(this.UMcurrentUser['canEditData']);
-            //document.getElementById('managerButton').addClass('role-button-selected');  //to add dynamability
-            //to convert the strings to bool before thingy
-        },
-
-        managerSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('managerButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = true;
-            this.UMcurrentUser['canModifyUsers'] = true;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Manager';
-        },
-
-        teamleaderSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('teamleaderButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Team Leader';
-        },
-
-        stockmoverSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('stockmoverButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Stock Mover';
-        },
-
-        sortingvolunteerSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = false;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Sorting Volunteer';
-        },
-
-        updateCurrentUser: function(){
-            this.UMcurrentUser['firstName'] = document.getElementById('fNameInput').value;
-            this.UMcurrentUser['lastName'] = document.getElementById('lNameInput').value;
-            this.UMcurrentUser['username'] = document.getElementById('uNameInput').value;
-            this.UMcurrentUser['password'] = document.getElementById('passwordInput').value;
-            this.UMcurrentUser['role'] = this.UMroleSelected;       //needs to be reset at the end of function
-            //role values will already be in the dictionary
-        },
-
+        setUserRole: function(role) {
+			this.UMcurrentUser.role = role;
+			if(role === 'MANAGER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = true;
+			}
+			else if(role === 'TEAM LEADER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = true;
+				this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+			else if(role === 'STOCK MOVER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = true;
+				this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+			else if(role === 'SORTING VOLUNTEER') {
+				this.UMcurrentUser.canViewData = true;
+				this.UMcurrentUser.canEditData = this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+		},
         submitUser: function(){
-            this.updateCurrentUser();
-            //role values will already be in the dictionary
-
-            console.log(this.UMcurrentUser);
-            console.log(this.UMroleSelected);
-            //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
-            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-
-
-            //this.UMcurrentUser['role'] = '';
-        },
-
-        updateUser: function(){
-            this.updateCurrentUser();
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-        },
-		fetchAllUsers: function(){
-            // var uTable;
-            // var data;
-            // var row;
-            axios.get(shelfieURL + '/users1', {withCredentials: true}).then((res) => {
-                this.UMusers = res.data;
-            }).catch((err) => {
-                this.UMusers = ['error retrieving data'];
+            axios.post(shelfieURL + '/users', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+                this.fetchAllUsers();
+				this.makeToast('Success', 'User created', 'success');
             });
-            // uTable = document.getElementById('userTable');
-            // for (i = 0; i<this.UMusers.length; i++){
-            //     data = this.UMusers[i];
-            //     row = $('<tr><td>ahhhtesettttt</td></tr>');
-            //     uTable.append(row);
-            // }
+        },
+		setUMmodeCreate: function() {
+			this.UMcreateMode = true;
+			this.UMcurrentUser = {
+				username: '',
+				password: '',
+				firstName: '',
+				lastName: '',
+				role: 'SORTING VOLUNTEER',
+				canViewData: true,
+				canEditData: false,
+				canModifyWarehouse: false,
+				canModifyUsers: false
+			}
+		},
+        updateUser: function(){
+            axios.patch(shelfieURL + '/users/' + this.UMcurrentUser._id, this.UMcurrentUser, {withCredentials: true}).then((res) => {
+                this.fetchAllUsers();
+				this.UMcurrentUser = null;
+				this.makeToast('Success', 'User updated', 'success');
+            });
+        },
+		deleteUser: function() {
+			if(!confirm('Are you sure you want to delete the selected user?')) return;
+			axios.delete(shelfieURL + '/users/' + this.UMcurrentUser._id, {withCredentials: true}).then((res) => {
+                this.fetchAllUsers();
+				this.UMcurrentUser = null;
+				this.makeToast('Success', 'User deleted', 'success');
+            });
+		},
+		fetchAllUsers: function(){
+            axios.get(shelfieURL + '/users', {withCredentials: true}).then((res) => {
+				const l = [];
+				for(let i in res.data) {
+					if(!res.data[i].role) {
+						res.data[i].role = '';
+					}
+					l.push(res.data[i]);
+				}
+                this.UMusers = l;
+            }).catch((err) => {
+                this.makeToast('Error', 'Failed to fetch users', 'danger');
+            });
             return this.UMusers;
         },
+
+
     },
     computed:{
         /* INVENTORY */
@@ -1056,7 +944,7 @@ const shelfieApp = new Vue({
 		}
 		const self = this;
 		axios.interceptors.response.use((resp) => {
-			return resp
+			return resp;
 		}, (err) => {
 			if(err.response.data && err.response.data.error) {
 				if(err.response.data.data) {

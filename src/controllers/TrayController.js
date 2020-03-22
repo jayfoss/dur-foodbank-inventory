@@ -195,7 +195,6 @@ class TrayController {
                     }
 					shelf.push(row);
                 }
-                console.log(shelf);
             });
             return shelf;
             

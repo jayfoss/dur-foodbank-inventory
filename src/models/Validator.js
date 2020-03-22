@@ -3,14 +3,14 @@ class Validator {
 		this.errors = [];
 		this.resource = resource;
 	}
-	
+	//to add isUniqe?
 	err(resource, field, validator, message){
 		this.errors.push({resource:resource, field:field, validator:validator, message:message});
 		return false;
 	}
 	
 	isNotNull(id, value){
-		if(value === undefined || value === null){
+		if(value === undefined || value === null || value ==="" || value ===" "){
 			return this.err(this.resource, id, {'name':'null'}, this.resource + ' ' + id + ' must be completed.');
 		}
 		return true;
