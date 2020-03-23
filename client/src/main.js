@@ -134,6 +134,7 @@ const shelfieApp = new Vue({
 		/* REPORT PAGE */
 		allzones:[],
 		isSelected:[],
+		reportTotals:[],
         /* END OF REPORT PAGE */
         
         /* USER MANAGEMENT (UM) */
@@ -719,10 +720,25 @@ const shelfieApp = new Vue({
 			}).catch((err) => {
 				this.isSelected = [];
 			})
+			updateReportTotals();
 			
 		},
+		updateReportTotals:function(){
+			this.reportTotals = [];
+			for (zone in this.isSelected){
+				for (category in zone){
+					if (this.reportTotals.includes(category)){
+						this.reportTotals[category][numberOfTrays] += this.isSelected[category][numberOfTrays];
+						this.reportTotals[category][totalWeight] += this.isSelected[category][totalWeight];
+					}
+					else{
+						this.reportTotals.push(category);
+					}
+				}
+			}
+		},
+		
 		myFilter:function(reportzone) {
-			/*this.isSelected = !this.isSelected;*/
 			if(this.isSelected.includes(reportzone)){
 					const indextest = this.isSelected.indexOf(reportzone);
 					this.isSelected.splice(indextest,1);
@@ -730,6 +746,7 @@ const shelfieApp = new Vue({
 			else{
 				this.isSelected.push(reportzone);
 			}
+			updateReportTotals();
 		},
         /* END OF REPORT PAGE */
         

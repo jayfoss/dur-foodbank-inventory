@@ -332,7 +332,11 @@
 													<th>Total Weight (kg)</th>
 												</tr>
 											</thead>
-											<tr v-for="
+											<tr v-for="category in reportTotals">
+												<td>{{ category }}</td>
+												<td>{{ category.numberOfTrays }}</td>
+												<td>{{ category.totalWeight }}</td>
+											</tr>
 											<!--
 											<tr>
 												<td>BEANS</td>
