@@ -251,7 +251,7 @@
 										<td>{{ tray.expiryMonth.start }}</td>
 										<td>{{ tray.expiryMonth.end }}</td>
 										<td>{{ tray.lastUpdated }}</td>
-										<td>{{ tray.userNote }}</td>
+										<td>{{ tray.userNote | str_len_limit(20) }}</td>
 									</tr>
 								</tbody>
 							</table>
