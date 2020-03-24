@@ -79,9 +79,9 @@ const shelfieApp = new Vue({
         /* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
-		isInventoryActive: false,
+		isInventoryActive: true,
 		isReportActive: false,
-		isWarehouseConfigActive: true,
+		isWarehouseConfigActive: false,
         isUserManagementActive: false,
         /* END OF NAV CONTROL */
 
