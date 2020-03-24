@@ -30,7 +30,7 @@ class TrayModel extends Model {
 		if(!this.validator.isNumberNN('weight', value)) {
 			return false;
 		}
-		if(!this.validator.isInRange('weight', value, 0, 5)){
+		if(!this.validator.isInRange('weight', value, 0, 1000)){
 			return false;
 		}
 		this.fields.weight = parseFloat(value);
@@ -46,7 +46,7 @@ class TrayModel extends Model {
 	}
 	
 	set userNote(value) {
-		if(!this.validator.isValidLengthNN('userNote', value, 0, 100)){
+		if(!this.validator.isValidLength('userNote', value, 0, 100)){
 			return false;
 		}
 		this.fields.userNote = value;
