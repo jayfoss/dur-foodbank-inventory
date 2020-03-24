@@ -117,6 +117,9 @@ class TrayController {
 		}
         let trays = await this.getAllTraysFromDb();
         let filteredTrays = {};
+        let numberOfTrays = trays.length;
+        var totalWeight;
+        console.log(trays);
         trays.forEach((tray) => {
             if(tray.category != ''){
                 if(!filteredTrays[tray.zone]){
