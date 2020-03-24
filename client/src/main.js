@@ -132,7 +132,9 @@ const shelfieApp = new Vue({
         /* END OF DATA VIEW */
 		
 		/* REPORT PAGE */
-		isSelected:['red','blue','pink'],
+		allzones:[],
+		isSelected:[],
+		reportTotals:[],
         /* END OF REPORT PAGE */
         
         /* USER MANAGEMENT (UM) */
@@ -171,6 +173,7 @@ const shelfieApp = new Vue({
 			e.preventDefault();
 		},
 		logout: function() {
+            this.isUserManagementActive = false;
 			axios.delete(shelfieURL + '/auth').then((res) => {
 				this.isSidebarActive = false;
 			}).catch((err) => {
@@ -196,10 +199,12 @@ const shelfieApp = new Vue({
 			if(page === 'inventory'){
 				this.isInventoryActive = true;
 			} else if(page === 'viewData') {
+                this.fetchAllTrays();
 				this.isDataViewActive = true;
 			} else if(page === 'report'){
 				this.isReportActive = true;
 			} else if(page === 'warehouseConfig'){
+                this.warehouseFetchZones();
 				this.isWarehouseConfigActive = true;
 			} else if(page === 'userManagement'){
                 this.fetchAllUsers();
@@ -704,9 +709,47 @@ const shelfieApp = new Vue({
 
         /* END OF DATA VIEW PAGE */
         
-		/* REPORT PAGE TESTING */
+		/* REPORT PAGE */
+		fetchReportZones: function() {
+            console.log("FETCH REPORT ZONES\n RES DATA:");
+			this.allzones = [];
+			this.isSelected = [];
+			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
+                console.log(res.data);
+                this.allzones = res.data;   //res.data is a dict, allzones is a list...
+            }).catch((err) => {
+                this.allzones = [];
+            });
+			axios.get(shelfieURL + '/report', {withCredentials: true}).then((res) => {
+                console.log(res.data);
+				this.isSelected = res.data; //res.data is a dict, isSelected is a list...
+			}).catch((err) => {
+                //console.log("this section");
+				this.isSelected = [];
+			})
+            this.updateReportTotals();
+            this.returnReport();
+            console.log(this.reportTotals);
+			
+		},
+		updateReportTotals:function(){
+            console.log("UPDATE REPORT TOTAL");
+			this.reportTotals = [];
+			for (zone in this.isSelected){
+				for (category in zone){
+					if (this.reportTotals.includes(category)){
+						this.reportTotals[category][numberOfTrays] += this.isSelected[category][numberOfTrays];
+						this.reportTotals[category][totalWeight] += this.isSelected[category][totalWeight];
+					}
+					else{
+						this.reportTotals.push(category);
+					}
+				}
+            }
+            return this.reportTotals;
+		},
+		
 		myFilter:function(reportzone) {
-			/*this.isSelected = !this.isSelected;*/
 			if(this.isSelected.includes(reportzone)){
 					const indextest = this.isSelected.indexOf(reportzone);
 					this.isSelected.splice(indextest,1);
@@ -714,9 +757,18 @@ const shelfieApp = new Vue({
 			else{
 				this.isSelected.push(reportzone);
 			}
-		},
-        /* END OF REPORT PAGE TESTING */
+			this.updateReportTotals();
+        },
         
+        returnReport:function(){
+            console.log("RETURNING REPORT");
+            this.fetchReportZones;
+            this.reportTotals = this.updateReportTotals;
+            return this.reportTotals;
+        },
+        /* END OF REPORT PAGE */
+        
+
         /* USER MANAGEMENT */
         setUserRole: function(role) {
 			this.UMcurrentUser.role = role;
@@ -872,6 +924,7 @@ const shelfieApp = new Vue({
         /* DATA VIEW PAGE */
         sortedTrays:function() {
             this.skippedRows = 0;
+            //const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             return this.trays.sort((a,b) => {
                 let modifier = 1;
                 if(this.currentSortDir === 'desc') modifier = -1;

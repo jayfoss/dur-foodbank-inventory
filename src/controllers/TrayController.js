@@ -117,15 +117,20 @@ class TrayController {
 		}
         let trays = await this.getAllTraysFromDb();
         let filteredTrays = {};
+        let numberOfTrays = trays.length;
+        var totalWeight;
+        console.log(trays);
         trays.forEach((tray) => {
             if(tray.category != ''){
                 if(!filteredTrays[tray.zone]){
                     filteredTrays[tray.zone] = {};
                 }
                 if(!filteredTrays[tray.zone][tray.category]){
-                    filteredTrays[tray.zone][tray.category] = 0;
+                    filteredTrays[tray.zone][tray.category] = { totalWeight: 0, numberOfTrays: 0 };
                 }
-                filteredTrays[tray.zone][tray.category] += 1;
+                filteredTrays[tray.zone][tray.category][numberOfTrays] += 1;
+                filteredTrays[tray.zone][tray.category][totalWeight] += tray.weight;
+
             }
         });
         resp.status(200);

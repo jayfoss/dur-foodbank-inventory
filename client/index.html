@@ -21,6 +21,7 @@
 		<div id="shelfie-app" ref="app">
 			<div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
 				<div class="container">
+					<img style="width: 50%; display:block; margin-left: auto; margin-right: auto;" src="./src/assets/shelfie.png">
 					<div class="row justify-content-center">
 						<div class="col-md-8 col-xs-10">
 							<form id="login-form" @submit="login">
@@ -29,16 +30,16 @@
 								</div>
 								<div class="form-group">
 									<label for="username">Username</label>
-									<input type="text" class="form-control" id="username" placeholder="Enter username" v-model="loginUsername" required>
+									<input type="text" class="form-control" style="font-size:24px;" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
 								</div>
 								<div class="form-group">
 									<label for="password">Password</label>
-									<input type="password" class="form-control" id="password" placeholder="Enter password" v-model="loginPassword" required>
+									<input type="password" class="form-control" style="font-size:24px;" id="password" placeholder="Enter password" v-model="loginPassword" required>
 								</div>
 								<div class="form-group">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="login-remember">
-										<label class="custom-control-label" for="login-remember">Remember me</label>
+										<input type="checkbox" class="custom-control-input" id="login-remember">	
+										<h4><label class="custom-control-label" for="login-remember">Remember me</label></h4>
 									</div>
 								</div>
 								<button type="submit" class="button mt-0">Login</button>
@@ -214,9 +215,10 @@
 									<h1 class="display-4 text-center">Data View</h1>
 									<hr>
 									<div class="table-responsive">
-										<table class="table table-striped table-bordered">
+										<table class="table table-striped table-bordered" style="width:100%">
 											<thead>
 												<tr>
+													<!-- THIS LAYOUT DOES NOT WORK ON SMALL SCREENS, only the note column shrinks leading to a ridiculous height for each row-->
 													<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
 													<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
 													<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
@@ -266,43 +268,43 @@
 									</div>
 								</div>
 							</div>
-							<div class="row d-flex justify-content-center">
+<!--						<div class="row d-flex justify-content-center">
 								<div class="col-sm-9">
 									<h2 class="display-5">Filters</h2>
 								</div>
-							</div>
+							</div>-->
 							<div class="row d-flex justify-content-center">
 								<div class="col-sm-3">
 									<div class="form-group">
-										<label for="filter-zone">Zone Filter</label>
+										<h5><label for="filter-zone">Zone Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
 									</div>
 									<div class="form-group">
-										<label for="filter-bay">Bay Filter</label>
+										<h5><label for="filter-bay">Bay Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
 									</div>
 									<div class="form-group">
-										<label for="filter-shelf">Shelf Filter</label>
+										<h5><label for="filter-shelf">Shelf Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
 									</div>
 								</div>
 								<div class="col-sm-3">
 									<div class="form-group">
-										<label for="filter-row">Row Filter</label>
+										<h5><label for="filter-row">Row Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
 									</div>
 									<div class="form-group">
-										<label for="filter-column">Column Filter</label>
+										<h5><label for="filter-column">Column Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
 									</div>
 								</div>
 								<div class="col-sm-3">
 									<div class="form-group">
-										<label for="filter-category">Category Filter</label>
+										<h5><label for="filter-category">Category Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
 									</div>
 									<div class="form-group">
-										<label for="filter-weight">Weight Filter</label>
+										<h5><label for="filter-weight">Weight Filter</label></h5>
 										<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
 									</div>
 								</div>
@@ -332,6 +334,12 @@
 													<th>Total Weight (kg)</th>
 												</tr>
 											</thead>
+											<tr v-for="category in returnReport">
+												<td>{{ category }}</td>
+												<td>{{ category.numberOfTrays }}</td>
+												<td>{{ category.totalWeight }}</td>
+											</tr>
+											<!--
 											<tr>
 												<td>BEANS</td>
 												<td>121</td>
@@ -437,15 +445,18 @@
 												<td>1000</td>
 												<td>10000.0</td>
 											</tr>
+											-->
 										</table>
 									</div>
 								</div>
 								<div class="col-sm-6 order-0 order-sm-1">
 									<h2 class="text-center">Selected Zones</h2>
 									<div class="d-flex justify-content-center flex-wrap">
-										<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+										<button v-on:click = "fetchReportZones(); returnReport();">Generate Full Report</button> 
+										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
 										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
+										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
+										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone)}" v-on:click="myFilter(zone)">{{ zone }}</button>
 										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 									</div>
 								</div>
@@ -731,10 +742,10 @@
 							<div class="col-md-4">
 								<h5>PERMISSIONS: </h5>
 								<div>
-									<h5 class="display-5"><input type="checkbox" value="true" v-model="UMcurrentUser.canViewData" disabled /> Can View Data</h5>
-									<h5 class="display-5"><input type="checkbox" value="true" v-model="UMcurrentUser.canEditData" disabled /> Can Edit Data</h5>
-									<h5 class="display-5"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyWarehouse" disabled /> Can Modify Warehouse</h5>
-									<h5 class="display-5"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyUsers" disabled /> Can Modify Users</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canViewData" disabled /> CAN VIEW DATA</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canEditData" disabled /> CAN EDIT DATA</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyWarehouse" disabled /> CAN MODIFY WAREHOUSE</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyUsers" disabled /> CAN MODIFY USERS</h5>
 								</div>
 							</div>
 						</div>
