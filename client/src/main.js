@@ -1065,31 +1065,10 @@ const shelfieApp = new Vue({
 	}
 });
 
-//$('userTable tr').click(userTableClicked($(this)));
+Vue.filter('str_len_limit', function (value, size) {
+  if (!value) return '';
+  const nv = value.toString();
 
-$('#userTable tr').click(function() {               //should probably be transformed into a function like above
-    var table = document.getElementById('userTable');
-    var row = $(this);
-    var i = 0;
-    var cItem = '';
-    var userDict = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-    row.addClass('tableSelected').siblings().removeClass('tableSelected');    
-    row.children().each(function(item) {
-        cItem = $(this).html();
-        // if (cItem.substring(0,1) == ' ') {
-        //     cItem=cItem(1); //removes the space, happens 
-        // };
-        if (cItem.toLowerCase() == 'true' || cItem.toLocaleLowerCase == ' true'){           //so this doesn't work, all elements of a dict must be same type (I assume)
-            userDict[Object.keys(userDict)[i]] = true;
-        }
-        else if (cItem.toLowerCase() == 'false' || cItem.toLocaleLowerCase == ' false'){
-            userDict[Object.keys(userDict)[i]] = false;
-        }
-        else{
-            userDict[Object.keys(userDict)[i]] = cItem;
-        }
-        i++;
-    });
-    shelfieApp.UMcurrentUser = userDict;
-    console.log(shelfieApp.UMcurrentUser);
+  if (nv.length <= size) return nv;
+  return nv.substr(0, size) + '...';
 });
