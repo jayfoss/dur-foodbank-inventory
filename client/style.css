@@ -290,6 +290,12 @@ input[type=checkbox] {
 .no-click {
 	cursor: default;
 }
+
+.data-view-table{
+	display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 /* END OF DATA VIEW PAGE CSS */
 
 

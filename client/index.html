@@ -54,7 +54,8 @@
 						<img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
 						<li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
 						<li @click="activatePage('viewData')">View Data</li>
-						<li @click="activatePage('report')">Report Generator</li>
+						<!--<li @click="activatePage('report')" >Report Generator</li>-->
+						<li @click="alert('report page is still in progress :)')" >Report Generator</li>
 						<li @click="activatePage('warehouseConfig')">Warehouse Config</li>
 						<li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
 						<li @click="logout()">Logout</li>
@@ -215,7 +216,7 @@
 									<h1 class="display-4 text-center">Data View</h1>
 									<hr>
 									<div class="table-responsive">
-										<table class="table table-striped table-bordered" style="width:100%">
+										<table class="table table-striped table-bordered; data-view-table" style="width:100%">
 											<thead>
 												<tr>
 													<!-- THIS LAYOUT DOES NOT WORK ON SMALL SCREENS, only the note column shrinks leading to a ridiculous height for each row-->
@@ -251,7 +252,7 @@
 													<td>{{ tray.expiryYear.end }}</td>
 													<td>{{ tray.expiryMonth.start }}</td>
 													<td>{{ tray.expiryMonth.end }}</td>
-													<td>{{ tray.lastUpdated }}</td>
+													<td>{{ convertDate( tray.lastUpdated ) }}</td>
 													<td>{{ tray.userNote }}</td>
 												</tr>
 											</tbody>
