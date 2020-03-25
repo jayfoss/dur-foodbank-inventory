@@ -34,22 +34,22 @@ class TrayController {
 		if(req.body.length !== traysOnShelf.length) {
 			return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf.length + ' rows, you gave ' + req.body.length + '.');
 		}
-		const newTrays = [];
+		const newTrays = {};
 		const updateTime = new Date();
 		for(let row in req.body) {
 			if(req.body[row].length !== traysOnShelf[row].length) {
 				return appError.unprocessableEntity(resp, 'Expected ' + traysOnShelf[row].length + ' columns, you gave ' + req.body[row].length + ' on row ' + row + '.');
 			}
-			const newRow = [];
+			const newRow = {};
 			for(let col in req.body[row]) {
 				const tray = new TrayModel();
 				if(!tray.map(req.body[row][col])) {
 					return appError.badRequest(resp, 'You passed an invalid tray', tray.validator.errors);
 				}
 				tray.fields.lastUpdated = updateTime.getTime();
-				newRow.push(tray.fields);
+				newRow['' + col] = tray.fields;
 			}
-			newTrays.push(newRow);
+			newTrays['' + row] = newRow;
 		}
 		await this.updateTraysOnShelfInDb(req.params.zoneId, req.params.bayId, req.params.shelfId, newTrays);
 		resp.status(200);
@@ -111,20 +111,30 @@ class TrayController {
         return tray;
     }
 
-    async getReportData(){
+    async getReportData(req, resp){
+        if(!req.jwtDecoded.canViewData) {
+			return appError.forbidden(resp, 'You do not have permission to view data');
+		}
         let trays = await this.getAllTraysFromDb();
         let filteredTrays = {};
+        let numberOfTrays = trays.length;
+        var totalWeight;
+        console.log(trays);
         trays.forEach((tray) => {
             if(tray.category != ''){
                 if(!filteredTrays[tray.zone]){
                     filteredTrays[tray.zone] = {};
                 }
                 if(!filteredTrays[tray.zone][tray.category]){
-                    filteredTrays[tray.zone][tray.category] = 0;
+                    filteredTrays[tray.zone][tray.category] = { totalWeight: 0, numberOfTrays: 0 };
                 }
-                filteredTrays[tray.zone][tray.category] += 1;
+                filteredTrays[tray.zone][tray.category][numberOfTrays] += 1;
+                filteredTrays[tray.zone][tray.category][totalWeight] += tray.weight;
+
             }
         });
+        resp.status(200);
+		resp.send(filteredTrays);
     }
 
     async getAllTraysFromDb(){
@@ -136,6 +146,8 @@ class TrayController {
                 for(let zoneName in doc){
                     if(zoneName === "_id") continue;
                     for(let bayName in doc[zoneName]){
+                        
+                        if(bayName === "_color") continue;
                         for(let shelfNumber in doc[zoneName][bayName]){
                             for(let rowNumber in doc[zoneName][bayName][shelfNumber]){
                                 for(let columnNumber in doc[zoneName][bayName][shelfNumber][rowNumber]){
@@ -180,8 +192,8 @@ class TrayController {
 						continue;
 					}
                     for(let columnNumber in result[zoneName][bayName][shelfNumber][rowNumber]){
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = parseInt(rowNumber);
-						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = parseInt(columnNumber);
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['row'] = '' + rowNumber;
+						result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]['col'] = '' + columnNumber;
                         row.push(result[zoneName][bayName][shelfNumber][rowNumber][columnNumber]);
                     }
 					shelf.push(row);

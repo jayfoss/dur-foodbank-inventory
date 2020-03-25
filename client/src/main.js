@@ -52,12 +52,12 @@ function getExpirySizeClass(tray) {
 	if(state === null) return null;
 	switch(state) {
 		case 1:
-			return 'exp-cyc-ryy';
+		return 'exp-cyc-ryy';
 		case 3:
 		case 4:
-			return 'exp-cyc-rym';
+		return 'exp-cyc-rym';
 		default:
-			return null;
+		return null;
 	}
 }
 
@@ -71,96 +71,98 @@ function getExpiryColor(tray) {
 
 const shelfieApp = new Vue({
 	el: '#shelfie-app',
-    data: {
+	data: {
 		toastCount: 0,
 		loginUsername: null,
 		loginPassword: null,
-
-        /* NAV CONTROL */
+		
+		/* NAV CONTROL */
 		isSidebarActive: false,
 		isDataViewActive: false,
-		isInventoryActive: false,
+		isInventoryActive: true,
 		isReportActive: false,
-		isWarehouseConfigActive: true,
-        isUserManagementActive: false,
-        /* END OF NAV CONTROL */
-
-        /* WAREHOUSE CONFIG */
-        toInsertZoneName: '',
-        toInsertBayName: '',
-        toInsertNumberOfBays: 0,
-        toInsertNumOfShelves: 4,
-        toInsertNumOfRows: 3,
-        toInsertNumOfColumns: 4,
-        warehouseZones: [],
-        warehouseBays: [],
-        warehouseShelves: [],
-        originalData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
-        modifiedData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
-        emptyTray: {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''},
-        /* END OF WAREHOUSE CONFIG */
-
-        /* INVENTORY */
-        inventoryZones: [],
-        inventoryBays: [],
-        inventoryShelves: [],
-        inventoryRows: [],
-        inventoryColumns: [],
-        selectedZone: -1,
-        selectedBay: -1,
-        selectedShelf: -1,
-        shelfTrays: [],
+		isWarehouseConfigActive: false,
+		isUserManagementActive: false,
+		/* END OF NAV CONTROL */
+		
+		/* WAREHOUSE CONFIG */
+		toInsertZoneName: '',
+		toInsertBayName: '',
+		toInsertNumberOfBays: 1,
+		toInsertNumOfShelves: 4,
+		toInsertNumOfRows: 3,
+		toInsertNumOfColumns: 4,
+		warehouseZones: [],
+		warehouseBays: [],
+		warehouseShelves: [],
+		originalData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
+		modifiedData: {'zone':{'_id':'', 'numberOfBays':-1}, 'bay':{'name':'', 'numberOfShelves':-1}, 'shelf':{'_id':-1, 'rows':-1, 'columns':-1}},
+		emptyTray: {'category':'', 'weight': 0.0, 'expiryYear':{'start':null, 'end':null}, 'expiryMonth':{'start':null, 'end':null}, 'lastUpdated':null, 'userNote':''},
+		/* END OF WAREHOUSE CONFIG */
+		
+		/* INVENTORY */
+		inventoryZones: [],
+		inventoryBays: [],
+		inventoryShelves: [],
+		inventoryRows: [],
+		inventoryColumns: [],
+		selectedZone: -1,
+		selectedBay: -1,
+		selectedShelf: -1,
+		shelfTrays: [],
 		selectedTray:null,
 		expandableItemGroups: {'baby':false, 'cleaning':false, 'christmas':false},
-        /* END OF INVENTORY *
-
-        /* DATA VIEW */
-        currentSort:'zone',
-        currentSortDir:'asc',
-        pageSize: 10,
-        currentPage: 1,
-        skippedRows: 0,
-        zoneFilter: '',
-        bayFilter: '',
-        shelfFilter: '',
-        rowFilter: '',
-        columnFilter: '',
-        categoryFilter: '',
-        weightFilter: '',
-        trays: [],
+		/* END OF INVENTORY *
+			
+		/* DATA VIEW */
+		currentSort:'zone',
+		currentSortDir:'asc',
+		pageSize: 10,
+		currentPage: 1,
+		skippedRows: 0,
+		zoneFilter: '',
+		bayFilter: '',
+		shelfFilter: '',
+		rowFilter: '',
+		columnFilter: '',
+		categoryFilter: '',
+		weightFilter: '',
+		trays: [],
 		zoneBgColor: '#68B72E',
-        /* END OF DATA VIEW */
+		/* END OF DATA VIEW */
 		
 		/* REPORT PAGE */
-		isSelected:['red','blue','pink'],
-        /* END OF REPORT PAGE */
-        
-        /* USER MANAGEMENT (UM) */
-        UMcurrentSort: 'fName',
-        UMcurrentSortDir: 'asc',
-        UMusers: ['error: no users loaded'],
-        UMcurrentUser: {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false, password:''},
-        UMroleSelected: ''
-    },
-    methods:{
+		allzones:[],
+		isSelected:[],
+		reportTotals:[],
+		/* END OF REPORT PAGE */
+		
+		/* USER MANAGEMENT (UM) */
+		UMcurrentSort: 'fName',
+		UMcurrentSortDir: 'asc',
+		UMusers: [],
+		UMcurrentUser: null,
+		UMcreateMode: false
+	},
+	methods:{
 		makeToast(title, msg, variant = null) {
 			this.toastCount++
 			this.$bvToast.toast(msg, {
-				  title: title,
-				  autoHideDelay: 5000,
-				  appendToast: true,
-				  variant: variant
+				title: title,
+				autoHideDelay: 5000,
+				appendToast: true,
+				variant: variant
 			})
 		},
 		login: function(e) {
 			axios.post(shelfieURL + '/auth', {
-				email: this.loginUsername,
+				username: this.loginUsername,
 				password: this.loginPassword
-			}).then((res) => {
+				}).then((res) => {
 				this.loginUsername = null;
 				this.loginPassword = null;
 				this.inventoryFetchZones(true);
-			}).catch((err) => {
+				}).catch((err) => {
 				if(err.response.data && err.response.data.error) {
 					this.makeToast('Error', err.response.data.error, 'danger');
 				}
@@ -171,9 +173,10 @@ const shelfieApp = new Vue({
 			e.preventDefault();
 		},
 		logout: function() {
+			this.isUserManagementActive = false;
 			axios.delete(shelfieURL + '/auth').then((res) => {
 				this.isSidebarActive = false;
-			}).catch((err) => {
+				}).catch((err) => {
 				if(err.response.data && err.response.data.error) {
 					this.makeToast('Error', err.response.data.error, 'danger');
 				}
@@ -183,11 +186,11 @@ const shelfieApp = new Vue({
 			});
 		},
 		isLoggedIn: () => {
-            return getAuthInfo() !== false ? true : false;
+			return getAuthInfo() !== false ? true : false;
 		},
-        /* NAVIGATION CONTROL */
+		/* NAVIGATION CONTROL */
 		activatePage: function(page){
-            this.isSidebarActive = false;
+			this.isSidebarActive = false;
 			this.isDataViewActive = false;
 			this.isInventoryActive = false;
 			this.isReportActive = false;
@@ -195,349 +198,366 @@ const shelfieApp = new Vue({
 			this.isUserManagementActive = false;
 			if(page === 'inventory'){
 				this.isInventoryActive = true;
-			} else if(page === 'viewData') {
+				} else if(page === 'viewData') {
+				this.fetchAllTrays();
 				this.isDataViewActive = true;
-			} else if(page === 'report'){
+				} else if(page === 'report'){
 				this.isReportActive = true;
-			} else if(page === 'warehouseConfig'){
+				} else if(page === 'warehouseConfig'){
+				this.warehouseFetchZones();
 				this.isWarehouseConfigActive = true;
-			} else if(page === 'userManagement'){
+				} else if(page === 'userManagement'){
+				this.fetchAllUsers();
 				this.isUserManagementActive = true;
 			}
-        },
-        /* END OF NAVIGATION CONTROL */
-
-        /* WAREHOUSE CONFIG */
-        warehouseLimitShelfSelector: function(){
-            if(this.toInsertNumOfShelves > 1)
-                this.toInsertNumOfShelves--;
-        },
-        warehouseLimitRowSelector: function(useModifySection){
-            if(useModifySection){
-                if(this.modifiedData.shelf.rows > 1)
-                    this.modifiedData.shelf.rows--;
-            } else {
-                if(this.toInsertNumOfRows > 1)
-                    this.toInsertNumOfRows--;
-            }
-        },
-        warehouseLimitColumnSelector: function(useModifySection){
-            if(useModifySection){
-                if(this.modifiedData.shelf.columns > 1)
-                    this.modifiedData.shelf.columns--;
-            } else {
-                if(this.toInsertNumOfColumns > 1)
-                    this.toInsertNumOfColumns--;
-            }
-        },
-        warehouseChangeNumberOfBaysInsert: function(offset){
-            this.toInsertNumberOfBays += offset;
-            if (this.toInsertNumberOfBays < 0)
-                this.toInsertNumberOfBays = 0;
-            else if(this.toInsertNumberOfBays > 26)
-                this.toInsertNumberOfBays = 26;
-        },
-        warehouseModifySubmit: function(){
-            // SHELF FUNCTIONALITY
-            if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
-                if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
-                    // DELETE SOME COLUMNS
-                    for(let row = 0; row < this.originalData.shelf.rows; row++){
-                        axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
-                            withCredentials: true
-                        });
-                    }
-                } else{
-                    // ADD SOME COLUMNS
-                    for(let row = 0; row < this.originalData.shelf.rows; row++){
-                        axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
-                            withCredentials: true
-                        });
-                    }
-                }
-            }
-
-            if(this.modifiedData.shelf.rows != this.originalData.shelf.rows){
-                if(this.modifiedData.shelf.rows < this.originalData.shelf.rows){
-                    // DELETE SOME ROWS
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/deletemany/' + this.modifiedData.shelf.rows, {
-                        withCredentials: true
-                    });
-                } else {
-                    // ADD SOME ROWS
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/insertmany/' + this.modifiedData.shelf.rows, {
-                        withCredentials: true
-                    });
-                }
-            }
-
-            // BAY FUNCTIONALITY
-            if(this.modifiedData.bay.name != this.originalData.bay.name){
-                // RENAME BAY
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name, {
-                    'name': this.modifiedData.bay.name,
-                    withCredentials: true
-                });
-            }
-
-            if(this.modifiedData.bay.numberOfShelves != this.originalData.bay.numberOfShelves){
-                if(this.modifiedData.bay.numberOfShelves < this.originalData.bay.numberOfShelves){
-                    // DELETE SOME SHELVES
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/deletemany/' + this.modifiedData.bay.numberOfShelves, {
-                        withCredentials: true
-                    });
-                } else {
-                    // ADD SOME SHELVES
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/insertmany/' + this.modifiedData.bay.numberOfShelves, {
-                        withCredentials: true
-                    });
-                }
-            }
-            
-            // ZONE FUNCTIONALITY
-            if(this.modifiedData.zone.numberOfBays != this.originalData.zone.numberOfBays){
-                if(this.modifiedData.zone.numberOfBays < this.originalData.zone.numberOfBays){
-                    // DELETE SOME BAYS
-                    axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/deletemany/' + this.modifiedData.zone.numberOfBays, {
-                        withCredentials: true
-                    });
-                } else {
-                    // ADD SOME BAYS
-                    axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/insertmany/' + this.modifiedData.zone.numberOfBays, {
-                        withCredentials: true
-                    });
-                }
-            }
-
-            if(this.modifiedData.zone._id !== this.originalData.zone._id){
-                // RENAME ZONE
-                axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id, {
-                    '_id': this.modifiedData.zone._id,
-                    withCredentials: true
-                });
-            }
-
-            // RELOAD THE PAGE HERE
-            
-        },
-        warehouseDeleteZone: function(){
-            if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
-                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name, {
-                    withCredentials: true
-                });
-                // RELOAD PAGE HERE
-        },
-        warehouseDeleteBay: function(){
-            if(confirm('Are you sure you want to delete bay ' + this.originalData.bay.name + ' from zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
-                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
-                    withCredentials: true
-                });
-                // RELOAD PAGE HERE
-        },
-        warehouseDeleteShelf: function(){
-            if(confirm('Are you sure you want to delete shelf ' + this.originalData.shelf.number + ' from bay ' + this.originalData.bay.name + ' in zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
-                axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
-                    withCredentials: true
-                });
-                // RELOAD PAGE HERE
-        },
-        warehouseCreateSubmit: function(){
-            if(this.toInsertZoneName == '')
-                return;
-
-            if(this.toInsertNumberOfBays > 0){
-                axios.post(shelfieURL + '/zones/', {
-                    _id: this.toInsertZoneName,
-                    bays: this.toInsertNumberOfBays,
-                    shelves: this.toInsertNumOfShelves,
-                    rows: this.toInsertNumOfRows,
-                    columns: this.toInsertNumOfColumns,
-                    withCredentials: true
-                });
-            } else if(this.toInsertBayName != ''){
-                axios.post(shelfieURL + '/zones/', {
-                    _id: this.toInsertZoneName,
-                    bays: this.toInsertBayName,
-                    shelves: this.toInsertNumOfShelves,
-                    rows: this.toInsertNumOfRows,
-                    columns: this.toInsertNumOfColumns,
-                    withCredentials: true
-                });
-            }
-
-            
-        },
-        warehouseFetchZones: function(){
-            this.warehouseZones = [];
-            this.warehouseBays = [];
-            this.warehouseShelves = [];
-            this.originalData.zone._id = this.modifiedData.zone._id = '';
-            this.originalData.bay.name = this.modifiedData.bay.name = '';
-            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
-            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
-            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-            
-            axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
-                this.warehouseZones = res.data;
-            }).catch((err) => {
-                this.warehouseZones = [];
-            });
-        },
-        warehouseFetchBays: function(zoneId){
-            this.originalData.zone._id = this.modifiedData.zone._id = zoneId;
-            this.warehouseBays = [];
-            this.warehouseShelves = [];
-            this.originalData.bay.name = this.modifiedData.bay.name = '';
-            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
-            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
-            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays', {withCredentials: true}).then((res) => {
-                this.warehouseBays = res.data;
-                this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = this.warehouseBays.length;
-            }).catch((err) => {
-                this.warehouseBays = [];
-                this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = 0;
-            });
-            
-        },
-        warehouseFetchShelves: function(bayName){
-            this.originalData.bay.name = this.modifiedData.bay.name = bayName;
-            this.warehouseShelves = [];
-            this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
-            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
-            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
-                this.warehouseShelves = res.data;
-                this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = this.warehouseShelves.length;
-            }).catch((err) => {
-                this.warehouseShelves = [];
-                this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = 0;
-            });
-
-        },
-        warehouseFetchRowsColumns(shelfId){
-            this.originalData.shelf._id = this.modifiedData.shelf._id = shelfId;
-            this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
-            this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
-            axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows', {withCredentials: true}).then((res) => {
-                let rows = res.data.length;
-                this.originalData.shelf.rows = this.modifiedData.shelf.rows = rows;
-
-                axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows/1/columns', {withCredentials: true}).then((res) => {
-                    let columns = res.data.length;
-                    this.originalData.shelf.columns = this.modifiedData.shelf.columns = columns;
-                }).catch((err) => {
-                    this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
-                });
-                
-                
-            }).catch((err) => {
-                this.originalData.shelf.rows = this.modifiedData.shelf.rows = 0;
-                this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
-            });
-        },
-        warehouseChangeNumberOfBays: function(offset){
-            this.modifiedData.zone.numberOfBays += offset
-            if(this.modifiedData.zone.numberOfBays < 1)
-                this.modifiedData.zone.numberOfBays = 1
-        },
-        warehouseChangeNumberOfShelves: function(offset){
-            this.modifiedData.bay.numberOfShelves += offset
-            if(this.modifiedData.bay.numberOfShelves < 1)
-                this.modifiedData.bay.numberOfShelves = 1
-        },
-        /* END OF WAREHOUSE CONFIG */
-
-        /* INVENTORY */
-        inventoryFetchZones: function(selectFirst=false){
-            axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
-                this.inventoryZones = res.data;
+		},
+		/* END OF NAVIGATION CONTROL */
+		
+		/* WAREHOUSE CONFIG */
+		warehouseLimitShelfSelector: function(){
+			if(this.toInsertNumOfShelves > 1)
+			this.toInsertNumOfShelves--;
+		},
+		warehouseLimitRowSelector: function(useModifySection){
+			if(useModifySection){
+				if(this.modifiedData.shelf.rows > 1)
+				this.modifiedData.shelf.rows--;
+				} else {
+				if(this.toInsertNumOfRows > 1)
+				this.toInsertNumOfRows--;
+			}
+		},
+		warehouseLimitColumnSelector: function(useModifySection){
+			if(useModifySection){
+				if(this.modifiedData.shelf.columns > 1)
+				this.modifiedData.shelf.columns--;
+				} else {
+				if(this.toInsertNumOfColumns > 1)
+				this.toInsertNumOfColumns--;
+			}
+		},
+		warehouseChangeNumberOfBaysInsert: function(offset){
+			this.toInsertNumberOfBays += offset;
+			if (this.toInsertNumberOfBays < 1)
+			this.toInsertNumberOfBays = 1;
+			else if(this.toInsertNumberOfBays > 26)
+			this.toInsertNumberOfBays = 26;
+		},
+		warehouseModifySubmit: function(){
+			// SHELF FUNCTIONALITY
+			if(this.modifiedData.shelf.columns != this.originalData.shelf.columns){
+				if(this.modifiedData.shelf.columns < this.originalData.shelf.columns){
+					// DELETE SOME COLUMNS
+					for(let row = 0; row < this.originalData.shelf.rows; row++){
+						axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/deletemany/' + this.modifiedData.shelf.columns, {
+							withCredentials: true
+						});
+					}
+					} else{
+					// ADD SOME COLUMNS
+					for(let row = 0; row < this.originalData.shelf.rows; row++){
+						axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/' + row + '/columns/insertmany/' + this.modifiedData.shelf.columns, {
+							withCredentials: true
+						});
+					}
+				}
+			}
+			
+			if(this.modifiedData.shelf.rows != this.originalData.shelf.rows){
+				if(this.modifiedData.shelf.rows < this.originalData.shelf.rows){
+					// DELETE SOME ROWS
+					axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/deletemany/' + this.modifiedData.shelf.rows, {
+						withCredentials: true
+					});
+					} else {
+					// ADD SOME ROWS
+					axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf._id + '/rows/insertmany/' + this.modifiedData.shelf.rows, {
+						withCredentials: true
+					});
+				}
+			}
+			
+			if(this.modifiedData.bay.numberOfShelves != this.originalData.bay.numberOfShelves){
+				if(this.modifiedData.bay.numberOfShelves < this.originalData.bay.numberOfShelves){
+					// DELETE SOME SHELVES
+					axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/deletemany/' + this.modifiedData.bay.numberOfShelves, {
+						withCredentials: true
+					});
+					} else {
+					// ADD SOME SHELVES
+					axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/insertmany/' + this.modifiedData.bay.numberOfShelves, {
+						withCredentials: true
+					});
+				}
+			}
+			
+			// ZONE FUNCTIONALITY
+			if(this.modifiedData.zone.numberOfBays != this.originalData.zone.numberOfBays){
+				if(this.modifiedData.zone.numberOfBays < this.originalData.zone.numberOfBays){
+					// DELETE SOME BAYS
+					axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/deletemany/' + this.modifiedData.zone.numberOfBays, {
+						withCredentials: true
+					});
+					} else {
+					// ADD SOME BAYS
+					axios.post(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/insertmany/' + this.modifiedData.zone.numberOfBays, {
+						withCredentials: true
+					});
+				}
+			}
+			
+			if(this.modifiedData.zone._id !== this.originalData.zone._id){
+				// RENAME ZONE
+				console.log(this.modifiedData.zone._id);
+				axios.patch(shelfieURL + '/zones/' + this.originalData.zone._id, {
+					'_id': this.modifiedData.zone._id,
+					'_color': 'FFFFFF',
+					withCredentials: true
+				});
+			}
+			
+			// RELOAD THE PAGE HERE
+			
+		},
+		warehouseDeleteZone: function(){
+			if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone._id + '?\nThis action is irreversible.'))
+			axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id, {
+				withCredentials: true
+				}).then((resp) => {
+				this.makeToast('Success', 'Successfuly deleted the zone.', 'success');
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not delete zone.\n' + err + '\nPlease try again.', 'danger');
+			});
+			// RELOAD PAGE HERE
+		},
+		warehouseDeleteBay: function(){
+			if(confirm('Are you sure you want to delete bay ' + this.originalData.bay.name + ' from zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
+			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
+				withCredentials: true
+				}).then((resp) => {
+				this.makeToast('Success', 'Successfuly deleted the bay.', 'success');
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not delete bay.\n' + err + '\nPlease try again.', 'danger');
+			});
+			// RELOAD PAGE HERE
+		},
+		warehouseDeleteShelf: function(){
+			if(confirm('Are you sure you want to delete shelf ' + this.originalData.shelf.number + ' from bay ' + this.originalData.bay.name + ' in zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
+			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
+				withCredentials: true
+				}).then((resp) => {
+				this.makeToast('Success', 'Successfuly deleted the shelf.', 'success');
+				}).catch((err) => {
+				this.modifiedData.bay.numberOfShelves = 1
+				this.makeToast('Error', 'Could not delete shelf.\n' + err + '\nPlease try again.', 'danger');
+			});
+			// RELOAD PAGE HERE
+		},
+		warehouseCreateSubmit: function(){
+			if(this.toInsertZoneName == ''){
+				this.makeToast('Error', 'Zone name must not be empty', 'danger');
+				return;
+			}
+			
+			let color = document.getElementById('zoneColor').value;
+			color = color.substring(1);
+			axios.post(shelfieURL + '/zones/', {
+				_id: this.toInsertZoneName,
+				_color: color,
+				bays: this.toInsertNumberOfBays,
+				shelves: this.toInsertNumOfShelves,
+				rows: this.toInsertNumOfRows,
+				columns: this.toInsertNumOfColumns,
+				withCredentials: true
+				}).then((resp) => {
+				this.makeToast('Success', 'Successfuly created the warehouse layout.', 'success');
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not create zone.\n' + err + '\nplease try again.', 'danger');
+				return;
+			});
+		},
+		warehouseFetchZones: function(){
+			this.warehouseZones = [];
+			this.warehouseBays = [];
+			this.warehouseShelves = [];
+			this.originalData.zone._id = this.modifiedData.zone._id = '';
+			this.originalData.bay.name = this.modifiedData.bay.name = '';
+			this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
+			this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+			this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+			axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
+				this.warehouseZones = res.data;
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not fetch zones.\n' + err, 'danger');
+				this.warehouseZones = [];
+			});
+		},
+		warehouseFetchBays: function(zoneId){
+			this.originalData.zone._id = this.modifiedData.zone._id = zoneId;
+			this.warehouseBays = [];
+			this.warehouseShelves = [];
+			this.originalData.bay.name = this.modifiedData.bay.name = '';
+			this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
+			this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+			this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+			
+			axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays', {withCredentials: true}).then((res) => {
+				this.warehouseBays = [];
+				for(let index in res.data){
+					if(res.data[index] != '_color')
+					this.warehouseBays.push(res.data[index]);
+				}
+				this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = this.warehouseBays.length;
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not fetch bays.\n' + err, 'danger');
+				this.warehouseBays = [];
+				this.originalData.zone.numberOfBays = this.modifiedData.zone.numberOfBays = 0;
+			});
+			
+		},
+		warehouseFetchShelves: function(bayName){
+			this.originalData.bay.name = this.modifiedData.bay.name = bayName;
+			this.warehouseShelves = [];
+			this.originalData.shelf._id = this.modifiedData.shelf._id = -1;
+			this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+			this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+			
+			axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves', {withCredentials: true}).then((res) => {
+				this.warehouseShelves = res.data;
+				this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = this.warehouseShelves.length;
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not fetch shelves.\n' + err, 'danger');
+				this.warehouseShelves = [];
+				this.originalData.bay.numberOfShelves = this.modifiedData.bay.numberOfShelves = 0;
+			});
+			
+		},
+		warehouseFetchRowsColumns(shelfId){
+			this.originalData.shelf._id = this.modifiedData.shelf._id = shelfId;
+			this.originalData.shelf.rows = this.modifiedData.shelf.rows = -1;
+			this.originalData.shelf.columns = this.modifiedData.shelf.columns = -1;
+			axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows', {withCredentials: true}).then((res) => {
+				let rows = res.data.length-1;
+				this.originalData.shelf.rows = this.modifiedData.shelf.rows = rows;
+				axios.get(shelfieURL + '/zones/' + this.originalData.zone._id + '/bays/' + this.originalData.bay.name + '/shelves/' + shelfId + '/rows/0/columns', {withCredentials: true}).then((res) => {
+					let columns = res.data.length;
+					this.originalData.shelf.columns = this.modifiedData.shelf.columns = columns;
+					}).catch((err) => {
+					this.makeToast('Error', 'Could not fetch columns.\n' + err, 'danger');
+					this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
+				});
+				
+				}).catch((err) => {
+				this.makeToast('Error', 'Could not fetch rows.\n' + err, 'danger');
+				this.originalData.shelf.rows = this.modifiedData.shelf.rows = 0;
+				this.originalData.shelf.columns = this.modifiedData.shelf.columns = 0;
+			});
+		},
+		warehouseChangeNumberOfBays: function(offset){
+			this.modifiedData.zone.numberOfBays += offset
+			if(this.modifiedData.zone.numberOfBays < 1){
+				this.modifiedData.zone.numberOfBays = 1
+				this.makeToast('Error', 'There must be 1 or more bays', 'danger');
+			}
+		},
+		warehouseChangeNumberOfShelves: function(offset){
+			this.modifiedData.bay.numberOfShelves += offset
+			if(this.modifiedData.bay.numberOfShelves < 1){
+				this.modifiedData.bay.numberOfShelves = 1
+				this.makeToast('Error', 'There must be 1 or more shelves', 'danger');
+			}
+		},
+		/* END OF WAREHOUSE CONFIG */
+		
+		/* INVENTORY */
+		inventoryFetchZones: function(selectFirst=false){
+			axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
+				this.inventoryZones = res.data;
 				if(this.inventoryZones.length > 0 && selectFirst) {
 					this.selectedZone = 0;
 					this.zoneBgColor = this.inventoryZones[this.selectedZone]._color ? '#' + this.inventoryZones[this.selectedZone]._color : '#68B72E';
 				}
-            }).catch((err) => {
-                this.inventoryZones = [];
-            });
-        },
-        inventoryFetchBays: function(selectFirst=false){
-            if(this.selectedZone === -1) {
-                this.inventoryBays = [];
-                return;
-            }
-            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays', {withCredentials: true}).then((res) => {
-                this.inventoryBays = res.data.sort();
+				}).catch((err) => {
+				this.inventoryZones = [];
+			});
+		},
+		inventoryFetchBays: function(selectFirst=false){
+			if(this.selectedZone === -1) {
+				this.inventoryBays = [];
+				return;
+			}
+			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays', {withCredentials: true}).then((res) => {
+				this.inventoryBays = res.data.sort();
 				if(this.inventoryBays.length > 0 && selectFirst) this.selectedBay = 0;
-            }).catch((err) => {
-                this.inventoryBays = [];
-            });
-        },
-        inventoryFetchShelves: function(selectFirst=false){
-            if(this.selectedZone === -1 || this.selectedBay === -1) {
-                this.inventoryShelves = [];
-                return;
-            }
-            axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves', {withCredentials: true}).then((res) => {
-                this.inventoryShelves = res.data.sort();
+				}).catch((err) => {
+				this.inventoryBays = [];
+			});
+		},
+		inventoryFetchShelves: function(selectFirst=false){
+			if(this.selectedZone === -1 || this.selectedBay === -1) {
+				this.inventoryShelves = [];
+				return;
+			}
+			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves', {withCredentials: true}).then((res) => {
+				this.inventoryShelves = res.data.sort();
 				if(this.inventoryShelves.length > 0 && selectFirst) this.selectedShelf = 0;
-            }).catch((err) => {
-                this.inventoryShelves = [];
-            });
-        },
+				}).catch((err) => {
+				this.inventoryShelves = [];
+			});
+		},
 		inventoryFetchShelfTrays: function() {
 			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
-                this.shelfTrays = res.data;
-            }).catch((err) => {
-                this.shelfTrays = [];
-            });
-		},
-        inventorySubmitTrays: function(){
-			const self = this;
-            axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
-                this.shelfTrays, {withCredentials: true}
-            ).then((res) => {
-				self.makeToast('Success', 'Trays saved', 'success');
+				this.shelfTrays = res.data;
+				}).catch((err) => {
+				this.shelfTrays = [];
 			});
-        },
-        checkForm: function (e) {
-            if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_shelf && this.enter_weight &&this.food_type) {
-                return true;
-              }
-        
-              this.errors = [];
-        
-              if (!this.select_year) {
-                this.errors.push('Expiry Year required.');
-              }
-              if (!this.select_month) {
-                this.errors.push('Expiry Month required.');
-              }
-              if (!this.stock_taken_date) {
-                this.errors.push('Stock taken date required.');
-              }
-              if (!this.select_zone ) {
-                this.errors.push('Zone required.');
-              }
-              if (!this.select_bay ) {
-                this.errors.push('Bay required.');
-              }
-              if (!this.select_shelf ) {
-                this.errors.push('Level required.');
-              }
-              if (!this.enter_weight ) {
-                this.errors.push('weight required.');
-              }
-              if (!this.tray_category ) {
-                this.errors.push('tray_category required.');
-              }
-              if (!this.tray_position ) {
-                this.errors.push('tray_position required.');
-              }
-        
-            e.preventDefault();
-        },
+		},
+		inventorySubmitTrays: function(){
+			const self = this;
+			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
+			this.shelfTrays, {withCredentials: true}
+			).then((res) => {
+				self.makeToast('Success', 'Trays saved', 'success');
+				this.shelfOk(false);
+			});
+		},
+		checkForm: function (e) {
+			if (this.select_year && this.select_month &&this.stock_taken_date &&this.select_zone && this.select_bay &&this.select_shelf && this.enter_weight &&this.food_type) {
+				return true;
+			}
+			
+			this.errors = [];
+			
+			if (!this.select_year) {
+				this.errors.push('Expiry Year required.');
+			}
+			if (!this.select_month) {
+				this.errors.push('Expiry Month required.');
+			}
+			if (!this.stock_taken_date) {
+				this.errors.push('Stock taken date required.');
+			}
+			if (!this.select_zone ) {
+				this.errors.push('Zone required.');
+			}
+			if (!this.select_bay ) {
+				this.errors.push('Bay required.');
+			}
+			if (!this.select_shelf ) {
+				this.errors.push('Level required.');
+			}
+			if (!this.enter_weight ) {
+				this.errors.push('weight required.');
+			}
+			if (!this.tray_category ) {
+				this.errors.push('tray_category required.');
+			}
+			if (!this.tray_position ) {
+				this.errors.push('tray_position required.');
+			}
+			
+			e.preventDefault();
+		},
 		getYearColor: (y) => {
 			return getYearColor(y);
 		},
@@ -561,17 +581,17 @@ const shelfieApp = new Vue({
 			if(state === null) return null;
 			switch(state) {
 				case 0:
-					return tray.expiryYear.start;
+				return tray.expiryYear.start;
 				case 1:
-					return tray.expiryYear.start + '-' + tray.expiryYear.end;
+				return tray.expiryYear.start + '-' + tray.expiryYear.end;
 				case 2:
-					return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + ' ' + tray.expiryYear.start;
+				return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + ' ' + tray.expiryYear.start;
 				case 3:
-					return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + '-' + luxon.DateTime.fromObject({month: tray.expiryMonth.end}).toFormat('MMM') + ' ' + tray.expiryYear.start;
+				return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + '-' + luxon.DateTime.fromObject({month: tray.expiryMonth.end}).toFormat('MMM') + ' ' + tray.expiryYear.start;
 				case 4:
-					return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + ' ' + tray.expiryYear.end + '-' + luxon.DateTime.fromObject({month: tray.expiryMonth.end}).toFormat('MMM') + ' ' + tray.expiryYear.end;
+				return luxon.DateTime.fromObject({month: tray.expiryMonth.start}).toFormat('MMM') + ' ' + tray.expiryYear.end + '-' + luxon.DateTime.fromObject({month: tray.expiryMonth.end}).toFormat('MMM') + ' ' + tray.expiryYear.end;
 				default:
-					return null;
+				return null;
 			}
 		},
 		getExpiryClass: (tray) => {
@@ -625,15 +645,15 @@ const shelfieApp = new Vue({
 			this.selectedTray.expiryMonth = {start: null, end: null};
 			this.selectedTray.userNote = '';
 		},
-		shelfOk: function() {
+		shelfOk: function(ok = true) {
 			if(!this.inventoryShelves[this.selectedShelf]) return;
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id, 
-				{_shelfOk: true},
-				{withCredentials: true})
+			{_shelfOk: ok},
+			{withCredentials: true})
 			.then((res) => {
-				this.inventoryShelves[this.selectedShelf]._shelfOk = true;
-                this.makeToast('Success', 'Shelf marked OK', 'success');
-            });
+				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
+				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
+			});
 		},
 		isShelfOk: function(shelf) {
 			if(!shelf) return false;
@@ -663,235 +683,171 @@ const shelfieApp = new Vue({
 			}
 			this.$bvModal.show('note-modal');
 		},
-        /* END OF INVENTORY */
+		/* END OF INVENTORY */
+		
+		/* DATA VIEW PAGE */
+		fetchAllTrays: function(){
+			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
+				this.trays = res.data;
+				}).catch((err) => {
+				this.trays = [];
+			});
+		},
+		sort: function(s) {
+			if(s === this.currentSort) {
+				this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+			}
+			this.currentSort = s;
+		},
+		nextPage: function() {
+			if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
+		},
+		prevPage: function() {
+			if(this.currentPage > 1) this.currentPage--;
+		},
 
-        /* DATA VIEW PAGE */
-        fetchAllTrays: function(){
-            axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
-                this.trays = res.data;
-            }).catch((err) => {
-                this.trays = [];
-            });
-        },
-        sort: function(s) {
-            if(s === this.currentSort) {
-                this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
-            }
-            this.currentSort = s;
-        },
-        nextPage: function() {
-            if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
-        },
-        prevPage: function() {
-            if(this.currentPage > 1) this.currentPage--;
-        },
-
-
-        /* END OF DATA VIEW PAGE */
-        
-		/* REPORT PAGE TESTING */
+		convertDate: function(date){
+			newDate = luxon.DateTime.fromMillis(date)
+			return luxon.DateTime.fromISO(newDate).toFormat('dd LLL yyyy HH:mm', { locale: 'gb' });
+		}, 
+		
+		
+		/* END OF DATA VIEW PAGE */
+		
+		/* REPORT PAGE */
+		fetchReportZones: function() {
+			console.log("FETCH REPORT ZONES\n RES DATA:");
+			this.allzones = [];
+			this.isSelected = [];
+			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
+				console.log(res.data);
+				this.allzones = res.data;   //res.data is a dict, allzones is a list...
+				}).catch((err) => {
+				this.allzones = [];
+			});
+			axios.get(shelfieURL + '/report', {withCredentials: true}).then((res) => {
+				console.log(res.data);
+				this.isSelected = res.data; //res.data is a dict, isSelected is a list...
+				}).catch((err) => {
+				//console.log("this section");
+				this.isSelected = [];
+			})
+			this.updateReportTotals();
+			this.returnReport();
+			console.log(this.reportTotals);
+			
+		},
+		updateReportTotals:function(){
+			console.log("UPDATE REPORT TOTAL");
+			this.reportTotals = [];
+			for (zone in this.isSelected){
+				for (category in zone){
+					if (this.reportTotals.includes(category)){
+						this.reportTotals[category][numberOfTrays] += this.isSelected[category][numberOfTrays];
+						this.reportTotals[category][totalWeight] += this.isSelected[category][totalWeight];
+					}
+					else{
+						this.reportTotals.push(category);
+					}
+				}
+			}
+			return this.reportTotals;
+		},
+		
 		myFilter:function(reportzone) {
-			/*this.isSelected = !this.isSelected;*/
 			if(this.isSelected.includes(reportzone)){
-					const indextest = this.isSelected.indexOf(reportzone);
-					this.isSelected.splice(indextest,1);
+				const indextest = this.isSelected.indexOf(reportzone);
+				this.isSelected.splice(indextest,1);
 			}
 			else{
 				this.isSelected.push(reportzone);
 			}
+			this.updateReportTotals();
 		},
-        /* END OF REPORT PAGE TESTING */
-        
-        /* USER MANAGEMENT */
-        addRows: function(){        //doesn't work and I don't know why
-            var uTable;
-            var data;
-            var row;
-            this.UMUsers = this.fetchAllUsers;
-            uTable = document.getElementById('userTableBody');
-            for (i=0; i < this.UMUsers.length; i++){
-                data = this.UMUsers[i];
-                row = $('<tr><td>ahhhtesettttt</td><td>test1</td></tr>');
-                //document.getElementById('userTableBody').append(row);
-                uTable.append($('<tr><td>ahhh</td><td>ahhh</td></tr>'));
-            }
-        },
-
-        emptyFields: function(){
-            this.UMcurrentUser = {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false};
-            //document.getElementById('userTable').rows.classList.remove('tableSelected');
-            document.getElementById('passwordContainer').style.visibility = 'visible';
-            document.getElementById('updateRecordButton').style.visibility = 'hidden';   
-            document.getElementById('addUserButton').style.visibility = 'visible';
-            $('#userTable tr').removeClass('tableSelected');
-            //deselect current user from table...
-            this.populateFields();
-        },
-
-        resetRoleButtons: function(){
-            document.getElementById('managerButton').classList.remove('role-button-selected');
-            document.getElementById('teamleaderButton').classList.remove('role-button-selected');
-            document.getElementById('stockmoverButton').classList.remove('role-button-selected');
-            document.getElementById('sortingvolunteerButton').classList.remove('role-button-selected');
-        },
-
-        updatePermissionChecks: function(){
-            document.getElementById('viewdataCheck').checked = this.UMcurrentUser['canViewData'];
-            document.getElementById('editdataCheck').checked = this.UMcurrentUser['canEditData'];
-            document.getElementById('modifywarehouseCheck').checked = this.UMcurrentUser['canModifyWarehouse'];
-            document.getElementById('modifyusersCheck').checked = this.UMcurrentUser['canModifyUsers'];
-        },
-
-        editUser: function(){
-            document.getElementById('passwordContainer').style.visibility = 'hidden';   
-            document.getElementById('updateRecordButton').style.visibility = 'visible';   
-            document.getElementById('addUserButton').style.visibility = 'hidden';
-            this.populateFields();
-        },
-
-        populateFields: function(){
-            //make it visible
-            //IF ADDING USER, HAVE A BOOL SAYING SO AND EMPTY UMCURRENTUSER
-            var currentRole;
-            console.log(this.UMcurrentUser);
-
-            document.getElementById('userFields').style.visibility='visible';
-            document.getElementById('userFieldsTitle').style.visibility='visible';
-
-            document.getElementById('fNameInput').value = this.UMcurrentUser['firstName'];
-            document.getElementById('fNameInput').visible = false;
-            document.getElementById('lNameInput').value = this.UMcurrentUser['lastName'];
-            document.getElementById('uNameInput').value = this.UMcurrentUser['username'];
-            
-            this.resetRoleButtons();
-            console.log('roles reset, current role');
-            console.log(this.UMcurrentUser['role']);
-            currentRole = this.UMcurrentUser['role'].toLocaleLowerCase();
-            if (currentRole == 'manager'){
-                document.getElementById('managerButton').classList.add('role-button-selected');
-                //document.getElementById('managerButton').siblings().removeClass('role-button-selected'); NOT WORKING
-            }
-            else if (currentRole == 'team leader'){
-                document.getElementById('teamleaderButton').classList.add('role-button-selected');
-            }
-            else if (currentRole == 'stock mover'){
-                document.getElementById('stockmoverButton').classList.add('role-button-selected');
-            }
-            else if (currentRole == 'sorting volunteer'){
-                document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
-            }
-
-            this.updatePermissionChecks();
-            //console.log(this.UMcurrentUser['canEditData']);
-            //document.getElementById('managerButton').addClass('role-button-selected');  //to add dynamability
-            //to convert the strings to bool before thingy
-        },
-
-        managerSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('managerButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = true;
-            this.UMcurrentUser['canModifyUsers'] = true;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Manager';
-        },
-
-        teamleaderSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('teamleaderButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Team Leader';
-        },
-
-        stockmoverSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('stockmoverButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = true;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Stock Mover';
-        },
-
-        sortingvolunteerSelected: function(){
-            this.resetRoleButtons();
-            document.getElementById('sortingvolunteerButton').classList.add('role-button-selected');
-
-            this.UMcurrentUser['canViewData'] = true;
-            this.UMcurrentUser['canEditData'] = false;
-            this.UMcurrentUser['canModifyWarehouse'] = false;
-            this.UMcurrentUser['canModifyUsers'] = false;
-
-            this.updatePermissionChecks();
-
-            this.UMroleSelected = 'Sorting Volunteer';
-        },
-
-        updateCurrentUser: function(){
-            this.UMcurrentUser['firstName'] = document.getElementById('fNameInput').value;
-            this.UMcurrentUser['lastName'] = document.getElementById('lNameInput').value;
-            this.UMcurrentUser['username'] = document.getElementById('uNameInput').value;
-            this.UMcurrentUser['password'] = document.getElementById('passwordInput').value;
-            this.UMcurrentUser['role'] = this.UMroleSelected;       //needs to be reset at the end of function
-            //role values will already be in the dictionary
-        },
-
-        submitUser: function(){
-            this.updateCurrentUser();
-            //role values will already be in the dictionary
-
-            console.log(this.UMcurrentUser);
-            console.log(this.UMroleSelected);
-            //axios.patch(shelfieURL + '/zones/' + zoneName + '/bays/' + bayName + '/shelves/' + shelfNum + '/rows/' + row + '/columns/' + column + '/tray', trayToSubmit, {withCredentials: true}
-            axios.post(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-
-
-            //this.UMcurrentUser['role'] = '';
-        },
-
-        updateUser: function(){
-            this.updateCurrentUser();
-
-            axios.patch(shelfieURL + '/users1', this.UMcurrentUser, {withCredentials: true}).then((res) => this.UMcurrentUser['role'] = '');
-        },
+		
+		returnReport:function(){
+			console.log("RETURNING REPORT");
+			this.fetchReportZones;
+			this.reportTotals = this.updateReportTotals;
+			return this.reportTotals;
+		},
+		/* END OF REPORT PAGE */
+		
+		
+		/* USER MANAGEMENT */
+		setUserRole: function(role) {
+			this.UMcurrentUser.role = role;
+			if(role === 'MANAGER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = true;
+			}
+			else if(role === 'TEAM LEADER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = true;
+				this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+			else if(role === 'STOCK MOVER') {
+				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = true;
+				this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+			else if(role === 'SORTING VOLUNTEER') {
+				this.UMcurrentUser.canViewData = true;
+				this.UMcurrentUser.canEditData = this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = false;
+			}
+		},
+		submitUser: function(){
+			axios.post(shelfieURL + '/users', this.UMcurrentUser, {withCredentials: true}).then((res) => {
+				this.fetchAllUsers();
+				this.makeToast('Success', 'User created', 'success');
+			});
+		},
+		setUMmodeCreate: function() {
+			this.UMcreateMode = true;
+			this.UMcurrentUser = {
+				username: '',
+				password: '',
+				firstName: '',
+				lastName: '',
+				role: 'SORTING VOLUNTEER',
+				canViewData: true,
+				canEditData: false,
+				canModifyWarehouse: false,
+				canModifyUsers: false
+			}
+		},
+		updateUser: function(){
+			axios.patch(shelfieURL + '/users/' + this.UMcurrentUser._id, this.UMcurrentUser, {withCredentials: true}).then((res) => {
+				this.fetchAllUsers();
+				this.UMcurrentUser = null;
+				this.makeToast('Success', 'User updated', 'success');
+			});
+		},
+		deleteUser: function() {
+			if(!confirm('Are you sure you want to delete the selected user?')) return;
+			axios.delete(shelfieURL + '/users/' + this.UMcurrentUser._id, {withCredentials: true}).then((res) => {
+				this.fetchAllUsers();
+				this.UMcurrentUser = null;
+				this.makeToast('Success', 'User deleted', 'success');
+			});
+		},
 		fetchAllUsers: function(){
-            // var uTable;
-            // var data;
-            // var row;
-            axios.get(shelfieURL + '/users1', {withCredentials: true}).then((res) => {
-                this.UMusers = res.data;
-            }).catch((err) => {
-                this.UMusers = ['error retrieving data'];
-            });
-            // uTable = document.getElementById('userTable');
-            // for (i = 0; i<this.UMusers.length; i++){
-            //     data = this.UMusers[i];
-            //     row = $('<tr><td>ahhhtesettttt</td></tr>');
-            //     uTable.append(row);
-            // }
-            return this.UMusers;
-        },
-
-
-    },
-    computed:{
-        /* INVENTORY */
+			axios.get(shelfieURL + '/users', {withCredentials: true}).then((res) => {
+				const l = [];
+				for(let i in res.data) {
+					if(!res.data[i].role) {
+						res.data[i].role = '';
+					}
+					l.push(res.data[i]);
+				}
+				this.UMusers = l;
+				}).catch((err) => {
+				this.makeToast('Error', 'Failed to fetch users', 'danger');
+			});
+			return this.UMusers;
+		},
+		
+		
+	},
+	computed:{
+		/* INVENTORY */
 		noteModel: {
 			get: function() {
 				if(this.selectedTray !== null) {
@@ -909,7 +865,7 @@ const shelfieApp = new Vue({
 			}
 			
 		},
-        monthYearButtons: function() {
+		monthYearButtons: function() {
 			const start = luxon.DateTime.local().minus({months: 1});
 			const yearMonths = [];
 			let current = start;
@@ -943,88 +899,89 @@ const shelfieApp = new Vue({
 			}
 			return quarters;
 		},
-        /* END OF INVENTORY */
-
-        /* USER MANAGEMENT PAGE */
-
-        sortedUsers: function(){
-            //to sort later
-            this.UMUsers = this.fetchAllUsers;
-            return this.UMusers //to populate later
-        },
-        // addRows: function(){
-        //     var uTable;
-        //     var data;
-        //     var row;
-        //     this.UMUsers = this.fetchAllUsers;
-        //     uTable = document.getElementById('userTable');
-        //     for (i=0; i < this.UMUsers.length; i++){
-        //         data = this.UMUsers[i]
-        //         row = $('<tr><td>ahhhtesettttt</td></tr>');
-        //         uTable.append(row);
-        //     }
-        // },
-
-        //can borrow sort functions from data view?
-
-
-        /* END OF USER MANAGEMENT PAGE */
-
-        /* DATA VIEW PAGE */
-        sortedTrays:function() {
-            this.skippedRows = 0;
-            return this.trays.sort((a,b) => {
-                let modifier = 1;
-                if(this.currentSortDir === 'desc') modifier = -1;
-                if(this.currentSort == 'expiryYear.start'){
-                    if(a['expiryYear']['start'] < b['expiryYear']['start']) return -1 * modifier;
-                    if(a['expiryYear']['start'] > b['expiryYear']['start']) return 1 * modifier;
-                } else if(this.currentSort == 'expiryYear.end'){
-                    if(a['expiryYear']['end'] < b['expiryYear']['end']) return -1 * modifier;
-                    if(a['expiryYear']['end'] > b['expiryYear']['end']) return 1 * modifier;
-                } else if(this.currentSort == 'expiryMonth.start'){
-                    if(a['expiryMonth']['start'] < b['expiryMonth']['start']) return -1 * modifier;
-                    if(a['expiryMonth']['start'] > b['expiryMonth']['start']) return 1 * modifier;
-                } else if (this.currentSort == 'expiryMonth.end'){
-                    if(a['expiryMonth']['end'] < b['expiryMonth']['end']) return -1 * modifier;
-                    if(a['expiryMonth']['end'] > b['expiryMonth']['end']) return 1 * modifier;
-                } else {
-                    if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
-                    if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
-                }
-                
-                return 0;
-            }).filter((object, index) => {
-                let start = (this.currentPage-1)*this.pageSize;
-                let end = this.currentPage*this.pageSize;
-                let tmpIndex = index - this.skippedRows;
-                if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated){
-                    this.skippedRows ++;
-                    return false;
-                }
-                if(tmpIndex >= start && tmpIndex < end) {
-                    if(object.zone.toLowerCase().startsWith(this.zoneFilter.toLowerCase()) &&
-                    object.bay.toLowerCase().startsWith(this.bayFilter.toLowerCase()) &&
-                    object.shelf.toString().toLowerCase().startsWith(this.shelfFilter.toLowerCase()) &&
-                    object.row.toString().toLowerCase().startsWith(this.rowFilter.toLowerCase()) &&
-                    object.column.toString().toLowerCase().startsWith(this.columnFilter.toLowerCase()) &&
-                    object.category.toLowerCase().startsWith(this.categoryFilter.toLowerCase()) &&
-                    object.weight.toString().toLowerCase().startsWith(this.weightFilter.toLowerCase())
-                    ){
-                        return true;
-                    }
-                    this.skippedRows++;
-                    return false;
-                } else {
-                    return false;
-                }
-            });
-        }
-        /* END OF DATA VIEW PAGE */
-    },
+		/* END OF INVENTORY */
+		
+		/* USER MANAGEMENT PAGE */
+		
+		sortedUsers: function(){
+			//to sort later
+			this.UMUsers = this.fetchAllUsers;
+			return this.UMusers //to populate later
+		},
+		// addRows: function(){
+		//     var uTable;
+		//     var data;
+		//     var row;
+		//     this.UMUsers = this.fetchAllUsers;
+		//     uTable = document.getElementById('userTable');
+		//     for (i=0; i < this.UMUsers.length; i++){
+		//         data = this.UMUsers[i]
+		//         row = $('<tr><td>ahhhtesettttt</td></tr>');
+		//         uTable.append(row);
+		//     }
+		// },
+		
+		//can borrow sort functions from data view?
+		
+		
+		/* END OF USER MANAGEMENT PAGE */
+		
+		/* DATA VIEW PAGE */
+		sortedTrays:function() {
+			this.skippedRows = 0;
+			//const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+			return this.trays.sort((a,b) => {
+				let modifier = 1;
+				if(this.currentSortDir === 'desc') modifier = -1;
+				if(this.currentSort == 'expiryYear.start'){
+					if(a['expiryYear']['start'] < b['expiryYear']['start']) return -1 * modifier;
+					if(a['expiryYear']['start'] > b['expiryYear']['start']) return 1 * modifier;
+					} else if(this.currentSort == 'expiryYear.end'){
+					if(a['expiryYear']['end'] < b['expiryYear']['end']) return -1 * modifier;
+					if(a['expiryYear']['end'] > b['expiryYear']['end']) return 1 * modifier;
+					} else if(this.currentSort == 'expiryMonth.start'){
+					if(a['expiryMonth']['start'] < b['expiryMonth']['start']) return -1 * modifier;
+					if(a['expiryMonth']['start'] > b['expiryMonth']['start']) return 1 * modifier;
+					} else if (this.currentSort == 'expiryMonth.end'){
+					if(a['expiryMonth']['end'] < b['expiryMonth']['end']) return -1 * modifier;
+					if(a['expiryMonth']['end'] > b['expiryMonth']['end']) return 1 * modifier;
+					} else {
+					if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+					if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+				}
+				
+				return 0;
+				}).filter((object, index) => {
+				let start = (this.currentPage-1)*this.pageSize;
+				let end = this.currentPage*this.pageSize;
+				let tmpIndex = index - this.skippedRows;
+				if(!object.category || object.weight === undefined || !object.expiryYear || !object.expiryMonth || !object.lastUpdated){
+					this.skippedRows ++;
+					return false;
+				}
+				if(tmpIndex >= start && tmpIndex < end) {
+					if(object.zone.toLowerCase().startsWith(this.zoneFilter.toLowerCase()) &&
+					object.bay.toLowerCase().startsWith(this.bayFilter.toLowerCase()) &&
+					object.shelf.toString().toLowerCase().startsWith(this.shelfFilter.toLowerCase()) &&
+					object.row.toString().toLowerCase().startsWith(this.rowFilter.toLowerCase()) &&
+					object.column.toString().toLowerCase().startsWith(this.columnFilter.toLowerCase()) &&
+					object.category.toLowerCase().startsWith(this.categoryFilter.toLowerCase()) &&
+					object.weight.toString().toLowerCase().startsWith(this.weightFilter.toLowerCase())
+					){
+						return true;
+					}
+					this.skippedRows++;
+					return false;
+					} else {
+					return false;
+				}
+			});
+		}
+		/* END OF DATA VIEW PAGE */
+	},
 	watch: {
 		selectedZone: function() {
-            this.inventoryFetchBays(true);
+			this.inventoryFetchBays(true);
 		},
 		selectedBay: function() {
 			this.inventoryFetchShelves(true);
@@ -1045,8 +1002,8 @@ const shelfieApp = new Vue({
 		}
 		const self = this;
 		axios.interceptors.response.use((resp) => {
-			return resp
-		}, (err) => {
+			return resp;
+			}, (err) => {
 			if(err.response.data && err.response.data.error) {
 				if(err.response.data.data) {
 					for(let i = 0; i < err.response.data.data.length; i++) {

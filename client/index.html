@@ -1,206 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>Shelfie Cloud</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!-- CSS -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.css" integrity="sha256-A47OwxL/nAN0ydiDFTSGX7ftbfTJTKgiJ0zqCuTPDh4=" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.css" integrity="sha256-DdAtjBS1alSSjGdknERh+FrjHv0m7NTxE5iMhdv5JKs=" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="style.css?v=2">
-
-	<!-- SCRIPTS -->
-	<script src="https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js" integrity="sha256-bpvncwMbMjT7nC1s89l0DbEgj0NRvsoyXsNPdv0481Y=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue-router@3.1.6/dist/vue-router.min.js" integrity="sha256-B8zvQ+y1lIQkcm+EJyCis+7AgsnzaTCBAHgkrPFQr9A=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/portal-vue@2.1.7/dist/portal-vue.umd.min.js" integrity="sha256-hpvN0uXcWg/hXFoIk7TfFKLWKV0HMa5WOICSKiyxxn4=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.js" integrity="sha256-Rg0qQCADTRyTZPkSVnItp1nSpSP0ZtYjTh/bNchzS+E=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
-</head>
-<body class="bg-light">
-  <div id="shelfie-app" ref="app">
-        <div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-md-8 col-xs-10">
-						<form id="login-form" @submit="login">
-							<div>
-								<h1>Welcome!</h1>
-							</div>
-							<div class="form-group">
-								<label for="username">Username</label>
-								<input type="text" class="form-control" id="username" placeholder="Enter username" v-model="loginUsername" required>
-							</div>
-							<div class="form-group">
-								<label for="password">Password</label>
-								<input type="password" class="form-control" id="password" placeholder="Enter password" v-model="loginPassword" required>
-							</div>
-							<div class="form-group">
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="login-remember">
-									<label class="custom-control-label" for="login-remember">Remember me</label>
+	<head>
+		<title>Shelfie Cloud</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.css" integrity="sha256-A47OwxL/nAN0ydiDFTSGX7ftbfTJTKgiJ0zqCuTPDh4=" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.css" integrity="sha256-DdAtjBS1alSSjGdknERh+FrjHv0m7NTxE5iMhdv5JKs=" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="style.css?v=2">
+		
+		<script src="https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js" integrity="sha256-bpvncwMbMjT7nC1s89l0DbEgj0NRvsoyXsNPdv0481Y=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue-router@3.1.6/dist/vue-router.min.js" integrity="sha256-B8zvQ+y1lIQkcm+EJyCis+7AgsnzaTCBAHgkrPFQr9A=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/portal-vue@2.1.7/dist/portal-vue.umd.min.js" integrity="sha256-hpvN0uXcWg/hXFoIk7TfFKLWKV0HMa5WOICSKiyxxn4=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.js" integrity="sha256-Rg0qQCADTRyTZPkSVnItp1nSpSP0ZtYjTh/bNchzS+E=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/luxon@1.22.0/build/global/luxon.min.js" integrity="sha256-9nOzQsMIG12Bislqz+VUSDS8iyP0q4iCy1FfzoRvbXY=" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+	</head>
+	
+	<body class="bg-light">
+		<div id="shelfie-app" ref="app">
+			<div id="login-page" class="d-flex align-items-center justify-content-center" v-if="!isLoggedIn()">
+				<div class="container">
+					<img style="width: 50%; display:block; margin-left: auto; margin-right: auto;" src="./src/assets/shelfie.png">
+					<div class="row justify-content-center">
+						<div class="col-md-8 col-xs-10">
+							<form id="login-form" @submit="login">
+								<div>
+									<h1>Welcome!</h1>
 								</div>
-							</div>
-							<button type="submit" class="button mt-0">Login</button>
-						</form>
+								<div class="form-group">
+									<label for="username">Username</label>
+									<input type="text" class="form-control" style="font-size:24px;" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
+								</div>
+								<div class="form-group">
+									<label for="password">Password</label>
+									<input type="password" class="form-control" style="font-size:24px;" id="password" placeholder="Enter password" v-model="loginPassword" required>
+								</div>
+								<div class="form-group">
+									<div class="custom-control custom-checkbox">
+										<input type="checkbox" class="custom-control-input" id="login-remember">	
+										<h4><label class="custom-control-label" for="login-remember">Remember me</label></h4>
+									</div>
+								</div>
+								<button type="submit" class="button mt-0">Login</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
-        </div>
-        <div id="app-container" v-if="isLoggedIn()">
-        <nav id="sidebar" v-bind:class="{active: isSidebarActive}">
-        <ul class="button-list">
-            <img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
-            <li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
-            <li @click="activatePage('viewData')">View Data</li>
-            <li @click="activatePage('report')">Report Generator</li>
-            <li @click="activatePage('warehouseConfig')">Warehouse Config</li>
-            <li @click="activatePage('userManagement')">User Management</li>
-			<li @click="logout()">Logout</li>
-        </ul>
-        </nav>
-        <div v-bind:class="{active: isSidebarActive}" id="main">
-            <section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
-				<section></section>
-				<section></section>
-				<section></section>
-            </section> 
-
-        <div v-bind:class="{active: isInventoryActive}" class="inventory">
-			<b-modal id="note-modal" title="Tray Note" centered ok-title="Save note" ok-only>
-				<div class="form-group">
-					<textarea class="note-textarea form-control" v-model="noteModel"></textarea>
-				</div>
-			</b-modal>
-            <div class="data-entry-form">
-                <div class="container-fluid inventory-container mx-0">
-					<div class="inv-warehouse-view-container">
-						<div class="row">
-							<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
-								<div class="inv-v-ctrl-container text-center pt-3">
-									<div class="inv-v-ctrl-head">Zone</div>
-									<div class="inv-v-ctrl-mv">
-										<button @click="sectionSelect('zone', false)">&#129092;</button>
-										<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
-										<button @click="sectionSelect('zone', true)">&#129094;</button>
+			<div id="app-container" v-if="isLoggedIn()">
+				<nav id="sidebar" v-bind:class="{active: isSidebarActive}">
+					<ul class="button-list">
+						<img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
+						<li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
+						<li @click="activatePage('viewData')">View Data</li>
+						<!--<li @click="activatePage('report')" >Report Generator</li>-->
+						<li @click="alert('report page is still in progress :)')" >Report Generator</li>
+						<li @click="activatePage('warehouseConfig')">Warehouse Config</li>
+						<li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
+						<li @click="logout()">Logout</li>
+					</ul>
+				</nav>
+				<div v-bind:class="{active: isSidebarActive}" id="main">
+					<section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
+						<section></section>
+						<section></section>
+						<section></section>
+					</section> 
+					
+					<div v-bind:class="{active: isInventoryActive}" class="inventory">
+						<b-modal id="note-modal" title="Tray Note" centered ok-title="Save note" ok-only>
+							<div class="form-group">
+								<textarea class="note-textarea form-control" v-model="noteModel"></textarea>
+							</div>
+						</b-modal>
+						<div class="data-entry-form">
+							<div class="container-fluid inventory-container mx-0">
+								<div class="inv-warehouse-view-container">
+									<div class="row">
+										<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
+											<div class="inv-v-ctrl-container text-center pt-3">
+												<div class="inv-v-ctrl-head">Zone</div>
+												<div class="inv-v-ctrl-mv">
+													<button @click="sectionSelect('zone', false)">&#129092;</button>
+													<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
+													<button @click="sectionSelect('zone', true)">&#129094;</button>
+												</div>
+											</div>
+											<div class="inv-v-ctrl-container text-center pt-1">
+												<div class="inv-v-ctrl-head">Bay</div>
+												<div class="inv-v-ctrl-mv">
+													<button @click="sectionSelect('bay', false)">&#129092;</button>
+													<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
+													<button @click="sectionSelect('bay', true)">&#129094;</button>
+												</div>
+											</div>
+											<div class="inv-v-ctrl-container text-center pt-1">
+												<div class="inv-v-ctrl-head">Shelf</div>
+												<div class="inv-v-ctrl-mv">
+													<button @click="sectionSelect('shelf', true)">&#129095;</button>
+													<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
+													<button @click="sectionSelect('shelf', false)">&#129093;</button>
+												</div>
+											</div>
+											<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
+												<div class="inv-left-controls">
+													<button class="invButton" @click="shelfOk()">Shelf OK</button>
+													<button class="invButton" @click="fillShelf()">Fill Shelf</button>
+													<button class="invButton" @click="clearTray()">Clear Tray</button>
+													<button class="invButton" @click="viewNote()">View Note</button>
+												</div>
+												<div class="inv-v-bay-view">
+													<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
+											<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
+												<div class="inv-w-row" v-for="row in shelfTrays.slice()">
+													<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
+														<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
+														<div class="inv-w-el-tray">{{tray.category}}</div>
+														<div class="inv-w-el-meta">
+															<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
+															<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
 									</div>
 								</div>
-								<div class="inv-v-ctrl-container text-center pt-1">
-									<div class="inv-v-ctrl-head">Bay</div>
-									<div class="inv-v-ctrl-mv">
-										<button @click="sectionSelect('bay', false)">&#129092;</button>
-										<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
-										<button @click="sectionSelect('bay', true)">&#129094;</button>
-									</div>
-								</div>
-								<div class="inv-v-ctrl-container text-center pt-1">
-									<div class="inv-v-ctrl-head">Shelf</div>
-									<div class="inv-v-ctrl-mv">
-										<button @click="sectionSelect('shelf', true)">&#129095;</button>
-										<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
-										<button @click="sectionSelect('shelf', false)">&#129093;</button>
-									</div>
-								</div>
-								<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
-									<div class="inv-left-controls">
-										<button class="invButton" @click="shelfOk()">Shelf OK</button>
-										<button class="invButton" @click="fillShelf()">Fill Shelf</button>
-										<button class="invButton" @click="clearTray()">Clear Tray</button>
-										<button class="invButton" @click="viewNote()">View Note</button>
-									</div>
-									<div class="inv-v-bay-view">
-										<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
+								<div class="inv-category-inputs my-2">
+									<div class="row no-gutters mx-0">
+										<div class="button-group col-lg-9">
+											<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
+											<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
+											<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
+											<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
+											<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
+											<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
+											<button class="invButton" @click="trayContent('MILK')">MILK</button>
+											<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
+											<button class="invButton" @click="trayContent('RICE')">RICE</button>
+											<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
+											<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
+											<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
+											<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
+											<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
+											<button class="invButton" @click="trayContent('JAM')">JAM</button>
+											<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
+											<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
+											<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
+											<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
+											<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
+											<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
+											<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
+											<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
+											<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
+											<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
+											<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
+											<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
+											<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
+											<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
+											<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
+											<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CAKE')">XMAS CAKE</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
+											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
+											<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
+											<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
+											<button class="invButton" @click="trayContent('FISH')">FISH</button>
+											<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
+											<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
+											<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
+											<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
+											<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
+											<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
+											<button class="invButton" @click="trayContent('MISC')">MISC</button>
+											<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
+											<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
+											<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
+										</div>
+										<div class="button-group col-lg-3">
+											<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
+											<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
-								<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
-									<div class="inv-w-row" v-for="row in shelfTrays.slice()">
-										<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
-											<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
-											<div class="inv-w-el-tray">{{tray.category}}</div>
-											<div class="inv-w-el-meta">
-												<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
-												<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
-											</div>
-										</div>
+						</div>        
+					</div>
+					
+					<div v-bind:class="{active: isDataViewActive}" id="data-view">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col">
+									<h1 class="display-4 text-center">Data View</h1>
+									<hr>
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered; data-view-table" style="width:100%">
+											<thead>
+												<tr>
+													<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
+													<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
+													<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
+													<th scope="col" rowspan="2" @click="sort('row')">Row</th>
+													<th scope="col" rowspan="2" @click="sort('column')">Column</th>
+													<th scope="col" rowspan="2" @click="sort('category')">Category</th>
+													<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
+													<th scope="col" class="no-click" colspan="2">Expiry Year</th>
+													<th scope="col" class="no-click" colspan="2">Expiry Month</th>
+													<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
+													<th scope="col" rowspan="2">Note</th>
+												</tr>
+												<tr>
+													<th scope="col" @click="sort('expiryYear.start')">Start</th>
+													<th scope="col" @click="sort('expiryYear.end')">End</th>
+													<th scope="col" @click="sort('expiryMonth.start')">Start</th>
+													<th scope="col" @click="sort('expiryMonth.end')">End</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr v-for="tray in sortedTrays">
+													<td>{{ tray.zone }}</td>
+													<td>{{ tray.bay }}</td>
+													<td>{{ tray.shelf }}</td>
+													<td>{{ tray.row }}</td>
+													<td>{{ tray.column }}</td>
+													<td>{{ tray.category }}</td>
+													<td>{{ tray.weight }}</td>
+													<td>{{ tray.expiryYear.start }}</td>
+													<td>{{ tray.expiryYear.end }}</td>
+													<td>{{ tray.expiryMonth.start }}</td>
+													<td>{{ tray.expiryMonth.end }}</td>
+													<td>{{ convertDate( tray.lastUpdated ) }}</td>
+													<td>{{ tray.userNote }}</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
-								</div>	
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="page-control-buttons">
+										<button @click="prevPage" type="button" class="m-3">Previous</button>
+										<button @click="nextPage" type="button" class="m-3">Next</button>
+										<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
+									</div>
+								</div>
+							</div>
+							<div class="row d-flex justify-content-center">
+								<div class="col-sm-9">
+									<h2>Filters</h2>
+								</div>
+							</div>
+							<div class="row d-flex justify-content-center">
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h5><label for="filter-zone">Zone Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
+									</div>
+									<div class="form-group">
+										<h5><label for="filter-bay">Bay Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
+									</div>
+									<div class="form-group">
+										<h5><label for="filter-shelf">Shelf Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h5><label for="filter-row">Row Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
+									</div>
+									<div class="form-group">
+										<h5><label for="filter-column">Column Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h5><label for="filter-category">Category Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
+									</div>
+									<div class="form-group">
+										<h5><label for="filter-weight">Weight Filter</label></h5>
+										<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="inv-category-inputs my-2">
-						<div class="row no-gutters mx-0">
-							<div class="button-group col-lg-9">
-								<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
-								<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
-								<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
-								<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
-								<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
-								<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
-								<button class="invButton" @click="trayContent('MILK')">MILK</button>
-								<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
-								<button class="invButton" @click="trayContent('RICE')">RICE</button>
-								<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
-								<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
-								<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
-								<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
-								<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
-								<button class="invButton" @click="trayContent('JAM')">JAM</button>
-								<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
-								<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
-								<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
-								<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
-								<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
-								<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
-								<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
-								<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
-								<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
-								<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
-								<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
-								<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
-								<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
-								<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
-								<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
-								<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('CHRISTMAS')">XMAS CAKE</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
-								<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
-								<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
-								<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
-								<button class="invButton" @click="trayContent('FISH')">FISH</button>
-								<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
-								<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
-								<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
-								<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
-								<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
-								<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
-								<button class="invButton" @click="trayContent('MISC')">MISC</button>
-								<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
-								<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
-								<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
+					<div v-bind:class="{active:isReportActive}" id="report-page">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col">
+									<h4 class="display-4 text-center">Stock Report</h4>
+									<hr>
+								</div>
 							</div>
-							<div class="button-group col-lg-3">
-								<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
-								<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
+							<div class="row mt-3">
+								<div class="col-sm-6 order-1 order-sm-0">
+									<h2>Results</h2>
+									<div id="report-table" class="table-responsive">
+										<table class="table table-striped table-bordered">
+											<thead class="thead-dark">
+												<tr>
+													<th>Item</th>
+													<th>Count</th>
+													<th>Total Weight (kg)</th>
+												</tr>
+											</thead>
+											<tr v-for="category in returnReport">
+												<td>{{ category }}</td>
+												<td>{{ category.numberOfTrays }}</td>
+												<td>{{ category.totalWeight }}</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+								<div class="col-sm-6 order-0 order-sm-1">
+									<h2 class="text-center">Selected Zones</h2>
+									<div class="d-flex justify-content-center flex-wrap">
+										<button v-on:click = "fetchReportZones(); returnReport();">Generate Full Report</button> 
+										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
+										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone)}" v-on:click="myFilter(zone)">{{ zone }}</button>
+										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -308,441 +457,307 @@
 						</div>
 					</div>
 				</div>
-			</div>
-        </div>
-
-
-		<!-- Start of code for report generation -->
-		<div v-bind:class="{active:isReportActive}" id="report-page">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col">
-						<h4 class="display-4 text-center">Stock Report</h4>
-						<hr>
-					</div>
-				</div>
-				<div class="row mt-3">
-                    <div class="col-sm-6 order-1 order-sm-0">
-                        <h2>Results</h2>
-                        <div id="report-table" class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Count</th>
-                                    <th>Total Weight (kg)</th>
-                                </tr>
-                                </thead>
-                                <tr>
-                                    <td>BEANS</td>
-                                    <td>121</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>PASTA</td>
-                                    <td>12</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>BAGS</td>
-                                    <td>31</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>BISCUITS</td>
-                                    <td>41</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>JAM</td>
-                                    <td>63</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>FISH</td>
-                                    <td>18</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>CEREAL</td>
-                                    <td>3</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>TEA BAGS</td>
-                                    <td>99</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>CUSTARD</td>
-                                    <td>121</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>HOT CHOC</td>
-                                    <td>13</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>SUGAR</td>
-                                    <td>66</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>FRUIT JUICE</td>
-                                    <td>53</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>RICE PUDDING</td>
-                                    <td>22</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>INSTANT MEALS</td>
-                                    <td>73</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>CLEANING</td>
-                                    <td>124</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>COFFEE</td>
-                                    <td>5</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>CRACKERS</td>
-                                    <td>19</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>MILK</td>
-                                    <td>23</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>TOMATOES</td>
-                                    <td>11</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr>
-                                    <td>POTATOES</td>
-                                    <td>121</td>
-                                    <td>1000.0</td>
-                                </tr>
-                                <tr class="table-info">
-                                    <td>Total</td>
-                                    <td>1000</td>
-                                    <td>10000.0</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-					<div class="col-sm-6 order-0 order-sm-1">
-						<h2 class="text-center">Selected Zones</h2>
-						<div class="d-flex justify-content-center flex-wrap">
-							<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-							<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-							<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>
-							<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
-						</div>
-					</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End of code for report generation-->
-
-        <!-- WAREHOUSE CONFIGURATION -->
-        <div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col text-center">
-						<button v-on:click="warehouseFetchZones()">REFRESH</button>
-						<h1 class="display-4">Warehouse Configuration</h1>
-						<hr>
-						<h2>Create</h2>
-					</div>
-				</div>
-			</div>
-            <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="form-group mt-1">
-							<label>ZONE NAME</label>
-							<input class="form-control" type="text" placeholder="Zone Name" v-model="toInsertZoneName">
-						</div>
-						<div class="form-group">
-							<label>BAY NAME</label>
-							<input class="form-control" type="text" placeholder="Bay Name" v-model="toInsertBayName">
-						</div>
-						<div class="inv-v-ctrl-container text-center pt-3">
-							<div class="inv-v-ctrl-head">OR NUMBER OF BAYS</div>
-							<div class="inv-v-ctrl-mv">
-								<button @click="warehouseChangeNumberOfBaysInsert(-1)">-</button>
-								<div class="inv-v-zone">{{toInsertNumberOfBays}}</div>
-								<button @click="warehouseChangeNumberOfBaysInsert(1)">+</button>
+				
+				<div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col text-center">
+								<button v-on:click="warehouseFetchZones()">REFRESH</button>
+								<h1 class="display-4">Warehouse Configuration</h1>
+								<hr>
+								<h2>Create</h2>
 							</div>
 						</div>
-                    </div>
-
-                    <div class="col-sm-6 col-lg-4">
-						<div class="inv-v-ctrl-container text-center pt-3">
-							<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
-							<div class="inv-v-ctrl-mv">
-								<button @click="warehouseLimitShelfSelector()">-</button>
-								<div class="inv-v-zone">{{toInsertNumOfShelves}}</div>
-								<button @click="toInsertNumOfShelves++">+</button>
-							</div>
-						</div>
-						<div class="inv-v-ctrl-container text-center pt-3">
-							<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
-							<div class="inv-v-ctrl-mv">
-								<button @click="warehouseLimitRowSelector(false)">-</button>
-								<div class="inv-v-zone">{{toInsertNumOfRows}}</div>
-								<button @click="toInsertNumRows++">+</button>
-							</div>
-						</div>						
-						<div class="inv-v-ctrl-container text-center pt-3">
-							<div class="inv-v-ctrl-head">NUMBER OF TRAYS (HORIZONTAL)</div>
-							<div class="inv-v-ctrl-mv">
-								<button @click="warehouseLimitColumnSelector(false)">-</button>
-								<div class="inv-v-zone">{{toInsertNumOfColumns}}</div>
-								<button @click="toInsertNumOfColumns++">+</button>
-							</div>
-						</div>
-                    </div>
-                </div>
-				<div class="row mt-3">
-					<div class="col d-flex justify-content-center">
-						<button class="my-2 submit-button" v-on:click="warehouseCreateSubmit()">SUBMIT</button>
 					</div>
-				</div>
-            </div>
-			<div class="container-fluid">
-				<hr />
-				<div class="row">
-					<div class="col">
-						<h2 class="text-center">Modify</h2>
-					</div>
-				</div>
-				<div class="row d-flex justify-content-around">
-					<div class="col-md-4 my-3">
-						<div class="cfg-modify-panel">
-							<h3 class="mb-3">SELECT A ZONE</h3>
-							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
-								<button v-on:click="warehouseFetchBays(zone._id)" v-for="zone in warehouseZones">{{zone._id}}</button>
-							</div>
-							<p v-else class="bg-warning p-2 h5">NO ZONES</p>
-							<p v-if="originalData.zone._id !== ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone._id}}</p>
-							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
-
-							<div v-if="originalData.zone._id != ''" class="d-flex flex-column">
+					<div class="container">
+						<div class="row align-items-center justify-content-center">
+							<div class="col-sm-6 col-lg-4">
+								<div class="form-group mt-1">
+									<label>ZONE NAME</label>
+									<input class="form-control" type="text" placeholder="Zone Name" v-model="toInsertZoneName">
+								</div>
 								<div class="form-group">
-									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone._id">
+									<label>COLOUR</label>
+									<input type="color" id="zoneColor" style="width: 100%; height: 35px;">
 								</div>
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF BAYS</div>
 									<div class="inv-v-ctrl-mv">
-										<button @click="warehouseChangeNumberOfBays(-1)">-</button>
-										<div class="inv-v-zone">{{modifiedData.zone.numberOfBays}}</div>
-										<button @click="warehouseChangeNumberOfBays(1)">+</button>
+										<button @click="warehouseChangeNumberOfBaysInsert(-1)">-</button>
+										<div class="inv-v-zone">{{toInsertNumberOfBays}}</div>
+										<button @click="warehouseChangeNumberOfBaysInsert(1)">+</button>
 									</div>
 								</div>
-								<button>DELETE ZONE</button>
 							</div>
-						</div>
-					</div>
-					<div class="col-md-4 my-3">
-						<div class="cfg-modify-panel">
-							<h3 class="mb-3">SELECT A BAY</h3>
-							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseBays.length > 0">
-								<button v-on:click="warehouseFetchShelves(bayName)" v-for="bayName in warehouseBays">{{bayName}}</button>
-							</div>
-							<p v-else class="bg-warning p-2 h5">NO BAYS</p>
-							<p v-if="originalData.bay.name != ''" class="h5 mt-4 mb-3">SELECTED BAY: {{originalData.bay.name}}</p>
-							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</p>
-
-							<div v-if="originalData.bay.name != ''" class="d-flex flex-column">
-								<div class="form-group">
-									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.bay.name">
-								</div>
+							
+							<div class="col-sm-6 col-lg-4">
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
 									<div class="inv-v-ctrl-mv">
-										<button @click="warehouseChangeNumberOfShelves(-1)">-</button>
-										<div class="inv-v-zone">{{modifiedData.bay.numberOfShelves}}</div>
-										<button @click="warehouseChangeNumberOfShelves(1)">+</button>
+										<button @click="warehouseLimitShelfSelector()">-</button>
+										<div class="inv-v-zone">{{toInsertNumOfShelves}}</div>
+										<button @click="toInsertNumOfShelves++">+</button>
 									</div>
 								</div>
-								<button>DELETE BAY</button>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4 my-3">
-						<div class="cfg-modify-panel">
-							<h3 class="mb-3">SELECT A SHELF</h3>
-							<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseShelves.length > 0">
-								<button v-on:click="warehouseFetchRowsColumns(shelf._id)" v-for="shelf in warehouseShelves">{{shelf._id}}</button>
-							</div>
-							<p v-else class="bg-warning p-2 h5">NO SHELVES</p>
-							<p class="h5 mt-4 mb-3" v-if="originalData.shelf._id != -1">SELECTED SHELF: {{originalData.shelf._id}}</p>
-							<p class="h5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</p>
-							
-							<div v-if="originalData.shelf._id != -1" class="d-flex flex-column">
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
 									<div class="inv-v-ctrl-mv">
-										<button @click="warehouseLimitRowSelector(true)">-</button>
-										<div class="inv-v-zone">{{modifiedData.shelf.rows}}</div>
-										<button @click="modifiedData.shelf.rows++">+</button>
+										<button @click="warehouseLimitRowSelector(false)">-</button>
+										<div class="inv-v-zone">{{toInsertNumOfRows}}</div>
+										<button @click="toInsertNumOfRows++">+</button>
 									</div>
-								</div>
+								</div>						
 								<div class="inv-v-ctrl-container text-center pt-3">
 									<div class="inv-v-ctrl-head">NUMBER OF TRAYS (HORIZONTAL)</div>
 									<div class="inv-v-ctrl-mv">
-										<button @click="warehouseLimitColumnSelector(true)">-</button>
-										<div class="inv-v-zone">{{modifiedData.shelf.columns}}</div>
-										<button @click="modifiedData.shelf.columns++">+</button>
+										<button @click="warehouseLimitColumnSelector(false)">-</button>
+										<div class="inv-v-zone">{{toInsertNumOfColumns}}</div>
+										<button @click="toInsertNumOfColumns++">+</button>
 									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-3">
+							<div class="col d-flex justify-content-center">
+								<button class="my-2 submit-button" v-on:click="warehouseCreateSubmit()">SUBMIT</button>
+							</div>
+						</div>
+					</div>
+					<div class="container-fluid">
+						<hr />
+						<div class="row">
+							<div class="col">
+								<h2 class="text-center">Modify</h2>
+							</div>
+						</div>
+						<div class="row d-flex justify-content-around">
+							<div class="col-md-4 my-3">
+								<div class="cfg-modify-panel">
+									<h3 class="mb-3">SELECT A ZONE</h3>
+									<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseZones.length > 0">
+										<button v-on:click="warehouseFetchBays(zone._id)" v-for="zone in warehouseZones">{{zone._id}}</button>
+									</div>
+									<p v-else class="bg-warning p-2 h5">NO ZONES</p>
+									<p v-if="originalData.zone._id !== ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone._id}}</p>
+									<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
+									
+									<div v-if="originalData.zone._id != ''" class="d-flex flex-column">
+										<div class="form-group">
+											<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone._id">
+										</div>
+										<div class="inv-v-ctrl-container text-center pt-3">
+											<div class="inv-v-ctrl-head">NUMBER OF BAYS</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="warehouseChangeNumberOfBays(-1)">-</button>
+												<div class="inv-v-zone">{{modifiedData.zone.numberOfBays}}</div>
+												<button @click="warehouseChangeNumberOfBays(1)">+</button>
+											</div>
+										</div>
+										<button v-on:click="warehouseDeleteZone()">DELETE ZONE</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 my-3">
+								<div class="cfg-modify-panel">
+									<h3 class="mb-3">SELECT A BAY</h3>
+									<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseBays.length > 0">
+										<button v-on:click="warehouseFetchShelves(bayName)" v-for="bayName in warehouseBays">{{bayName}}</button>
+									</div>
+									<p v-else class="bg-warning p-2 h5">NO BAYS</p>
+									<p v-if="originalData.bay.name != ''" class="h5 mt-4 mb-3">SELECTED BAY: {{originalData.bay.name}}</p>
+									<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED BAY: None</p>
+									
+									<div v-if="originalData.bay.name != ''" class="d-flex flex-column">
+										<div class="inv-v-ctrl-container text-center pt-3">
+											<div class="inv-v-ctrl-head">NUMBER OF SHELVES</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="warehouseChangeNumberOfShelves(-1)">-</button>
+												<div class="inv-v-zone">{{modifiedData.bay.numberOfShelves}}</div>
+												<button @click="warehouseChangeNumberOfShelves(1)">+</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 my-3">
+								<div class="cfg-modify-panel">
+									<h3 class="mb-3">SELECT A SHELF</h3>
+									<div class="w-100 scrollable-list text-left border bg-light" v-if="warehouseShelves.length > 0">
+										<button v-on:click="warehouseFetchRowsColumns(shelf._id)" v-for="shelf in warehouseShelves">{{shelf._id}}</button>
+									</div>
+									<p v-else class="bg-warning p-2 h5">NO SHELVES</p>
+									<p class="h5 mt-4 mb-3" v-if="originalData.shelf._id != -1">SELECTED SHELF: {{originalData.shelf._id}}</p>
+									<p class="h5 mt-4 mb-3 bg-warning p-2" v-else>SELECTED SHELF: None</p>
+									
+									<div v-if="originalData.shelf._id != -1" class="d-flex flex-column">
+										<div class="inv-v-ctrl-container text-center pt-3">
+											<div class="inv-v-ctrl-head">NUMBER OF TRAYS (VERTICAL)</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="warehouseLimitRowSelector(true)">-</button>
+												<div class="inv-v-zone">{{modifiedData.shelf.rows}}</div>
+												<button @click="modifiedData.shelf.rows++">+</button>
+											</div>
+										</div>
+										<div class="inv-v-ctrl-container text-center pt-3">
+											<div class="inv-v-ctrl-head">NUMBER OF TRAYS (HORIZONTAL)</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="warehouseLimitColumnSelector(true)">-</button>
+												<div class="inv-v-zone">{{modifiedData.shelf.columns}}</div>
+												<button @click="modifiedData.shelf.columns++">+</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<hr />
+							</div>
+						</div>
+						<div class="row justify-content-around">
+							<div class="col-sm-4">
+								<h3 class="my-3 text-center">BEFORE CHANGES</h3>
+								<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{originalData.zone._id}}</h5>
+								<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
+								<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{originalData.bay.name}}</h5>
+								<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{originalData.bay.numberOfShelves}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{originalData.shelf._id}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
+							</div>
+							<div class="col-sm-4">
+								<h3 class="my-3 text-center">AFTER CHANGES</h3>
+								<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{modifiedData.zone._id}}</h5>
+								<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
+								<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{modifiedData.bay.name}}</h5>
+								<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{modifiedData.bay.numberOfShelves}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{modifiedData.shelf._id}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{modifiedData.shelf.rows}}</h5>
+								<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{modifiedData.shelf.columns}}</h5>
+							</div>
+						</div>
+						<div class="row my-3">
+							<div class="col-12 d-flex justify-content-center">
+								<button class="submit-button" v-on:click="warehouseModifySubmit()">SUBMIT CHANGES</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div v-bind:class="{active: isUserManagementActive}" id="user-view">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col">
+							<h1 class="display-4 text-center">User Management</h1>
+							<hr>
+						</div>
+					</div>
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col">	
+							<h2 class="text-center">All Users</h2>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered text-center">
+									<tbody>
+										<tr>
+											<th scope="col">FIRST NAME</th>
+											<th scope="col">LAST NAME</th>
+											<th scope="col">USERNAME</th>
+											<th scope="col">ROLE</th>
+											<th scope="col">CAN VIEW DATA</th>
+											<th scope="col">CAN EDIT DATA</th>
+											<th scope="col">CAN MODIFY WAREHOUSE</th>
+											<th scope="col">CAN MODIFY USERS</th>
+										</tr>
+										<tr v-for="user in sortedUsers" @click="UMcurrentUser = user; UMcreateMode = false" class="user-el" :class="{selected: UMcurrentUser === user}">
+											<td>{{user.firstName}}</td>
+											<td>{{user.lastName}}</td>
+											<td>{{user.username}}</td>
+											<td>{{user.role}}</td>
+											<td>{{user.canViewData}}</td>
+											<td>{{user.canEditData}}</td>
+											<td>{{user.canModifyWarehouse}}</td>
+											<td>{{user.canModifyUsers}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div class="page-control-buttons d-flex justify-content-center">
+								<button @click="prevPage" type="button">Previous</button>
+								<button @click="nextPage" type="button">Next</button>
+								<button @click="fetchAllUsers" type="button">Refresh Table</button>
+								<button @click="setUMmodeCreate()" class="submit-button" type="button">ADD USER</button>
+							</div>
+						</div>
+					</div>
+					<div v-if="UMcurrentUser !== null" class="my-3">
+						<div class="row">
+							<div class="col">
+								<h2>User Details</h2>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<h5>BASIC INFO:</h5>
+								<div class="form-group">
+									<label class="d-inline">FIRST NAME:</label>
+									<input type="text" class="d-inline form-control" v-model="UMcurrentUser.firstName" placeholder="Enter first name">
+								</div>
+								<div class="form-group">
+									<label class="d-inline">LAST NAME:</label>
+									<input type="text" class="d-inline form-control" v-model="UMcurrentUser.lastName" placeholder="Enter last name">
+								</div>
+								<div class="form-group">
+									<label class="d-inline">USERNAME:</label>
+									<input type="text" class="d-inline form-control" v-model="UMcurrentUser.username" placeholder="Enter username">
+								</div>
+								<div v-if="UMcreateMode" class="form-group">
+									<label class="d-inline">PASSWORD:</label>
+									<input type="password" class="d-inline form-control" v-model="UMcurrentUser.password" placeholder="Enter password">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<h5>ROLE:</h5>
+								<div>
+									<button class="role-button" @click="setUserRole('MANAGER')" :key="UMcurrentUser.role" :class="{'selected': UMcurrentUser.role === 'MANAGER'}">MANAGER</button>
+									<button class="role-button" @click="setUserRole('TEAM LEADER')" :key="UMcurrentUser.role" :class="{'selected': UMcurrentUser.role === 'TEAM LEADER'}">TEAM LEADER</button>
+									<button class="role-button" @click="setUserRole('STOCK MOVER')" :key="UMcurrentUser.role" :class="{'selected': UMcurrentUser.role === 'STOCK MOVER'}">STOCK MOVER</button>
+									<button class="role-button" @click="setUserRole('SORTING VOLUNTEER')" :key="UMcurrentUser.role" :class="{'selected': UMcurrentUser.role === 'SORTING VOLUNTEER'}">SORTING VOLUNTEER</button>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<h5>PERMISSIONS: </h5>
+								<div>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canViewData" disabled /> CAN VIEW DATA</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canEditData" disabled /> CAN EDIT DATA</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyWarehouse" disabled /> CAN MODIFY WAREHOUSE</h5>
+									<h5 class="display-5" style="font-weight: normal"><input type="checkbox" value="true" v-model="UMcurrentUser.canModifyUsers" disabled /> CAN MODIFY USERS</h5>
+								</div>
+							</div>
+						</div>
+						<div class="row my-3">
+							<div class="col">
+								<div class="d-flex justify-content-center">
+									<button v-if="!UMcreateMode" @click="updateUser" class="submit-button">UPDATE RECORD</button>
+									<button v-if="UMcreateMode" @click="submitUser" class="submit-button">ADD USER</button>
+									<button v-if="!UMcreateMode" @click="deleteUser" class="ml-3 bg-danger">DELETE USER</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col">
-						<hr />
-					</div>
-				</div>
-				<div class="row justify-content-around">
-					<div class="col-sm-4">
-						<h3 class="my-3 text-center">BEFORE CHANGES</h3>
-						<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{originalData.zone._id}}</h5>
-						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{originalData.zone.numberOfBays}}</h5>
-						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{originalData.bay.name}}</h5>
-						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{originalData.bay.numberOfShelves}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{originalData.shelf._id}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{originalData.shelf.rows}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{originalData.shelf.columns}}</h5>
-					</div>
-					<div class="col-sm-4">
-						<h3 class="my-3 text-center">AFTER CHANGES</h3>
-						<h5 class="display-5" v-if="originalData.zone._id != ''">Zone Name: {{modifiedData.zone._id}}</h5>
-						<h5 class="display-5" v-if="originalData.zone.numberOfBays != -1">Number of Bays: {{modifiedData.zone.numberOfBays}}</h5>
-						<h5 class="display-5" v-if="originalData.bay.name != ''">Bay Name: {{modifiedData.bay.name}}</h5>
-						<h5 class="display-5" v-if="originalData.bay.numberOfShelves != -1">Number of Shelves: {{modifiedData.bay.numberOfShelves}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf._id != -1">Shelf: {{modifiedData.shelf._id}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.rows != -1">Rows (vertical): {{modifiedData.shelf.rows}}</h5>
-						<h5 class="display-5" v-if="originalData.shelf.columns != -1">Columns (horizontal): {{modifiedData.shelf.columns}}</h5>
-					</div>
-				</div>
-				<div class="row my-3">
-					<div class="col-12 d-flex justify-content-center">
-						<button class="submit-button" v-on:click="warehouseModifySubmit()">SUBMIT CHANGES</button>
-					</div>
-				</div>
-				</div>
 			</div>
-        </div>
-        <!-- END OF WAREHOUSE CONFIGURATION -->
-
-
-        <!-- USER MANAGEMENT PAGE -->
-        <!--ERROR: slight gap at the top of the page before container :(-->
-        <div v-bind:class="{active: isUserManagementActive}" class="user-view text-center" style="height: 0px;">
-            <div class="user-view-container">
-                <h4 class="display-4">User Management</h4>
-                <hr>
-                <div>	
-                    <h5 class="h2">All Users</h5>
-                    <table class="table" style="text-align: center;" id="userTable">
-                        <tbody id = "userTableBody">
-                            <tr>
-                                <th>FIRST NAME</th>
-                                <th>LAST NAME</th>
-                                <th>USERNAME</th>
-                                <th>ROLE</th>
-                                <th>CAN VIEW DATA</th>
-                                <th>CAN EDIT DATA</th>
-                                <th>CAN MODIFY WAREHOUSE</th>
-                                <th>CAN MODIFY USERS</th>
-                            </tr>
-                            <tr v-for="user in sortedUsers">
-                                <td>{{ user.firstName }}</td>
-                                <td>{{ user.lastName }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.role }}</td>
-                                <td> {{ user.canViewData }} </td>
-                                <td> {{user.canEditData}} </td>
-                                <td> {{user.canModifyWarehouse}}</td>
-                                <td> {{user.canModifyUsers}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="page-control-buttons" style="margin-bottom: 0px;">
-                    <button @click="prevPage" class = "Button" style="padding: 8px; height: 80px; width: 125px; margin: 10px;" type="button">Previous</button>
-                    <button @click="nextPage" class = "Button" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Next</button>
-                    <!--<button @click="addRows" style="padding: 8px; height: 80px;  width: 125px; margin: 10px;" type="button">Refresh Table</button>-->
-                </div>
-
-                <div class="page-control-buttons" style="margin-top: 0px; margin-bottom: 0px;">
-                    <button @click="editUser" class="add-update-button submit-button" type="button">EDIT SELECTED USER</button>
-                    <button @click="emptyFields" class="add-update-button submit-button" type="button">ADD USER</button>
-                </div>
-
-                <h5 class="h2" style="visibility: hidden;" id="userFieldsTitle">User Details</h5>
-                    <div class="current-record" style="margin-left: 0px; visibility: hidden;" id="userFields">
-                        <div>
-							<!-- NOTE: jerzy did: 
-								<div class="form-group">
-								<label class="d-inline">FIRST NAME:</label>
-								<input type="text" class="d-inline form-control" placeholder="Aidan">
-							</div>-->
-							<h5 class="input-label display-5" >FIRST NAME:
-                                <input type="text" class="text-input form-control" id="fNameInput" placeholder="Type here"></h5>
-                            <h5 class="input-label display-5">LAST NAME:
-                                <input type="text" class="text-input form-control" style="margin-left: 2px;" id="lNameInput" placeholder="Type here"></h5>
-                            <h5 class="input-label display-5">USERNAME:
-                                <input type="text" class="text-input form-control" style="margin-left: 5px;" id="uNameInput" placeholder="Type here"></h5>
-                            <h5 class="input-label display-5" id="passwordContainer" style="visibility: hidden;">PASSWORD:
-                                <input type="password" class="text-input form-control" style="margin-left: 3px;" id="passwordInput" placeholder="Type here"></h5>
-                        </div>
-                        <div class="record-item">
-                            <h5 class = "display-5">ROLE: </h5>
-                            <div class="button-group" style="vertical-align: centre; width:350px; margin-left: 2.5%;">
-                                <button @click="managerSelected" class="role-button" id="managerButton">MANAGER</button>
-                                <button @click="teamleaderSelected" class="role-button" id="teamleaderButton">TEAM LEADER</button>
-                                <button @click="stockmoverSelected" class="role-button" id="stockmoverButton">STOCK MOVER</button>
-                                <button @click="sortingvolunteerSelected" class="role-button" id="sortingvolunteerButton">SORTING VOLUNTEER</button>
-                            </div>
-                        </div>
-                        <div class="record-item">
-                            <h5 class="display-5">PERMISSIONS: </h5>
-                            <div class="button-group" style="vertical-align: centre; width:250px; margin-left: 2.5%;">
-                                <h3><input type="checkbox" value="true" disabled id="viewdataCheck"/> Can View Data </h3>
-                                <h3><input type="checkbox" value="true" disabled id="editdataCheck"/> Can Edit Data</h3>
-                                <h3><input type="checkbox" value="true" disabled id="modifywarehouseCheck"/> Can Modify Warehouse</h3>
-                                <h3><input type="checkbox" value="true" disabled id="modifyusersCheck"/> Can Modify Users</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <button @click="updateUser" class="submit-button Button" style="width:600px; visibility: hidden;" id="updateRecordButton">UPDATE RECORD</button>
-                    <button @click="submitUser" class="submit-button Button" style="width:600px; visibility: hidden;" id="addUserButton">ADD USER</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- END OF USER MANAGEMENT PAGE -->
-
-    </div>
+		</div>		
+	</div>
 </div>
 
-  <script src="./src/main.js?v=22" ></script>
+<script src="./src/main.js?v=22" ></script>
 </body>
 </html>

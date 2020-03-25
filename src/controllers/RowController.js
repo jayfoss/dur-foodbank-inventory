@@ -15,10 +15,10 @@ class RowController {
             'userNote': ''
         };
         this.basicRow = {
+            '0': this.basicTrayData,
             '1': this.basicTrayData,
             '2': this.basicTrayData,
             '3': this.basicTrayData,
-            '4': this.basicTrayData,
         }
     }
 
@@ -27,7 +27,6 @@ class RowController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const row = new RowModel();
-		if(!row.map(req.body)) return;
 		await this.insertRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
 		resp.status(201);
 		resp.send(row.fields);
@@ -38,7 +37,6 @@ class RowController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const row = new RowModel();
-		if(!row.map(req.body)) return;
 		await this.deleteRows(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.numberOfRows);
 		resp.status(201);
 		resp.send(row.fields);
@@ -142,20 +140,20 @@ class RowController {
 */
     async deleteRows(zoneName, bayName, shelfNumber, newRowNumber){
         let originalRows = await this.getRowsFromDb(zoneName, bayName, shelfNumber);
-        let numOfOrigRows = originalRows.length;
+        let numOfOrigRows = originalRows.length-1;
         if(newRowNumber >= numOfOrigRows)
             return;
-        for(let row = numOfOrigRows; row > newRowNumber; row--){
+        for(let row = numOfOrigRows-1; row >= newRowNumber; row--){
             await this.deleteRowFromDb(zoneName, bayName, shelfNumber, row);
         }
     }
 
     async insertRows(zoneName, bayName, shelfNumber, newRowNumber){
         let originalRows = await this.getRowsFromDb(zoneName, bayName, shelfNumber);
-        let numOfOrigRows = originalRows.length;
+        let numOfOrigRows = originalRows.length-1;
         if(newRowNumber <= numOfOrigRows)
             return;
-        for(let row = numOfOrigRows + 1; row <= newRowNumber; row++){
+        for(let row = numOfOrigRows; row < newRowNumber; row++){
             await this.insertRow(zoneName, bayName, shelfNumber, row);
         }
     }
