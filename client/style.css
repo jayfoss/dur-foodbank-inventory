@@ -1,13 +1,3 @@
-/* ||CONSTANTS||
-	FONT-SIZES
-	titles: x-large (exact val???)
-	buttons: 18px
-	subtitles (e.g. navbar): 20px
-	...
-	
-*/
-
-/* Set a style for all buttons */
 button {
 	background-color: #00506C;
 	color: white;
