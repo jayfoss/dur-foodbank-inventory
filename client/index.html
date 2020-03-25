@@ -30,333 +30,329 @@
 								</div>
 								<div class="form-group">
 									<label for="username">Username</label>
-									<input type="text" class="form-control" style="font-size:24px;" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
+								<input type="text" class="form-control" style="font-size:24px;" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
+							</div>
+							<div class="form-group">
+								<label for="password">Password</label>
+								<input type="password" class="form-control" style="font-size:24px;" id="password" placeholder="Enter password" v-model="loginPassword" required>
+							</div>
+							<div class="form-group">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="login-remember">	
+									<h4><label class="custom-control-label" for="login-remember">Remember me</label></h4>
 								</div>
-								<div class="form-group">
-									<label for="password">Password</label>
-									<input type="password" class="form-control" style="font-size:24px;" id="password" placeholder="Enter password" v-model="loginPassword" required>
-								</div>
-								<div class="form-group">
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="login-remember">	
-										<h4><label class="custom-control-label" for="login-remember">Remember me</label></h4>
-									</div>
-								</div>
-								<button type="submit" class="button mt-0">Login</button>
-							</form>
-						</div>
+							</div>
+							<button type="submit" class="button mt-0">Login</button>
+						</form>
 					</div>
 				</div>
 			</div>
-			<div id="app-container" v-if="isLoggedIn()">
-				<nav id="sidebar" v-bind:class="{active: isSidebarActive}">
-					<ul class="button-list">
-						<img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
-						<li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
-						<li @click="activatePage('viewData')">View Data</li>
-						<!--<li @click="activatePage('report')" >Report Generator</li>-->
-						<li @click="alert('report page is still in progress :)')" >Report Generator</li>
-						<li @click="activatePage('warehouseConfig')">Warehouse Config</li>
-						<li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
-						<li @click="logout()">Logout</li>
-					</ul>
-				</nav>
-				<div v-bind:class="{active: isSidebarActive}" id="main">
-					<section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
-						<section></section>
-						<section></section>
-						<section></section>
-					</section> 
-					
-					<div v-bind:class="{active: isInventoryActive}" class="inventory">
-						<b-modal id="note-modal" title="Tray Note" centered ok-title="Save note" ok-only>
-							<div class="form-group">
-								<textarea class="note-textarea form-control" v-model="noteModel"></textarea>
-							</div>
-						</b-modal>
-						<div class="data-entry-form">
-							<div class="container-fluid inventory-container mx-0">
-								<div class="inv-warehouse-view-container">
-									<div class="row">
-										<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
-											<div class="inv-v-ctrl-container text-center pt-3">
-												<div class="inv-v-ctrl-head">Zone</div>
-												<div class="inv-v-ctrl-mv">
-													<button @click="sectionSelect('zone', false)">&#129092;</button>
-													<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
-													<button @click="sectionSelect('zone', true)">&#129094;</button>
-												</div>
-											</div>
-											<div class="inv-v-ctrl-container text-center pt-1">
-												<div class="inv-v-ctrl-head">Bay</div>
-												<div class="inv-v-ctrl-mv">
-													<button @click="sectionSelect('bay', false)">&#129092;</button>
-													<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
-													<button @click="sectionSelect('bay', true)">&#129094;</button>
-												</div>
-											</div>
-											<div class="inv-v-ctrl-container text-center pt-1">
-												<div class="inv-v-ctrl-head">Shelf</div>
-												<div class="inv-v-ctrl-mv">
-													<button @click="sectionSelect('shelf', false)">&#129095;</button>
-													<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
-													<button @click="sectionSelect('shelf', true)">&#129093;</button>
-												</div>
-											</div>
-											<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
-												<div class="inv-left-controls">
-													<button class="invButton" @click="shelfOk()">Shelf OK</button>
-													<button class="invButton" @click="fillShelf()">Fill Shelf</button>
-													<button class="invButton" @click="clearTray()">Clear Tray</button>
-													<button class="invButton" @click="viewNote()">View Note</button>
-												</div>
-												<div class="inv-v-bay-view">
-													<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
-												</div>
+		</div>
+		<div id="app-container" v-if="isLoggedIn()">
+			<nav id="sidebar" v-bind:class="{active: isSidebarActive}">
+				<ul class="button-list">
+					<img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
+					<li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
+					<li @click="activatePage('viewData')">View Data</li>
+					<!--<li @click="activatePage('report')" >Report Generator</li>-->
+					<li @click="alert('report page is still in progress :)')" >Report Generator</li>
+					<li @click="activatePage('warehouseConfig')">Warehouse Config</li>
+					<li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
+					<li @click="logout()">Logout</li>
+				</ul>
+			</nav>
+			<div v-bind:class="{active: isSidebarActive}" id="main">
+				<section @click="isSidebarActive = !isSidebarActive" v-bind:class="{active: isSidebarActive}" class="hamburger">
+					<section></section>
+					<section></section>
+					<section></section>
+				</section> 
+				
+				<div v-bind:class="{active: isInventoryActive}" class="inventory">
+					<b-modal id="note-modal" title="Tray Note" centered ok-title="Save note" ok-only>
+						<div class="form-group">
+							<textarea class="note-textarea form-control" v-model="noteModel"></textarea>
+						</div>
+					</b-modal>
+					<div class="data-entry-form">
+						<div class="container-fluid inventory-container mx-0">
+							<div class="inv-warehouse-view-container">
+								<div class="row">
+									<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
+										<div class="inv-v-ctrl-container text-center pt-3">
+											<div class="inv-v-ctrl-head">Zone</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="sectionSelect('zone', false)">&#129092;</button>
+												<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
+												<button @click="sectionSelect('zone', true)">&#129094;</button>
 											</div>
 										</div>
-										<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
-											<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
-												<div class="inv-w-row" v-for="row in shelfTrays.slice()">
-													<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
-														<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
-														<div class="inv-w-el-tray">{{tray.category}}</div>
-														<div class="inv-w-el-meta">
-															<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
-															<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
-														</div>
+										<div class="inv-v-ctrl-container text-center pt-1">
+											<div class="inv-v-ctrl-head">Bay</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="sectionSelect('bay', false)">&#129092;</button>
+												<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
+												<button @click="sectionSelect('bay', true)">&#129094;</button>
+											</div>
+										</div>
+										<div class="inv-v-ctrl-container text-center pt-1">
+											<div class="inv-v-ctrl-head">Shelf</div>
+											<div class="inv-v-ctrl-mv">
+												<button @click="sectionSelect('shelf', false)">&#129095;</button>
+												<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
+												<button @click="sectionSelect('shelf', true)">&#129093;</button>
+											</div>
+										</div>
+										<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
+											<div class="inv-left-controls">
+												<button class="invButton" @click="shelfOk()">Shelf OK</button>
+												<button class="invButton" @click="fillShelf()">Fill Shelf</button>
+												<button class="invButton" @click="clearTray()">Clear Tray</button>
+												<button class="invButton" @click="viewNote()">View Note</button>
+											</div>
+											<div class="inv-v-bay-view">
+												<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
+										<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
+											<div class="inv-w-row" v-for="row in shelfTrays.slice()">
+												<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
+													<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
+													<div class="inv-w-el-tray">{{tray.category}}</div>
+													<div class="inv-w-el-meta">
+														<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
+														<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
 													</div>
 												</div>
-											</div>	
-										</div>
-									</div>
-								</div>
-								<div class="inv-category-inputs my-2">
-									<div class="row no-gutters mx-0">
-										<div class="button-group col-lg-9">
-											<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
-											<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
-											<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
-											<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
-											<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
-											<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
-											<button class="invButton" @click="trayContent('MILK')">MILK</button>
-											<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
-											<button class="invButton" @click="trayContent('RICE')">RICE</button>
-											<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
-											<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
-											<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
-											<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
-											<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
-											<button class="invButton" @click="trayContent('JAM')">JAM</button>
-											<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
-											<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
-											<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
-											<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
-											<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
-											<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
-											<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
-											<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
-											<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
-											<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
-											<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
-											<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
-											<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
-											<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
-											<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
-											<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CAKE')">XMAS CAKE</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
-											<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
-											<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
-											<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
-											<button class="invButton" @click="trayContent('FISH')">FISH</button>
-											<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
-											<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
-											<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
-											<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
-											<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
-											<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
-											<button class="invButton" @click="trayContent('MISC')">MISC</button>
-											<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
-											<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
-											<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
-										</div>
-										<div class="button-group col-lg-3">
-											<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
-											<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
-										</div>
+											</div>
+										</div>	
 									</div>
 								</div>
 							</div>
-						</div>        
-					</div>
-					
-					<div v-bind:class="{active: isDataViewActive}" id="data-view">
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col">
-									<h1 class="display-4 text-center">Data View</h1>
-									<hr>
-									<div class="table-responsive">
-										<table class="table table-striped table-bordered data-view-table">
-											<thead>
-												<tr>
-													<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
-													<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
-													<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
-													<th scope="col" rowspan="2" @click="sort('row')">Row</th>
-													<th scope="col" rowspan="2" @click="sort('column')">Column</th>
-													<th scope="col" rowspan="2" @click="sort('category')">Category</th>
-													<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
-													<th scope="col" class="no-click" colspan="2">Expiry Year</th>
-													<th scope="col" class="no-click" colspan="2">Expiry Month</th>
-													<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
-													<th scope="col" rowspan="2">Note</th>
-												</tr>
-												<tr>
-													<th scope="col" @click="sort('expiryYear.start')">Start</th>
-													<th scope="col" @click="sort('expiryYear.end')">End</th>
-													<th scope="col" @click="sort('expiryMonth.start')">Start</th>
-													<th scope="col" @click="sort('expiryMonth.end')">End</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr v-for="tray in sortedTrays">
-													<td>{{ tray.zone }}</td>
-													<td>{{ tray.bay }}</td>
-													<td>{{ tray.shelf }}</td>
-													<td>{{ tray.row }}</td>
-													<td>{{ tray.column }}</td>
-													<td>{{ tray.category }}</td>
-													<td>{{ tray.weight }}</td>
-													<td>{{ tray.expiryYear.start }}</td>
-													<td>{{ tray.expiryYear.end }}</td>
-													<td>{{ tray.expiryMonth.start }}</td>
-													<td>{{ tray.expiryMonth.end }}</td>
-													<td>{{ convertDate( tray.lastUpdated ) }}</td>
-													<td>{{ tray.userNote }}</td>
-												</tr>
-											</tbody>
-										</table>
+							<div class="inv-category-inputs my-2">
+								<div class="row no-gutters mx-0">
+									<div class="button-group col-lg-9">
+										<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
+										<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
+										<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
+										<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
+										<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
+										<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
+										<button class="invButton" @click="trayContent('MILK')">MILK</button>
+										<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
+										<button class="invButton" @click="trayContent('RICE')">RICE</button>
+										<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
+										<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
+										<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
+										<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
+										<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
+										<button class="invButton" @click="trayContent('JAM')">JAM</button>
+										<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
+										<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
+										<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
+										<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
+										<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
+										<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
+										<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
+										<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
+										<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
+										<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
+										<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
+										<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
+										<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
+										<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
+										<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
+										<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CAKE')">XMAS CAKE</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
+										<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
+										<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
+										<button class="invButton" @click="trayContent('FISH')">FISH</button>
+										<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
+										<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
+										<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
+										<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
+										<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
+										<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
+										<button class="invButton" @click="trayContent('MISC')">MISC</button>
+										<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
+										<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
+										<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col">
-									<div class="page-control-buttons">
-										<button @click="prevPage" type="button" class="m-3">Previous</button>
-										<button @click="nextPage" type="button" class="m-3">Next</button>
-										<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
-									</div>
-								</div>
-							</div>
-							<div class="row d-flex justify-content-center">
-								<div class="col-sm-9">
-									<h2>Filters</h2>
-								</div>
-							</div>
-							<div class="row d-flex justify-content-center">
-								<div class="col-sm-3">
-									<div class="form-group">
-										<h5><label for="filter-zone">Zone Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
-									</div>
-									<div class="form-group">
-										<h5><label for="filter-bay">Bay Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
-									</div>
-									<div class="form-group">
-										<h5><label for="filter-shelf">Shelf Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
-									</div>
-								</div>
-								<div class="col-sm-3">
-									<div class="form-group">
-										<h5><label for="filter-row">Row Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
-									</div>
-									<div class="form-group">
-										<h5><label for="filter-column">Column Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
-									</div>
-								</div>
-								<div class="col-sm-3">
-									<div class="form-group">
-										<h5><label for="filter-category">Category Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
-									</div>
-									<div class="form-group">
-										<h5><label for="filter-weight">Weight Filter</label></h5>
-										<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
+									<div class="button-group col-lg-3">
+										<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
+										<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div v-bind:class="{active:isReportActive}" id="report-page">
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col">
-									<h4 class="display-4 text-center">Stock Report</h4>
-									<hr>
-								</div>
-							</div>
-							<div class="row mt-3">
-								<div class="col-sm-6 order-1 order-sm-0">
-									<h2>Results</h2>
-									<div id="report-table" class="table-responsive">
-										<table class="table table-striped table-bordered">
-											<thead class="thead-dark">
-												<tr>
-													<th>Item</th>
-													<th>Count</th>
-													<th>Total Weight (kg)</th>
-												</tr>
-											</thead>
-											<tr v-for="category in returnReport">
-												<td>{{ category }}</td>
-												<td>{{ category.numberOfTrays }}</td>
-												<td>{{ category.totalWeight }}</td>
+					</div>        
+				</div>
+				
+				<div v-bind:class="{active: isDataViewActive}" id="data-view">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col">
+								<h1 class="display-4 text-center">Data View</h1>
+								<hr>
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered data-view-table">
+										<thead>
+											<tr>
+												<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
+												<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
+												<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
+												<th scope="col" rowspan="2" @click="sort('row')">Row</th>
+												<th scope="col" rowspan="2" @click="sort('column')">Column</th>
+												<th scope="col" rowspan="2" @click="sort('category')">Category</th>
+												<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
+												<th scope="col" class="no-click" colspan="2">Expiry Year</th>
+												<th scope="col" class="no-click" colspan="2">Expiry Month</th>
+												<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
+												<th scope="col" rowspan="2">Note</th>
 											</tr>
-										</table>
-									</div>
+											<tr>
+												<th scope="col" @click="sort('expiryYear.start')">Start</th>
+												<th scope="col" @click="sort('expiryYear.end')">End</th>
+												<th scope="col" @click="sort('expiryMonth.start')">Start</th>
+												<th scope="col" @click="sort('expiryMonth.end')">End</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="tray in sortedTrays">
+												<td>{{ tray.zone }}</td>
+												<td>{{ tray.bay }}</td>
+												<td>{{ tray.shelf }}</td>
+												<td>{{ tray.row }}</td>
+												<td>{{ tray.column }}</td>
+												<td>{{ tray.category }}</td>
+												<td>{{ tray.weight }}</td>
+												<td>{{ tray.expiryYear.start }}</td>
+												<td>{{ tray.expiryYear.end }}</td>
+												<td>{{ tray.expiryMonth.start }}</td>
+												<td>{{ tray.expiryMonth.end }}</td>
+												<td>{{ convertDate( tray.lastUpdated ) }}</td>
+												<td>{{ tray.userNote }}</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
-								<div class="col-sm-6 order-0 order-sm-1">
-									<h2 class="text-center">Selected Zones</h2>
-									<div class="d-flex justify-content-center flex-wrap">
-										<button v-on:click = "fetchReportZones(); returnReport();">Generate Full Report</button> 
-										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
-										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone)}" v-on:click="myFilter(zone)">{{ zone }}</button>
-										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
-									</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="page-control-buttons">
+									<button @click="prevPage" type="button" class="m-3">Previous</button>
+									<button @click="nextPage" type="button" class="m-3">Next</button>
+									<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
+								</div>
+							</div>
+						</div>
+						<div class="row d-flex justify-content-center">
+							<div class="col-sm-9">
+								<h2>Filters</h2>
+							</div>
+						</div>
+						<div class="row d-flex justify-content-center">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<h5><label for="filter-zone">Zone Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
+								</div>
+								<div class="form-group">
+									<h5><label for="filter-bay">Bay Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
+								</div>
+								<div class="form-group">
+									<h5><label for="filter-shelf">Shelf Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<h5><label for="filter-row">Row Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
+								</div>
+								<div class="form-group">
+									<h5><label for="filter-column">Column Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<h5><label for="filter-category">Category Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
+								</div>
+								<div class="form-group">
+									<h5><label for="filter-weight">Weight Filter</label></h5>
+									<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
 								</div>
 							</div>
 						</div>
 					</div>
-                </div>
-            </div>        
-        </div>
-
+				</div>
+				<div v-bind:class="{active:isReportActive}" id="report-page">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col">
+								<h4 class="display-4 text-center">Stock Report</h4>
+								<hr>
+							</div>
+						</div>
+						<div class="row mt-3">
+							<div class="col-sm-6 order-1 order-sm-0">
+								<h2>Results</h2>
+								<div id="report-table" class="table-responsive">
+									<table class="table table-striped table-bordered">
+										<thead class="thead-dark">
+											<tr>
+												<th>Item</th>
+												<th>Count</th>
+												<th>Total Weight (kg)</th>
+											</tr>
+										</thead>
+										<tr v-for="category in returnReport">
+											<td>{{ category }}</td>
+											<td>{{ category.numberOfTrays }}</td>
+											<td>{{ category.totalWeight }}</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="col-sm-6 order-0 order-sm-1">
+								<h2 class="text-center">Selected Zones</h2>
+								<div class="d-flex justify-content-center flex-wrap">
+									<button v-on:click = "fetchReportZones(); returnReport();">Generate Full Report</button> 
+									<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
+										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
+									<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
+									<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone)}" v-on:click="myFilter(zone)">{{ zone }}</button>
+									<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
 					<div class="container-fluid">
 						<div class="row">
@@ -653,10 +649,9 @@
 					</div>
 				</div>
 			</div>
-		</div>		
-	</div>
-</div>
-
-<script src="./src/main.js?v=22" ></script>
+		</div>
+	</div>  
+	
+	<script src="./src/main.js?v=22" ></script>
 </body>
 </html>
