@@ -111,7 +111,7 @@
 													<button class="invButton" @click="viewNote()">View Note</button>
 												</div>
 												<div class="inv-v-bay-view">
-													<div v-for="shelf in inventoryShelves.slice().reverse()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
+													<div v-for="shelf in inventoryShelves.slice()" class="inv-v-bay-view-shelf"><div class="inv-checked" :key="shelf._shelfOk" :class="{done: isShelfOk(shelf), selected: isShelfSelected(shelf)}"></div></div>
 												</div>
 											</div>
 										</div>
