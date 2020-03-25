@@ -1021,11 +1021,3 @@ const shelfieApp = new Vue({
 		});
 	}
 });
-
-Vue.filter('str_len_limit', function (value, size) {
-  if (!value) return '';
-  const nv = value.toString();
-
-  if (nv.length <= size) return nv;
-  return nv.substr(0, size) + '...';
-});

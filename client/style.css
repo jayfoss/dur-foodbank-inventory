@@ -292,8 +292,7 @@ input[type=checkbox] {
 }
 
 .data-view-table{
-	display: block;
-    overflow-x: auto;
+	overflow-x: auto;
     white-space: nowrap;
 }
 /* END OF DATA VIEW PAGE CSS */

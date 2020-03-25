@@ -216,7 +216,7 @@
 									<h1 class="display-4 text-center">Data View</h1>
 									<hr>
 									<div class="table-responsive">
-										<table class="table table-striped table-bordered; data-view-table" style="width:100%">
+										<table class="table table-striped table-bordered data-view-table">
 											<thead>
 												<tr>
 													<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
@@ -357,107 +357,6 @@
             </div>        
         </div>
 
-        <div v-bind:class="{active: isDataViewActive}" id="data-view">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col">
-						<h1 class="display-4 text-center">Data View</h1>
-						<hr>
-						<div class="table-responsive">
-							<table class="table">
-								<thead>
-									<tr>
-										<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
-										<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
-										<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
-										<th scope="col" rowspan="2" @click="sort('row')">Row</th>
-										<th scope="col" rowspan="2" @click="sort('column')">Column</th>
-										<th scope="col" rowspan="2" @click="sort('category')">Category</th>
-										<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
-										<th scope="col" class="no-click" colspan="2">Expiry Year</th>
-										<th scope="col" class="no-click" colspan="2">Expiry Month</th>
-										<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
-										<th scope="col" rowspan="2">Note</th>
-									</tr>
-									<tr>
-										<th scope="col" @click="sort('expiryYear.start')">Start</th>
-										<th scope="col" @click="sort('expiryYear.end')">End</th>
-										<th scope="col" @click="sort('expiryMonth.start')">Start</th>
-										<th scope="col" @click="sort('expiryMonth.end')">End</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="tray in sortedTrays">
-										<td>{{ tray.zone }}</td>
-										<td>{{ tray.bay }}</td>
-										<td>{{ tray.shelf }}</td>
-										<td>{{ tray.row }}</td>
-										<td>{{ tray.column }}</td>
-										<td>{{ tray.category }}</td>
-										<td>{{ tray.weight }}</td>
-										<td>{{ tray.expiryYear.start }}</td>
-										<td>{{ tray.expiryYear.end }}</td>
-										<td>{{ tray.expiryMonth.start }}</td>
-										<td>{{ tray.expiryMonth.end }}</td>
-										<td>{{ tray.lastUpdated }}</td>
-										<td>{{ tray.userNote | str_len_limit(20) }}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<div class="page-control-buttons">
-							<button @click="prevPage" type="button" class="m-3">Previous</button>
-							<button @click="nextPage" type="button" class="m-3">Next</button>
-							<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
-						</div>
-					</div>
-				</div>
-				<div class="row d-flex justify-content-center">
-					<div class="col-sm-9">
-						<h2 class="display-5">Filters</h2>
-					</div>
-				</div>
-				<div class="row d-flex justify-content-center">
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label for="filter-zone">Zone Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="zoneFilter" class="form-control" id="filter-zone" placeholder="Search by zone">
-						</div>
-						<div class="form-group">
-							<label for="filter-bay">Bay Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="bayFilter" class="form-control" id="filter-bay" placeholder="Search by bay">
-						</div>
-						<div class="form-group">
-							<label for="filter-shelf">Shelf Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="shelfFilter" class="form-control" id="filter-shelf" placeholder="Search by shelf">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label for="filter-row">Row Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="rowFilter" class="form-control" id="filter-row" placeholder="Search by row on shelf">
-						</div>
-						<div class="form-group">
-							<label for="filter-column">Column Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="columnFilter" class="form-control" id="filter-column" placeholder="Search by column on shelf">
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="form-group">
-							<label for="filter-category">Category Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="categoryFilter" class="form-control" id="filter-category" placeholder="Search by tray content">
-						</div>
-						<div class="form-group">
-							<label for="filter-weight">Weight Filter</label>
-							<input type="text" v-on:keyup="currentPage = 1" v-model="weightFilter" class="form-control" id="filter-weight" placeholder="Search by tray weight">
-						</div>
-					</div>
-				</div>
-				
 				<div v-bind:class="{active: isWarehouseConfigActive}" class="warehouse-config">
 					<div class="container-fluid">
 						<div class="row">
