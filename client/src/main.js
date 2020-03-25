@@ -705,6 +705,11 @@ const shelfieApp = new Vue({
 		prevPage: function() {
 			if(this.currentPage > 1) this.currentPage--;
 		},
+
+		convertDate: function(date){
+			newDate = luxon.DateTime.fromMillis(date)
+			return luxon.DateTime.fromISO(newDate).toFormat('dd LLL yyyy HH:mm', { locale: 'gb' });
+		}, 
 		
 		
 		/* END OF DATA VIEW PAGE */
