@@ -134,7 +134,9 @@ const shelfieApp = new Vue({
 		/* REPORT PAGE */
 		allzones:[],
 		isSelected:[],
+		reporttest:[],
 		reportTotals:[],
+		catsInReport:[],
 		/* END OF REPORT PAGE */
 		
 		/* USER MANAGEMENT (UM) */
@@ -142,6 +144,12 @@ const shelfieApp = new Vue({
 		UMcurrentSortDir: 'asc',
 		UMusers: [],
 		UMcurrentUser: null,
+        
+        /* USER MANAGEMENT (UM) */
+        UMcurrentSort: 'fName',
+        UMcurrentSortDir: 'asc',
+        UMusers: [],
+        UMcurrentUser: null,
 		UMcreateMode: false
 	},
 	methods:{
@@ -716,42 +724,44 @@ const shelfieApp = new Vue({
 		
 		/* REPORT PAGE */
 		fetchReportZones: function() {
-			console.log("FETCH REPORT ZONES\n RES DATA:");
 			this.allzones = [];
+			this.reporttest = [];
 			this.isSelected = [];
+			axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
+                //console.log(res.data);
+                this.allzones = res.data; 
+            }).catch((err) => {
+                this.allzones = [];
+            });
 			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
-				console.log(res.data);
-				this.allzones = res.data;   //res.data is a dict, allzones is a list...
-				}).catch((err) => {
-				this.allzones = [];
+                //console.log(res.data);	
+				this.reporttest = res.data;
+			}).catch((err) => {
+				this.reporttest = [];
 			});
-			axios.get(shelfieURL + '/report', {withCredentials: true}).then((res) => {
-				console.log(res.data);
-				this.isSelected = res.data; //res.data is a dict, isSelected is a list...
-				}).catch((err) => {
-				//console.log("this section");
-				this.isSelected = [];
-			})
-			this.updateReportTotals();
-			this.returnReport();
-			console.log(this.reportTotals);
-			
+			for (zone in this.allzones){
+				this.isSelected.push(zone._id);	
+			}
+            this.updateReportTotals();	
 		},
+		
 		updateReportTotals:function(){
-			console.log("UPDATE REPORT TOTAL");
-			this.reportTotals = [];
-			for (zone in this.isSelected){
-				for (category in zone){
-					if (this.reportTotals.includes(category)){
-						this.reportTotals[category][numberOfTrays] += this.isSelected[category][numberOfTrays];
-						this.reportTotals[category][totalWeight] += this.isSelected[category][totalWeight];
+			for (i=0; i < (this.reporttest.length); i++){
+				if (this.isSelected.includes(this.reporttest[i].zone)){
+					if (!this.catsInReport.includes(this.reporttest[i].category)){
+						this.catsInReport.push(this.reporttest[i].category);
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
+							reportCat = this.reporttest[i].category;
+							totalWeight = this.reporttest[i].weight;
+							numberOfTrays = 1;
+						}
 					}
 					else{
-						this.reportTotals.push(category);
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight += this.reporttest[i].weight;
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 					}
 				}
-			}
-			return this.reportTotals;
+			}	
 		},
 		
 		myFilter:function(reportzone) {
@@ -765,17 +775,17 @@ const shelfieApp = new Vue({
 			this.updateReportTotals();
 		},
 		
-		returnReport:function(){
+		/*returnReport:function(){
 			console.log("RETURNING REPORT");
 			this.fetchReportZones;
 			this.reportTotals = this.updateReportTotals;
 			return this.reportTotals;
-		},
+		},*/
+		
 		/* END OF REPORT PAGE */
-		
-		
-		/* USER MANAGEMENT */
-		setUserRole: function(role) {
+
+        /* USER MANAGEMENT */
+        setUserRole: function(role) {
 			this.UMcurrentUser.role = role;
 			if(role === 'MANAGER') {
 				this.UMcurrentUser.canViewData = this.UMcurrentUser.canEditData = this.UMcurrentUser.canModifyWarehouse = this.UMcurrentUser.canModifyUsers = true;
