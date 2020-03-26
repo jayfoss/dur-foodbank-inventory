@@ -746,6 +746,8 @@ const shelfieApp = new Vue({
 		},
 		
 		updateReportTotals:function(){
+			this.catsInReport = [];
+			this.reportTotals = [];
 			for (i=0; i < (this.reporttest.length); i++){
 				if (this.isSelected.includes(this.reporttest[i].zone)){
 					if (!this.catsInReport.includes(this.reporttest[i].category)){
