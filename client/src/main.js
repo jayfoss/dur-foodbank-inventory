@@ -753,9 +753,9 @@ const shelfieApp = new Vue({
 					if (!this.catsInReport.includes(this.reporttest[i].category)){
 						this.catsInReport.push(this.reporttest[i].category);
 						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
-							reportCat = this.reporttest[i].category;
-							totalWeight = this.reporttest[i].weight;
-							numberOfTrays = 1;
+							reportCat : this.reporttest[i].category,
+							totalWeight : this.reporttest[i].weight,
+							numberOfTrays : 1
 						}
 					}
 					else{

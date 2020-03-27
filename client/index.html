@@ -337,8 +337,8 @@
 											</thead>
 											<tr v-for="category in reportTotals">
 												<td>{{ category.reportCat }}</td>
-												<td>{{ category.totalWeight }}</td>
 												<td>{{ category.numberOfTrays }}</td>
+												<td>{{ category.totalWeight }}</td>
 											</tr>
 										</table>
 									</div>
@@ -350,7 +350,7 @@
 										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
 										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
 										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
-										<button v-for = "zone in allzones" v-bind:class="{disabled:isSelected.includes(zone._id)}" v-on:click="myFilter(zone._id)">{{ zone }}</button>
+										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone._id)}" v-on:click="myFilter(zone._id)">{{ zone._id }}</button>
 										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 									</div>
 								</div>
