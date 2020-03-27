@@ -54,8 +54,7 @@
 						<img width="80%" src="./src/assets/trussell-trust-logo-500px.png">
 						<li @click="activatePage('inventory')" style="border-top: 1px solid #82bd14;">Inventory</li>
 						<li @click="activatePage('viewData')">View Data</li>
-						<li @click="activatePage('report')" >Report Generator</li>
-						<!--<li @click="alert('report page is still in progress :)')" >Report Generator</li>-->
+						<li @click="activatePage('report'); fetchReportZones()" >Report Generator</li>
 						<li @click="activatePage('warehouseConfig')">Warehouse Config</li>
 						<li @click="activatePage('userManagement'); fetchAllUsers">User Management</li>
 						<li @click="logout()">Logout</li>
@@ -219,7 +218,6 @@
 										<table class="table table-striped table-bordered; data-view-table" style="width:100%">
 											<thead>
 												<tr>
-													<!-- THIS LAYOUT DOES NOT WORK ON SMALL SCREENS, only the note column shrinks leading to a ridiculous height for each row-->
 													<th scope="col" rowspan="2" @click="sort('zone')">Zone</th>
 													<th scope="col" rowspan="2" @click="sort('bay')">Bay</th>
 													<th scope="col" rowspan="2" @click="sort('shelf')">Shelf</th>
@@ -318,7 +316,8 @@
 					<div v-bind:class="{active:isReportActive}" id="report-page">
 						<div class="container-fluid">
 							<div class="row">
-								<div class="col">
+								<div class="col text-center">
+									<button v-on:click = "fetchReportZones();">REFRESH</button> 
 									<h4 class="display-4 text-center">Stock Report</h4>
 									<hr>
 								</div>
@@ -327,7 +326,7 @@
 								<div class="col-sm-6 order-1 order-sm-0">
 									<h2>Results</h2>
 									<div id="report-table" class="table-responsive">
-										<table class="table table-striped table-bordered">
+										<table class="table table-striped table-bordered; data-view-table">
 											<thead class="thead-dark">
 												<tr>
 													<th>Item</th>
@@ -335,22 +334,23 @@
 													<th>Total Weight (kg)</th>
 												</tr>
 											</thead>
-											<tr v-for="category in reportTotals">
-												<td>{{ category.reportCat }}</td>
-												<td>{{ category.numberOfTrays }}</td>
-												<td>{{ category.totalWeight }}</td>
-											</tr>
+											<tbody>
+												<tr v-for="category in reportTotals">
+													<td>{{ category.reportCat }}</td>
+													<td>{{ category.numberOfTrays }}</td>
+													<td>{{ category.totalWeight }}</td>
+												</tr>
+											</tbody>
 										</table>
 									</div>
 								</div>
 								<div class="col-sm-6 order-0 order-sm-1">
 									<h2 class="text-center">Selected Zones</h2>
 									<div class="d-flex justify-content-center flex-wrap">
-										<button v-on:click = "fetchReportZones();">Generate Full Report</button> 
 										<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
 										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
 										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
-										<button v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone._id)}" v-on:click="myFilter(zone._id)">{{ zone._id }}</button>
+										<button style="text-transform:uppercase" v-for = "zone in allzones" v-bind:class="{disabled:!isSelected.includes(zone._id)}" v-on:click="myFilter(zone._id)">{{ zone._id }}</button>
 										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 									</div>
 								</div>

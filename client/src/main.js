@@ -739,7 +739,7 @@ const shelfieApp = new Vue({
 			}).catch((err) => {
 				this.reporttest = [];
 			});
-            this.updateReportTotals();	
+			this.updateReportTotals();
 		},
 		
 		updateReportTotals:function(){
@@ -764,6 +764,7 @@ const shelfieApp = new Vue({
 		},
 		
 		myFilter:function(reportzone) {
+			console.log(reportzone);
 			if(this.isSelected.includes(reportzone)){
 				const indextest = this.isSelected.indexOf(reportzone);
 				this.isSelected.splice(indextest,1);
