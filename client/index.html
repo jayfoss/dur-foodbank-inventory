@@ -114,11 +114,11 @@
 										<div class="inv-v-ctrl-container text-center pt-1">
 											<div class="inv-v-ctrl-head">Shelf</div>
 											<div class="inv-v-ctrl-mv">
-												<button @click="sectionSelect('shelf', true)">&#129095;</button>
+												<button @click="sectionSelect('shelf', false)">&#129095;</button>
 												<div class="inv-v-zone">
 													{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}
 												</div>
-												<button @click="sectionSelect('shelf', false)">&#129093;</button>
+												<button @click="sectionSelect('shelf', true)">&#129093;</button>
 											</div>
 										</div>
 										<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
