@@ -153,7 +153,7 @@ class RowController {
         let numOfOrigRows = originalRows.length-1;
         if(newRowNumber <= numOfOrigRows)
             return;
-        for(let row = numOfOrigRows; row < newRowNumber; row++){
+        for(let row = numOfOrigRows; row <= newRowNumber; row++){
             await this.insertRow(zoneName, bayName, shelfNumber, row);
         }
     }
