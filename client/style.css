@@ -204,6 +204,7 @@ input[type=checkbox] {
 	flex-direction: column;
 	position: fixed;
 	z-index:1000;
+	margin-top: -.25em;
 }
 
 .hamburger > section {
@@ -306,8 +307,8 @@ input[type=checkbox] {
 
 /*creating a class for buttons on the inventory page*/
 .invButton {
-	height: 50px;
-	width: 110px;
+	height: 45px;
+	width: 100px;
 	font-weight:bold;
 	margin: 0;
 	padding: 0;
@@ -325,8 +326,8 @@ input[type=checkbox] {
 }
 
 .invButton.expandable {
-	height: 50px;
-	width: 110px;
+	height: 45px;
+	width: 100px;
 	border: 1px solid white;
 	background-color: #072631;
 	font-size: 10px;
@@ -356,7 +357,7 @@ input[type=checkbox] {
 }
 
 #save-trays {
-	width: 220px;
+	width: 200px;
 	background-color: var(--red);
 }
 
@@ -367,10 +368,6 @@ input[type=checkbox] {
 
 .inventory.active {
 	display: initial;
-}
-
-.inv-v-ctrl-head {
-	/*font-size: 1.25em;*/
 }
 
 .inv-v-ctrl-mv {
@@ -387,8 +384,8 @@ input[type=checkbox] {
 .inv-v-ctrl-mv button {
 	padding: 0;
 	font-size: 2em;
-	width: 1.25em;
-	height: 1.25em;
+	width: 1.2em;
+	height: 1.2em;
 	margin: 0;
 	text-align: center;
 	line-height: 0;
@@ -399,6 +396,10 @@ input[type=checkbox] {
 	align-items: center;
 }
 
+.inv-v-ctrl-mv button i {
+	font-size: .75em;
+}
+
 .inv-v-zone {
 	text-transform: uppercase;
 }
@@ -406,8 +407,8 @@ input[type=checkbox] {
 .inv-checked {
 	padding: 0;
 	font-size: 2em;
-	width: 1.25em;
-	height: 1.25em;
+	width: 1.2em;
+	height: 1.2em;
 	background-color: red;
 	display: flex;
 	align-items: center;
@@ -428,15 +429,19 @@ input[type=checkbox] {
 }
 
 .inv-checked.done:after {
-	content:"\1F5F9";
+	font-family: Flaticon;
+	font-size: .75em;
+	font-style: normal;
+	content: "\f104";
 }
 
 .inv-warehouse-container {
-	padding:.75em;
+	padding:.15em .75em;
 	background-color: #68B72E;
 	overflow: scroll;
-	height: 440px;
+	height: 415px;
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	position: relative;
 }
 
 .inv-w-row {

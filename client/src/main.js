@@ -1,4 +1,4 @@
-const shelfieURL = 'https://shelfiec.herokuapp.com/api/v1';
+const shelfieURL = 'http://localhost:8080/api/v1';
 
 function getAuthInfo() {
 	const cookieStrings = document.cookie.split(';');
@@ -13,6 +13,14 @@ function getAuthInfo() {
 			return authInfo;
 		}
 	}
+	return false;
+}
+
+function hasBelow(tray, shelfTrays) {
+	const r = +tray.row;
+	const c = +tray.col;
+	if(r === shelfTrays.length - 1) return true;
+	if(shelfTrays[r + 1][c].category !== null && shelfTrays[r + 1][c].category !== '') return true;
 	return false;
 }
 
@@ -516,7 +524,7 @@ const shelfieApp = new Vue({
 		inventoryFetchShelfTrays: function() {
 			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
 				this.shelfTrays = res.data;
-				if(this.shelfTrays.length > 0 && this.shelfTrays[0].length > 0) this.selectedTray = this.shelfTrays[0][0];
+				if(this.shelfTrays.length > 0 && this.shelfTrays[0].length > 0) this.selectedTray = this.shelfTrays[this.shelfTrays.length - 1][0];
 				}).catch((err) => {
 				this.shelfTrays = [];
 			});
@@ -527,7 +535,13 @@ const shelfieApp = new Vue({
 			this.shelfTrays, {withCredentials: true}
 			).then((res) => {
 				self.makeToast('Success', 'Trays saved', 'success');
-				this.shelfOk(false);
+				self.shelfOk(false);
+				if(this.selectedShelf < this.inventoryShelves.length - 1) {
+					self.sectionSelect('shelf', true);
+				}
+				else {
+					self.sectionSelect('bay', true);
+				}
 			});
 		},
 		checkForm: function (e) {
@@ -571,7 +585,14 @@ const shelfieApp = new Vue({
 			return getYearColor(y);
 		},
 		trayContent: function(str) {
-			if(this.selectedTray === null || this.selectedTray === undefined) return;
+			if(this.selectedTray === null || this.selectedTray === undefined) {
+				this.makeToast('Error', 'No tray selected.', 'danger');
+				return;
+			}
+			if(!hasBelow(this.selectedTray, this.shelfTrays)) {
+				this.makeToast('Error', 'There is no tray below the selected tray.', 'danger');
+				return;
+			}
 			this.selectedTray.category = str;
 		},
 		trayExpiry: function(yearRange, monthRange) {
@@ -583,7 +604,10 @@ const shelfieApp = new Vue({
 			else {
 				this.selectedTray.expiryMonth = {start: null, end: null};
 			}
-			this.nextTray();
+			do {
+				this.nextTray();
+			}
+			while(!hasBelow(this.selectedTray, this.shelfTrays));
 		},
 		getExpiryString: (tray) => {
 			const state = getExpiryFormatState(tray);
@@ -648,7 +672,7 @@ const shelfieApp = new Vue({
 				this.makeToast('Error', 'No tray selected.', 'danger');
 				return;
 			}
-			for(let i = 0; i < this.selectedTray.row; i++) {
+			for(let i = 0; i <= this.selectedTray.row; i++) {
 				emptyTheTray(this.shelfTrays[i][this.selectedTray.col]);
 			}
 		},
@@ -660,6 +684,12 @@ const shelfieApp = new Vue({
 			.then((res) => {
 				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
 				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
+				if(this.selectedShelf < this.inventoryShelves.length - 1) {
+					this.sectionSelect('shelf', true);
+				}
+				else {
+					this.sectionSelect('bay', true);
+				}
 			});
 		},
 		isShelfOk: function(shelf) {
@@ -673,14 +703,14 @@ const shelfieApp = new Vue({
 		nextTray: function() {
 			const tray = this.selectedTray;
 			if(!tray) return;
-			if(tray.col < this.shelfTrays[tray.row].length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row][+tray.col + 1];
+			if(+tray.col < this.shelfTrays[+tray.row].length - 1) {
+				this.selectedTray = this.shelfTrays[+tray.row][+tray.col + 1];
 			}
-			else if(tray.col === this.shelfTrays[tray.row].length - 1 && tray.row < this.shelfTrays.length - 1) {
-				this.selectedTray = this.shelfTrays[+tray.row + 1][0];
+			else if(+tray.col === this.shelfTrays[+tray.row].length - 1 && +tray.row > 0) {
+				this.selectedTray = this.shelfTrays[+tray.row - 1][0];
 			}
 			else {
-				this.selectedTray = this.shelfTrays[0][0];
+				this.selectedTray = this.shelfTrays[this.shelfTrays.length - 1][0];
 			}
 		},
 		viewNote: function() {
@@ -712,7 +742,7 @@ const shelfieApp = new Vue({
 		prevPage: function() {
 			if(this.currentPage > 1) this.currentPage--;
 		},
-
+		
 		convertDate: function(date){
 			newDate = luxon.DateTime.fromMillis(date)
 			return luxon.DateTime.fromISO(newDate).toFormat('dd LLL yyyy HH:mm', { locale: 'gb' });
@@ -1028,3 +1058,16 @@ const shelfieApp = new Vue({
 		});
 	}
 });
+
+window.onload = function() {
+	const elem = document.documentElement;
+	if (elem.requestFullscreen) {
+		elem.requestFullscreen().catch();
+	} else if (elem.mozRequestFullScreen) {
+		elem.mozRequestFullScreen().catch();
+	} else if (elem.webkitRequestFullscreen) {
+		elem.webkitRequestFullscreen().catch();
+	} else if (elem.msRequestFullscreen) {
+		elem.msRequestFullscreen().catch();
+	}
+}

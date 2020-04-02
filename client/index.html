@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.css" integrity="sha256-A47OwxL/nAN0ydiDFTSGX7ftbfTJTKgiJ0zqCuTPDh4=" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.6.1/dist/bootstrap-vue.min.css" integrity="sha256-DdAtjBS1alSSjGdknERh+FrjHv0m7NTxE5iMhdv5JKs=" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="style.css?v=2">
+		<link rel="stylesheet" type="text/css" href="./src/assets/font/flaticon.css">
 		
 		<script src="https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js" integrity="sha256-bpvncwMbMjT7nC1s89l0DbEgj0NRvsoyXsNPdv0481Y=" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js" integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68=" crossorigin="anonymous"></script>
@@ -79,31 +80,31 @@
 							<div class="inv-warehouse-view-container">
 								<div class="row">
 									<div class="col-sm-4 col-lg-3 col-xl-2 inv-warehouse-view-ctrl">
-										<div class="inv-v-ctrl-container text-center pt-3">
+										<div class="inv-v-ctrl-container text-center pt-2">
 											<div class="inv-v-ctrl-head">Zone</div>
 											<div class="inv-v-ctrl-mv">
-												<button @click="sectionSelect('zone', false)">&#129092;</button>
+												<button @click="sectionSelect('zone', false)"><i class="flaticon-left-arrow"></i></button>
 												<div class="inv-v-zone">{{inventoryZones[selectedZone] !== undefined ? inventoryZones[selectedZone]._id : ''}}</div>
-												<button @click="sectionSelect('zone', true)">&#129094;</button>
+												<button @click="sectionSelect('zone', true)"><i class="flaticon-right-arrow"></i></button>
 											</div>
 										</div>
-										<div class="inv-v-ctrl-container text-center pt-1">
+										<div class="inv-v-ctrl-container text-center">
 											<div class="inv-v-ctrl-head">Bay</div>
 											<div class="inv-v-ctrl-mv">
-												<button @click="sectionSelect('bay', false)">&#129092;</button>
+												<button @click="sectionSelect('bay', false)"><i class="flaticon-left-arrow"></i></button>
 												<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
-												<button @click="sectionSelect('bay', true)">&#129094;</button>
+												<button @click="sectionSelect('bay', true)"><i class="flaticon-right-arrow"></i></button>
 											</div>
 										</div>
-										<div class="inv-v-ctrl-container text-center pt-1">
+										<div class="inv-v-ctrl-container text-center">
 											<div class="inv-v-ctrl-head">Shelf</div>
 											<div class="inv-v-ctrl-mv">
-												<button @click="sectionSelect('shelf', false)">&#129095;</button>
+												<button @click="sectionSelect('shelf', false)"><i class="flaticon-download"></i></button>
 												<div class="inv-v-zone">{{inventoryShelves[selectedShelf] !== undefined ? inventoryShelves[selectedShelf]._id : ''}}</div>
-												<button @click="sectionSelect('shelf', true)">&#129093;</button>
+												<button @click="sectionSelect('shelf', true)"><i class="flaticon-up-arrow"></i></button>
 											</div>
 										</div>
-										<div class="inv-v-ctrl-container d-flex justify-content-between pt-1">
+										<div class="inv-v-ctrl-container d-flex justify-content-between">
 											<div class="inv-left-controls">
 												<button class="invButton" @click="shelfOk()">Shelf OK</button>
 												<button class="invButton" @click="fillShelf()">Fill Shelf</button>
@@ -117,13 +118,17 @@
 									</div>
 									<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
 										<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
-											<div class="inv-w-row" v-for="row in shelfTrays.slice().reverse()">
-												<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
-													<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
-													<div class="inv-w-el-tray">{{tray.category}}</div>
-													<div class="inv-w-el-meta">
-														<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
-														<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
+											<div class="d-flex align-items-end" :class="{'h-100': shelfTrays.length < 4}">
+												<div>
+													<div class="inv-w-row" v-for="row in shelfTrays.slice()">
+														<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
+															<div class="inv-w-el-tray-note" v-if="tray.userNote !== '' && tray.userNote !== null"></div>
+															<div class="inv-w-el-tray">{{tray.category}}</div>
+															<div class="inv-w-el-meta">
+																<div class="inv-w-el-weight"><input type="number" min="0" step="0.01" v-model="tray.weight" tabindex="-1"></div>
+																<div class="inv-w-el-expiry" :class="getExpiryClass(tray)">{{getExpiryString(tray)}}</div>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -131,7 +136,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="inv-category-inputs my-2">
+							<div class="inv-category-inputs mb-2">
 								<div class="row no-gutters mx-0">
 									<div class="button-group col-lg-9">
 										<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
@@ -648,6 +653,15 @@
 				</div>
 			</div>
 		</div>
+		<footer>
+			<div class="container">
+				<div class="row">
+					<div class="col text-center">
+						<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/"     title="Flaticon">www.flaticon.com</a></div>
+					</div>
+				</div>
+			</div>
+		</footer>
 	</div>  
 	
 	<script src="./src/main.js?v=22" ></script>
