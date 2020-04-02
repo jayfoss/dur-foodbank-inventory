@@ -536,12 +536,6 @@ const shelfieApp = new Vue({
 			).then((res) => {
 				self.makeToast('Success', 'Trays saved', 'success');
 				self.shelfOk(false);
-				if(this.selectedShelf < this.inventoryShelves.length - 1) {
-					self.sectionSelect('shelf', true);
-				}
-				else {
-					self.sectionSelect('bay', true);
-				}
 			});
 		},
 		checkForm: function (e) {
