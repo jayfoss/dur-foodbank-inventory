@@ -331,9 +331,11 @@ const shelfieApp = new Vue({
 			if(confirm('Are you sure you want to delete the zone ' + this.originalData.zone._id + '?\nThis action is irreversible.'))
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id, {
 				withCredentials: true
-				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the zone.', 'success');
-				}).catch((err) => {
+				})
+				//.then((resp) => {
+				//this.makeToast('Success', 'Successfuly deleted the zone.', 'success');
+				//})
+				.catch((err) => {
 				this.makeToast('Error', 'Could not delete zone.\n' + err + '\nPlease try again.', 'danger');
 			});
 			// RELOAD PAGE HERE
@@ -342,9 +344,11 @@ const shelfieApp = new Vue({
 			if(confirm('Are you sure you want to delete bay ' + this.originalData.bay.name + ' from zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
 				withCredentials: true
-				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the bay.', 'success');
-				}).catch((err) => {
+				})
+				// .then((resp) => {
+				// this.makeToast('Success', 'Successfuly deleted the bay.', 'success');
+				// })
+				.catch((err) => {
 				this.makeToast('Error', 'Could not delete bay.\n' + err + '\nPlease try again.', 'danger');
 			});
 			// RELOAD PAGE HERE
@@ -353,9 +357,11 @@ const shelfieApp = new Vue({
 			if(confirm('Are you sure you want to delete shelf ' + this.originalData.shelf.number + ' from bay ' + this.originalData.bay.name + ' in zone ' + this.originalData.zone.name + '?\nThis action is irreversible.'))
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
 				withCredentials: true
-				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the shelf.', 'success');
-				}).catch((err) => {
+				})
+				// .then((resp) => {
+				// this.makeToast('Success', 'Successfuly deleted the shelf.', 'success');
+				// })
+				.catch((err) => {
 				this.modifiedData.bay.numberOfShelves = 1
 				this.makeToast('Error', 'Could not delete shelf.\n' + err + '\nPlease try again.', 'danger');
 			});
@@ -377,12 +383,14 @@ const shelfieApp = new Vue({
 				rows: this.toInsertNumOfRows,
 				columns: this.toInsertNumOfColumns,
 				withCredentials: true
-				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly created the warehouse layout.', 'success');
-				}).catch((err) => {
+			})
+				// .then((resp) => {
+				// this.makeToast('Success', 'Successfuly created the warehouse layout.', 'success');
+				// })
+				.catch((err) => {
 				this.makeToast('Error', 'Could not create zone.\n' + err + '\nplease try again.', 'danger');
 				return;
-			});
+				});
 		},
 		warehouseFetchZones: function(){
 			this.warehouseZones = [];
@@ -525,7 +533,7 @@ const shelfieApp = new Vue({
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
 			this.shelfTrays, {withCredentials: true}
 			).then((res) => {
-				self.makeToast('Success', 'Trays saved', 'success');
+				//self.makeToast('Success', 'Trays saved', 'success');
 				this.shelfOk(false);
 			});
 		},
@@ -660,7 +668,7 @@ const shelfieApp = new Vue({
 			{withCredentials: true})
 			.then((res) => {
 				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
-				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
+				//if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
 			});
 		},
 		isShelfOk: function(shelf) {
@@ -806,7 +814,7 @@ const shelfieApp = new Vue({
 		submitUser: function(){
 			axios.post(shelfieURL + '/users', this.UMcurrentUser, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
-				this.makeToast('Success', 'User created', 'success');
+				//this.makeToast('Success', 'User created', 'success');
 			});
 		},
 		setUMmodeCreate: function() {
@@ -827,7 +835,7 @@ const shelfieApp = new Vue({
 			axios.patch(shelfieURL + '/users/' + this.UMcurrentUser._id, this.UMcurrentUser, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
 				this.UMcurrentUser = null;
-				this.makeToast('Success', 'User updated', 'success');
+				//this.makeToast('Success', 'User updated', 'success');
 			});
 		},
 		deleteUser: function() {
@@ -835,7 +843,7 @@ const shelfieApp = new Vue({
 			axios.delete(shelfieURL + '/users/' + this.UMcurrentUser._id, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
 				this.UMcurrentUser = null;
-				this.makeToast('Success', 'User deleted', 'success');
+				//this.makeToast('Success', 'User deleted', 'success');
 			});
 		},
 		fetchAllUsers: function(){
