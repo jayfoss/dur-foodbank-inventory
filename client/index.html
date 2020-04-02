@@ -425,13 +425,13 @@
 									<table class="table table-striped table-bordered; data-view-table">
 										<thead class="thead-dark">
 											<tr>
-												<th>Item</th>
-												<th>Count</th>
-												<th>Total Weight (kg)</th>
+												<th @click="reportSortDirectionFlip('item')">Item</th>
+												<th @click="reportSortDirectionFlip('count')">Count</th>
+												<th @click="reportSortDirectionFlip('weight')">Total Weight (kg)</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr v-for="category in reportTotals">
+											<tr v-for="category in reportSortCompute">
 												<td>{{ category.reportCat }}</td>
 												<td>{{ category.numberOfTrays }}</td>
 												<td>{{ category.totalWeight }}</td>
@@ -700,14 +700,14 @@
 							<table class="table table-striped table-bordered text-center">
 								<tbody>
 									<tr>
-										<th scope="col">FIRST NAME</th>
-										<th scope="col">LAST NAME</th>
-										<th scope="col">USERNAME</th>
-										<th scope="col">ROLE</th>
-										<th scope="col">CAN VIEW DATA</th>
-										<th scope="col">CAN EDIT DATA</th>
-										<th scope="col">CAN MODIFY WAREHOUSE</th>
-										<th scope="col">CAN MODIFY USERS</th>
+										<th @click="usersSortDirectionFlip('first name')" scope="col">FIRST NAME</th>
+										<th @click="usersSortDirectionFlip('last name')" scope="col">LAST NAME</th>
+										<th @click="usersSortDirectionFlip('username')" scope="col">USERNAME</th>
+										<th @click="usersSortDirectionFlip('role')" scope="col">ROLE</th>
+										<th @click="usersSortDirectionFlip('can view data')" scope="col">CAN VIEW DATA</th>
+										<th @click="usersSortDirectionFlip('can edit data')" scope="col">CAN EDIT DATA</th>
+										<th @click="usersSortDirectionFlip('can modify warehouse')" scope="col">CAN MODIFY WAREHOUSE</th>
+										<th @click="usersSortDirectionFlip('can modify users')" scope="col">CAN MODIFY USERS</th>
 									</tr>
 									<tr v-for="user in sortedUsers" @click="UMcurrentUser = user; UMcreateMode = false"
 										class="user-el" :class="{selected: UMcurrentUser === user}">

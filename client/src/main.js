@@ -153,6 +153,8 @@ const shelfieApp = new Vue({
 		reporttest:[],
 		reportTotals:[],
 		catsInReport:[],
+		reportSelectedSort:'item',
+		reportSelectedSortDirection:'asc',
 		/* END OF REPORT PAGE */
 		
 		/* USER MANAGEMENT (UM) */
@@ -166,7 +168,9 @@ const shelfieApp = new Vue({
         UMcurrentSortDir: 'asc',
         UMusers: [],
         UMcurrentUser: null,
-		UMcreateMode: false
+		UMcreateMode: false,
+		usersSelectedSort:'first name',
+		usersSelectedSortDirection:'asc'
 	},
 	methods:{
 		makeToast(title, msg, variant = null) {
@@ -732,6 +736,18 @@ const shelfieApp = new Vue({
 			}
 			this.currentSort = s;
 		},
+		reportSortDirectionFlip: function(s){
+			if(s === this.reportSelectedSort) {
+				this.reportSelectedSortDirection = this.reportSelectedSortDirection==='asc'?'desc':'asc';
+			}
+			this.reportSelectedSort = s;
+		},
+		usersSortDirectionFlip: function(s){
+			if(s === this.usersSelectedSort) {
+				this.usersSelectedSortDirection = this.usersSelectedSortDirection==='asc'?'desc':'asc';
+			}
+			this.usersSelectedSort = s;
+		},
 		nextPage: function() {
 			if((this.currentPage*this.pageSize) < this.trays.length-this.skippedRows) this.currentPage++;
 		},
@@ -943,7 +959,36 @@ const shelfieApp = new Vue({
 		sortedUsers: function(){
 			//to sort later
 			this.UMUsers = this.fetchAllUsers;
-			return this.UMusers //to populate later
+			return this.UMusers.sort((a, b) => {
+				let modifier = 1;
+				if(this.usersSelectedSortDirection === 'desc') modifier = -1;
+				if(this.usersSelectedSort === 'first name'){
+					if(a['firstName'] < b['firstName']) return -1 * modifier;
+					if(a['firstName'] > b['firstName']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'last name'){
+					if(a['lastName'] < b['lastName']) return -1 * modifier;
+					if(a['lastName'] > b['lastName']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'username'){
+					if(a['username'] < b['username']) return -1 * modifier;
+					if(a['username'] > b['username']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'role'){
+					if(a['role'] < b['role']) return -1 * modifier;
+					if(a['role'] > b['role']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'can view data'){
+					if(a['canViewData'] < b['canViewData']) return -1 * modifier;
+					if(a['canViewData'] > b['canViewData']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'can edit data'){
+					if(a['canEditData'] < b['canEditData']) return -1 * modifier;
+					if(a['canEditData'] > b['canEditData']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'can modify warehouse'){
+					if(a['canModifyWarehouse'] < b['canModifyWarehouse']) return -1 * modifier;
+					if(a['canModifyWarehouse'] > b['canModifyWarehouse']) return 1 * modifier;
+				} else if (this.usersSelectedSort === 'can modify users'){
+					if(a['canModifyUsers'] < b['canModifyUsers']) return -1 * modifier;
+					if(a['canModifyUsers'] > b['canModifyUsers']) return 1 * modifier;
+				} 
+				return 0;
+			}); //to populate later
 		},
 		// addRows: function(){
 		//     var uTable;
@@ -973,16 +1018,16 @@ const shelfieApp = new Vue({
 				if(this.currentSort == 'expiryYear.start'){
 					if(a['expiryYear']['start'] < b['expiryYear']['start']) return -1 * modifier;
 					if(a['expiryYear']['start'] > b['expiryYear']['start']) return 1 * modifier;
-					} else if(this.currentSort == 'expiryYear.end'){
+				} else if(this.currentSort == 'expiryYear.end'){
 					if(a['expiryYear']['end'] < b['expiryYear']['end']) return -1 * modifier;
 					if(a['expiryYear']['end'] > b['expiryYear']['end']) return 1 * modifier;
-					} else if(this.currentSort == 'expiryMonth.start'){
+				} else if(this.currentSort == 'expiryMonth.start'){
 					if(a['expiryMonth']['start'] < b['expiryMonth']['start']) return -1 * modifier;
 					if(a['expiryMonth']['start'] > b['expiryMonth']['start']) return 1 * modifier;
-					} else if (this.currentSort == 'expiryMonth.end'){
+				} else if (this.currentSort == 'expiryMonth.end'){
 					if(a['expiryMonth']['end'] < b['expiryMonth']['end']) return -1 * modifier;
 					if(a['expiryMonth']['end'] > b['expiryMonth']['end']) return 1 * modifier;
-					} else {
+				} else {
 					if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
 					if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
 				}
@@ -1012,6 +1057,23 @@ const shelfieApp = new Vue({
 					} else {
 					return false;
 				}
+			});
+		},
+		reportSortCompute: function() {
+			return this.reportTotals.sort((a, b) => {
+				let modifier = 1;
+				if(this.reportSelectedSortDirection === 'desc') modifier = -1;
+				if(this.reportSelectedSort === 'item'){
+					if(a['reportCat'] < b['reportCat']) return -1 * modifier;
+					if(a['reportCat'] > b['reportCat']) return 1 * modifier;
+				} else if (this.reportSelectedSort === 'count'){
+					if(a['numberOfTrays'] < b['numberOfTrays']) return -1 * modifier;
+					if(a['numberOfTrays'] > b['numberOfTrays']) return 1 * modifier;
+				} else if (this.reportSelectedSort === 'weight'){
+					if(a['totalWeight'] < b['totalWeight']) return -1 * modifier;
+					if(a['totalWeight'] > b['totalWeight']) return 1 * modifier;
+				}
+				return 0;
 			});
 		}
 		/* END OF DATA VIEW PAGE */
