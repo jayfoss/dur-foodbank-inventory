@@ -1062,12 +1062,12 @@ const shelfieApp = new Vue({
 window.onload = function() {
 	const elem = document.documentElement;
 	if (elem.requestFullscreen) {
-		elem.requestFullscreen().catch();
+		elem.requestFullscreen().catch(()=>{});
 	} else if (elem.mozRequestFullScreen) {
-		elem.mozRequestFullScreen().catch();
+		elem.mozRequestFullScreen().catch(()=>{});
 	} else if (elem.webkitRequestFullscreen) {
-		elem.webkitRequestFullscreen().catch();
+		elem.webkitRequestFullscreen().catch(()=>{});
 	} else if (elem.msRequestFullscreen) {
-		elem.msRequestFullscreen().catch();
+		elem.msRequestFullscreen().catch(()=>{});
 	}
 }
