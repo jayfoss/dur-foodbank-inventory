@@ -356,6 +356,20 @@
 								</div>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col">
+								<div class="page-control-buttons">
+									<button @click="prevPage" type="button" class="m-3">Previous</button>
+									<button @click="nextPage" type="button" class="m-3">Next</button>
+									<button @click="fetchAllTrays" type="button" class="m-3">Refresh Table</button>
+								</div>
+							</div>
+						</div>
+						<!--<div class="row d-flex justify-content-center">
+								<div class="col-sm-9">
+									<h2 class="display-5">Filters</h2>
+								</div>
+							</div>-->
 						<div class="row d-flex justify-content-center">
 							<div class="col-sm-3">
 								<div class="form-group">
@@ -438,9 +452,6 @@
 							<div class="col-sm-6 order-0 order-sm-1">
 								<h2 class="text-center">Selected Zones</h2>
 								<div class="d-flex justify-content-center flex-wrap">
-									<!--<button v-bind:class="{disabled:!isSelected.includes('red')}" v-on:click="myFilter('red')">RED</button>	
-										<button v-bind:class="{disabled:!isSelected.includes('blue')}" v-on:click="myFilter('blue')">BLUE</button>
-										<button v-bind:class="{disabled:!isSelected.includes('pink')}" v-on:click="myFilter('pink')">PINK</button>-->
 									<button style="text-transform:uppercase" v-for="zone in allzones"
 										v-bind:class="{disabled:!isSelected.includes(zone._id)}"
 										v-on:click="myFilter(zone._id)">{{ zone._id }}</button>
@@ -798,6 +809,7 @@
 				</div>
 			</div>
 		</div>
+
 	</div>
 	</div>
 	</div>
