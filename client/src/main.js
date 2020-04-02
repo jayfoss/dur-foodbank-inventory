@@ -728,19 +728,24 @@ const shelfieApp = new Vue({
 			this.reporttest = [];
 			this.isSelected = [];
 			axios.get(shelfieURL + '/zones', {withCredentials: true}).then((res) => {
-                //console.log(res.data);
                 this.allzones = res.data; 
+				for (i=0;i<this.allzones.length;i++){
+					this.isSelected.push(this.allzones[i]._id);
+				}
+				this.updateReportTotals();
             }).catch((err) => {
                 this.allzones = [];
             });
 			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
                 //console.log(res.data);	
 				this.reporttest = res.data;
+				this.updateReportTotals();
+				
 			}).catch((err) => {
-				this.reporttest = [];
+				this.reporttest = [];	
 			});
-			this.updateReportTotals();
 		},
+		
 		
 		updateReportTotals:function(){
 			this.catsInReport = [];
@@ -760,11 +765,11 @@ const shelfieApp = new Vue({
 						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 					}
 				}
-			}	
+			}
 		},
 		
 		myFilter:function(reportzone) {
-			console.log(reportzone);
+			//this.fetchReportZones();
 			if(this.isSelected.includes(reportzone)){
 				const indextest = this.isSelected.indexOf(reportzone);
 				this.isSelected.splice(indextest,1);
