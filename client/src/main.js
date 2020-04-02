@@ -16,6 +16,14 @@ function getAuthInfo() {
 	return false;
 }
 
+function hasBelow(tray, shelfTrays) {
+	const r = +tray.row;
+	const c = +tray.col;
+	if(r === shelfTrays.length - 1) return true;
+	if(shelfTrays[r + 1][c].category !== null && shelfTrays[r + 1][c].category !== '') return true;
+	return false;
+}
+
 function getYearColor(y) {
 	if(y === NaN) return null;
 	if(Number.isInteger((y - 2016) / 4)) return 'exp-cyc-yellow';
@@ -67,6 +75,14 @@ function getExpiryColor(tray) {
 	if(tray.expiryYear.start === undefined) return null;
 	const y = parseInt(tray.expiryYear.start);
 	return getYearColor(y);
+}
+
+function emptyTheTray(tray) {
+	tray.category = null;
+	tray.weight = null;
+	tray.expiryYear = {start: null, end: null};
+	tray.expiryMonth = {start: null, end: null};
+	tray.userNote = null;
 }
 
 const shelfieApp = new Vue({
@@ -332,7 +348,6 @@ const shelfieApp = new Vue({
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone._id, {
 				withCredentials: true
 				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the zone.', 'success');
 				}).catch((err) => {
 				this.makeToast('Error', 'Could not delete zone.\n' + err + '\nPlease try again.', 'danger');
 			});
@@ -343,7 +358,6 @@ const shelfieApp = new Vue({
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name, {
 				withCredentials: true
 				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the bay.', 'success');
 				}).catch((err) => {
 				this.makeToast('Error', 'Could not delete bay.\n' + err + '\nPlease try again.', 'danger');
 			});
@@ -354,7 +368,6 @@ const shelfieApp = new Vue({
 			axios.delete(shelfieURL + '/zones/' + this.originalData.zone.name + '/bays/' + this.originalData.bay.name + '/shelves/' + this.originalData.shelf.number, {
 				withCredentials: true
 				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly deleted the shelf.', 'success');
 				}).catch((err) => {
 				this.modifiedData.bay.numberOfShelves = 1
 				this.makeToast('Error', 'Could not delete shelf.\n' + err + '\nPlease try again.', 'danger');
@@ -378,7 +391,6 @@ const shelfieApp = new Vue({
 				columns: this.toInsertNumOfColumns,
 				withCredentials: true
 				}).then((resp) => {
-				this.makeToast('Success', 'Successfuly created the warehouse layout.', 'success');
 				}).catch((err) => {
 				this.makeToast('Error', 'Could not create zone.\n' + err + '\nplease try again.', 'danger');
 				return;
@@ -516,6 +528,7 @@ const shelfieApp = new Vue({
 		inventoryFetchShelfTrays: function() {
 			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
 				this.shelfTrays = res.data;
+				if(this.shelfTrays.length > 0 && this.shelfTrays[0].length > 0) this.selectedTray = this.shelfTrays[this.shelfTrays.length - 1][0];
 				}).catch((err) => {
 				this.shelfTrays = [];
 			});
@@ -525,8 +538,7 @@ const shelfieApp = new Vue({
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
 			this.shelfTrays, {withCredentials: true}
 			).then((res) => {
-				self.makeToast('Success', 'Trays saved', 'success');
-				this.shelfOk(false);
+				self.shelfOk(false);
 			});
 		},
 		checkForm: function (e) {
@@ -570,7 +582,14 @@ const shelfieApp = new Vue({
 			return getYearColor(y);
 		},
 		trayContent: function(str) {
-			if(this.selectedTray === null || this.selectedTray === undefined) return;
+			if(this.selectedTray === null || this.selectedTray === undefined) {
+				this.makeToast('Error', 'No tray selected.', 'danger');
+				return;
+			}
+			if(!hasBelow(this.selectedTray, this.shelfTrays)) {
+				this.makeToast('Error', 'There is no tray below the selected tray.', 'danger');
+				return;
+			}
 			this.selectedTray.category = str;
 		},
 		trayExpiry: function(yearRange, monthRange) {
@@ -582,7 +601,10 @@ const shelfieApp = new Vue({
 			else {
 				this.selectedTray.expiryMonth = {start: null, end: null};
 			}
-			this.nextTray();
+			do {
+				this.nextTray();
+			}
+			while(!hasBelow(this.selectedTray, this.shelfTrays));
 		},
 		getExpiryString: (tray) => {
 			const state = getExpiryFormatState(tray);
@@ -635,7 +657,7 @@ const shelfieApp = new Vue({
 			for(let row of this.shelfTrays) {
 				for(let tray of row) {
 					tray.category = this.selectedTray.category;
-					tray.weight = this.selectedTray.weight;
+					tray.weight = null;
 					tray.expiryYear = {start: this.selectedTray.expiryYear.start, end: this.selectedTray.expiryYear.end};
 					tray.expiryMonth = {start: this.selectedTray.expiryMonth.start, end: this.selectedTray.expiryMonth.end};
 					tray.userNote = this.selectedTray.userNote;
@@ -647,11 +669,9 @@ const shelfieApp = new Vue({
 				this.makeToast('Error', 'No tray selected.', 'danger');
 				return;
 			}
-			this.selectedTray.category = '';
-			this.selectedTray.weight = 0;
-			this.selectedTray.expiryYear = {start: null, end: null};
-			this.selectedTray.expiryMonth = {start: null, end: null};
-			this.selectedTray.userNote = '';
+			for(let i = 0; i <= this.selectedTray.row; i++) {
+				emptyTheTray(this.shelfTrays[i][this.selectedTray.col]);
+			}
 		},
 		shelfOk: function(ok = true) {
 			if(!this.inventoryShelves[this.selectedShelf]) return;
@@ -660,7 +680,12 @@ const shelfieApp = new Vue({
 			{withCredentials: true})
 			.then((res) => {
 				this.inventoryShelves[this.selectedShelf]._shelfOk = ok;
-				if(ok) this.makeToast('Success', 'Shelf marked OK', 'success');
+				if(this.selectedShelf < this.inventoryShelves.length - 1) {
+					this.sectionSelect('shelf', true);
+				}
+				else {
+					this.sectionSelect('bay', true);
+				}
 			});
 		},
 		isShelfOk: function(shelf) {
@@ -674,14 +699,14 @@ const shelfieApp = new Vue({
 		nextTray: function() {
 			const tray = this.selectedTray;
 			if(!tray) return;
-			if(tray.col < this.shelfTrays[tray.row].length - 1) {
-				this.selectedTray = this.shelfTrays[tray.row][+tray.col + 1];
+			if(+tray.col < this.shelfTrays[+tray.row].length - 1) {
+				this.selectedTray = this.shelfTrays[+tray.row][+tray.col + 1];
 			}
-			else if(tray.col === this.shelfTrays[tray.row].length - 1 && tray.row < this.shelfTrays.length - 1) {
-				this.selectedTray = this.shelfTrays[+tray.row + 1][0];
+			else if(+tray.col === this.shelfTrays[+tray.row].length - 1 && +tray.row > 0) {
+				this.selectedTray = this.shelfTrays[+tray.row - 1][0];
 			}
 			else {
-				this.selectedTray = this.shelfTrays[0][0];
+				this.selectedTray = this.shelfTrays[this.shelfTrays.length - 1][0];
 			}
 		},
 		viewNote: function() {
@@ -713,7 +738,7 @@ const shelfieApp = new Vue({
 		prevPage: function() {
 			if(this.currentPage > 1) this.currentPage--;
 		},
-
+		
 		convertDate: function(date){
 			newDate = luxon.DateTime.fromMillis(date)
 			return luxon.DateTime.fromISO(newDate).toFormat('dd LLL yyyy HH:mm', { locale: 'gb' });
@@ -811,7 +836,6 @@ const shelfieApp = new Vue({
 		submitUser: function(){
 			axios.post(shelfieURL + '/users', this.UMcurrentUser, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
-				this.makeToast('Success', 'User created', 'success');
 			});
 		},
 		setUMmodeCreate: function() {
@@ -832,7 +856,6 @@ const shelfieApp = new Vue({
 			axios.patch(shelfieURL + '/users/' + this.UMcurrentUser._id, this.UMcurrentUser, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
 				this.UMcurrentUser = null;
-				this.makeToast('Success', 'User updated', 'success');
 			});
 		},
 		deleteUser: function() {
@@ -840,7 +863,6 @@ const shelfieApp = new Vue({
 			axios.delete(shelfieURL + '/users/' + this.UMcurrentUser._id, {withCredentials: true}).then((res) => {
 				this.fetchAllUsers();
 				this.UMcurrentUser = null;
-				this.makeToast('Success', 'User deleted', 'success');
 			});
 		},
 		fetchAllUsers: function(){
@@ -1036,3 +1058,16 @@ const shelfieApp = new Vue({
 		});
 	}
 });
+
+window.onload = function() {
+	const elem = document.documentElement;
+	if (elem.requestFullscreen) {
+		elem.requestFullscreen().catch(()=>{});
+	} else if (elem.mozRequestFullScreen) {
+		elem.mozRequestFullScreen().catch(()=>{});
+	} else if (elem.webkitRequestFullscreen) {
+		elem.webkitRequestFullscreen().catch(()=>{});
+	} else if (elem.msRequestFullscreen) {
+		elem.msRequestFullscreen().catch(()=>{});
+	}
+}
