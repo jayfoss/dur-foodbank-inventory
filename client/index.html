@@ -30,11 +30,11 @@
 								</div>
 								<div class="form-group">
 									<label for="username">Username</label>
-								<input type="text" class="form-control" style="font-size:24px;" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
+								<input type="text" class="form-control" id="username" placeholder="Enter username" v-model="loginUsername" required></h5>
 							</div>
 							<div class="form-group">
 								<label for="password">Password</label>
-								<input type="password" class="form-control" style="font-size:24px;" id="password" placeholder="Enter password" v-model="loginPassword" required>
+								<input type="password" class="form-control" id="password" placeholder="Enter password" v-model="loginPassword" required>
 							</div>
 							<div class="form-group">
 								<div class="custom-control custom-checkbox">
@@ -117,7 +117,7 @@
 									</div>
 									<div class="col-sm-8 col-lg-9 col-xl-10 inv-warehouse-view">
 										<div class="inv-warehouse-container" :style="'background-color:'+zoneBgColor+';'">
-											<div class="inv-w-row" v-for="row in shelfTrays.slice()">
+											<div class="inv-w-row" v-for="row in shelfTrays.slice().reverse()">
 												<div class="inv-w-el" v-for="tray in row" @click="selectedTray = tray" :class="{selected: selectedTray === tray}">
 													<div class="inv-w-el-tray-note" v-if="tray.userNote !== ''"></div>
 													<div class="inv-w-el-tray">{{tray.category}}</div>
@@ -134,68 +134,66 @@
 							<div class="inv-category-inputs my-2">
 								<div class="row no-gutters mx-0">
 									<div class="button-group col-lg-9">
-										<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
-										<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
-										<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
-										<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
-										<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
-										<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
-										<button class="invButton" @click="trayContent('MILK')">MILK</button>
-										<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
-										<button class="invButton" @click="trayContent('RICE')">RICE</button>
-										<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
-										<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
-										<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
-										<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
-										<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
-										<button class="invButton" @click="trayContent('JAM')">JAM</button>
-										<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
-										<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
-										<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
-										<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
-										<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
-										<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
-										<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
 										<button class="invButton" @click="expandableItemGroups.baby = !expandableItemGroups.baby">BABY...</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY CARE')">BABY CARE</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('BABY FOOD')">BABY FOOD</button>
-										<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
-										<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
-										<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
-										<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
-										<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
-										<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.baby}" @click="trayContent('NAPPIES')">NAPPIES</button>
+										<button class="invButton" @click="trayContent('BEANS')">BEANS</button>
+										<button class="invButton" @click="trayContent('BISCUITS')">BISCUITS</button>
 										<button class="invButton" @click="trayContent('CEREAL')">CEREAL</button>
+										<button class="invButton" @click="trayContent('CHOC/SWEET')">CHOC/SWEET</button>
 										<button class="invButton" @click="expandableItemGroups.christmas = !expandableItemGroups.christmas">CHRISTMAS...</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS BISCUITS')">XMAS BISCUITS</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CAKE')">XMAS CAKE</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Small)')">XMAS CHOC (Small)</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CHOC (Large)')">XMAS CHOC (Large)</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS CRACKERS')">XMAS CRACKERS</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MINCE PIES')">XMAS MINCE PIES</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS PUDDING')">XMAS PUDDING</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SNACKS')">XMAS SNACKS</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
 										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS TINNED HAM')">XMAS TINNED HAM</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS SELECT. BOXES')">XMAS SELECT. BOXES</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS HAMPERS')">XMAS HAMPERS</button>
-										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.christmas}" @click="trayContent('XMAS MISC')">XMAS MISC</button>
-										<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
-										<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
+										<button class="invButton" @click="expandableItemGroups.cleaning = !expandableItemGroups.cleaning">CLEANING...</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('CLEANING (General)')">CLEANING (General)</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('HOUSE CLEANING')">HOUSE CLEANING</button>
+										<button class="invButton expandable" :class="{hidden: !expandableItemGroups.cleaning}" @click="trayContent('KITCHEN FOIL')">KITCHEN FOIL</button>
+										<button class="invButton" @click="trayContent('COFFEE')">COFFEE</button>
+										<button class="invButton" @click="trayContent('CUSTARD')">CUSTARD</button>
+										<button class="invButton" @click="trayContent('EFBs')">EFBs</button>
+										<button class="invButton" @click="trayContent('FEM HYGIENE')">FEM HYGIENE</button>
 										<button class="invButton" @click="trayContent('FISH')">FISH</button>
-										<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
 										<button class="invButton" @click="trayContent('FRUIT')">FRUIT</button>
-										<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
-										<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
-										<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
-										<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
+										<button class="invButton" @click="trayContent('FRUIT JUICE')">FRUIT JUICE</button>
+										<button class="invButton" @click="trayContent('HOT CHOC')">HOT CHOC</button>
+										<button class="invButton" @click="trayContent('INSTANT MEALS')">INSTANT MEALS</button>
+										<button class="invButton" @click="trayContent('JAM')">JAM</button>
+										<button class="invButton" @click="trayContent('MEAT')">MEAT</button>
+										<button class="invButton" @click="trayContent('MILK')">MILK</button>
 										<button class="invButton" @click="trayContent('MISC')">MISC</button>
+										<button class="invButton" @click="trayContent('MIXED')">MIXED</button>
 										<button class="invButton" @click="trayContent('OTHER')">OTHER</button>
+										<button class="invButton" @click="trayContent('OUT OF DATE')">OUT OF DATE</button>
+										<button class="invButton" @click="trayContent('PASTA')">PASTA</button>
+										<button class="invButton" @click="trayContent('PASTA SAUCE')">PASTA SAUCE</button>
+										<button class="invButton" @click="trayContent('PET FOOD')">PET FOOD</button>
+										<button class="invButton" @click="trayContent('POP/SQUASH')">POP/SQUASH</button>
+										<button class="invButton" @click="trayContent('POTATOES')">POTATOES</button>
+										<button class="invButton" @click="trayContent('RICE')">RICE</button>
+										<button class="invButton" @click="trayContent('RICE PUD')">RICE PUD</button>
+										<button class="invButton" @click="trayContent('SAVOURY TREATS')">SAVOURY TREATS</button>
+										<button class="invButton" @click="trayContent('SHORT DATE')">SHORT DATE</button>
+										<button class="invButton" @click="trayContent('SOUP')">SOUP</button>
+										<button class="invButton" @click="trayContent('SPAGHETTI')">SPAGHETTI</button>
+										<button class="invButton" @click="trayContent('SPONGE PUD')">SPONGE PUD</button>
+										<button class="invButton" @click="trayContent('SUGAR')">SUGAR</button>
+										<button class="invButton" @click="trayContent('TEA BAGS')">TEA BAGS</button>
+										<button class="invButton" @click="trayContent('TOILETRIES')">TOILETRIES</button>
+										<button class="invButton" @click="trayContent('TOMATOES')">TOMATOES</button>
+										<button class="invButton" @click="trayContent('TRAYS')">TRAYS</button>
+										<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
+										<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
 										<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
 										<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 									</div>

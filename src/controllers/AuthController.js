@@ -24,8 +24,8 @@ class AuthController {
 			user.password = '';
 			delete user.password;
 			const auth = this.createAuth(user);
-			resp.cookie('_id', auth['id'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: true, secure: config.auth.secureCookie});
-			resp.cookie('_p', auth['p'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: false, secure: config.auth.secureCookie});
+			resp.cookie('_id', auth['id'], {httpOnly: true, secure: config.auth.secureCookie});
+			resp.cookie('_p', auth['p'], {httpOnly: false, secure: config.auth.secureCookie});
 			resp.status(201);
 			resp.send(user);
 		}

@@ -69,6 +69,14 @@ function getExpiryColor(tray) {
 	return getYearColor(y);
 }
 
+function emptyTheTray(tray) {
+	tray.category = null;
+	tray.weight = null;
+	tray.expiryYear = {start: null, end: null};
+	tray.expiryMonth = {start: null, end: null};
+	tray.userNote = null;
+}
+
 const shelfieApp = new Vue({
 	el: '#shelfie-app',
 	data: {
@@ -508,6 +516,7 @@ const shelfieApp = new Vue({
 		inventoryFetchShelfTrays: function() {
 			axios.get(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays', {withCredentials: true}).then((res) => {
 				this.shelfTrays = res.data;
+				if(this.shelfTrays.length > 0 && this.shelfTrays[0].length > 0) this.selectedTray = this.shelfTrays[0][0];
 				}).catch((err) => {
 				this.shelfTrays = [];
 			});
@@ -627,7 +636,7 @@ const shelfieApp = new Vue({
 			for(let row of this.shelfTrays) {
 				for(let tray of row) {
 					tray.category = this.selectedTray.category;
-					tray.weight = this.selectedTray.weight;
+					tray.weight = null;
 					tray.expiryYear = {start: this.selectedTray.expiryYear.start, end: this.selectedTray.expiryYear.end};
 					tray.expiryMonth = {start: this.selectedTray.expiryMonth.start, end: this.selectedTray.expiryMonth.end};
 					tray.userNote = this.selectedTray.userNote;
@@ -639,11 +648,9 @@ const shelfieApp = new Vue({
 				this.makeToast('Error', 'No tray selected.', 'danger');
 				return;
 			}
-			this.selectedTray.category = '';
-			this.selectedTray.weight = 0;
-			this.selectedTray.expiryYear = {start: null, end: null};
-			this.selectedTray.expiryMonth = {start: null, end: null};
-			this.selectedTray.userNote = '';
+			for(let i = 0; i < this.selectedTray.row; i++) {
+				emptyTheTray(this.shelfTrays[i][this.selectedTray.col]);
+			}
 		},
 		shelfOk: function(ok = true) {
 			if(!this.inventoryShelves[this.selectedShelf]) return;

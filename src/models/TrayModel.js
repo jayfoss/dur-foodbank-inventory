@@ -19,7 +19,7 @@ class TrayModel extends Model {
 	}
 	
 	set category(value) {
-		if(!this.validator.isValidLengthNN('category', value, 1, 25)) {
+		if(!this.validator.isValidLength('category', value, 0, 25)) {
 			return false;
 		}
 		this.fields.category = value;
@@ -27,13 +27,10 @@ class TrayModel extends Model {
 	}
 	
 	set weight(value) {
-		if(!this.validator.isNumberNN('weight', value)) {
-			return false;
-		}
 		if(!this.validator.isInRange('weight', value, 0, 1000)){
 			return false;
 		}
-		this.fields.weight = parseFloat(value);
+		this.fields.weight = value !== null ? parseFloat(value) : null;
 		return this;
 	}
 	
