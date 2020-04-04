@@ -585,7 +585,9 @@ input[type=checkbox] {
 
 /* END OF INVENTORY PAGE CSS */
 
-
+.report-table th:hover{
+	cursor: pointer;
+}
 
 
 /* USER MANAGEMENT */
@@ -595,6 +597,10 @@ input[type=checkbox] {
 
 #user-view.active {
 	display: block;
+}
+
+.user-table th:hover {
+	cursor: pointer;
 }
 
 .user-el {
