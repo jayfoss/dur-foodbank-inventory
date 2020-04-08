@@ -155,6 +155,8 @@ const shelfieApp = new Vue({
 		catsInReport:[],
 		reportSelectedSort:'item',
 		reportSelectedSortDirection:'asc',
+		allWeight:0,
+		allCount:0,
 		/* END OF REPORT PAGE */
 		
 		/* USER MANAGEMENT (UM) */
@@ -791,24 +793,33 @@ const shelfieApp = new Vue({
 		updateReportTotals:function(){
 			this.catsInReport = [];
 			this.reportTotals = [];
+			this.allCount = 0;
+			this.allWeight = 0;
 			var roundedWeight = 0;
 			for (i=0; i < (this.reporttest.length); i++){
-				if (this.isSelected.includes(this.reporttest[i].zone)){
-					if (!this.catsInReport.includes(this.reporttest[i].category)){
-						this.catsInReport.push(this.reporttest[i].category);
-						roundedWeight = this.reporttest[i].weight;
-						roundedWeight = +roundedWeight.toFixed(2);
-						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
-							reportCat : this.reporttest[i].category,
-							totalWeight : roundedWeight,
-							numberOfTrays : 1
+				if(this.reporttest[i].category != '')
+				{
+					if (this.isSelected.includes(this.reporttest[i].zone)){
+						if (!this.catsInReport.includes(this.reporttest[i].category)){
+							this.catsInReport.push(this.reporttest[i].category);
+							roundedWeight = this.reporttest[i].weight;
+							roundedWeight = +roundedWeight.toFixed(2);
+							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
+								reportCat : this.reporttest[i].category,
+								totalWeight : roundedWeight,
+								numberOfTrays : 1
+							}
+							this.allCount += 1;
+							this.allWeight += roundedWeight;
 						}
-					}
-					else{
-						roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
-						roundedWeight = +roundedWeight.toFixed(2);
-						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
-						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
+						else{
+							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
+							roundedWeight = +roundedWeight.toFixed(2);
+							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
+							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
+							this.allCount += 1;
+							this.allWeight += roundedWeight;
+						}
 					}
 				}
 			}
