@@ -545,7 +545,7 @@ const shelfieApp = new Vue({
 		},
 		inventorySubmitTrays: function(){
 			const self = this;
-			console.log('Submit');
+			console.log(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays');
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
 			this.shelfTrays, {withCredentials: true}
 			).then((res) => {
