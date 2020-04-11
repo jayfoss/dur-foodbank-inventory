@@ -170,7 +170,9 @@ const shelfieApp = new Vue({
         UMcurrentUser: null,
 		UMcreateMode: false,
 		usersSelectedSort:'first name',
-		usersSelectedSortDirection:'asc'
+		usersSelectedSortDirection:'asc',
+		UMcurrentPage: 1,
+		UMpageSize: 10
 	},
 	methods:{
 		makeToast(title, msg, variant = null) {
@@ -901,6 +903,12 @@ const shelfieApp = new Vue({
 			});
 			return this.UMusers;
 		},
+		UMnextPage: function() {
+			if((this.UMcurrentPage*this.UMpageSize) < this.UMUsers.length) this.UMcurrentPage++;
+		},
+		UMprevPage: function() {
+			if(this.UMcurrentPage > 1) this.UMcurrentPage--;
+		}
 		
 		
 	},
@@ -993,6 +1001,10 @@ const shelfieApp = new Vue({
 					if(a['canModifyUsers'] > b['canModifyUsers']) return 1 * modifier;
 				} 
 				return 0;
+				//.filter((object, index) => {
+				// 	let start = (this.currentPage-1)*this.pageSize;
+				// 	let end = this.currentPage*this.pageSize;
+				// 	let tmpIndex = index - this.skippedRows;
 			}); //to populate later
 		},
 		// addRows: function(){
