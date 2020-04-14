@@ -18,7 +18,7 @@ class AuthController {
 			return appError.unauthorized(resp, 'Invalid email or password');
 		}
 		const pwdMatch = await this.passwordMatches(resp, req.body.password, user.password);
-		if(pwdMatch === null) return;
+		if(pwdMatch === null) return appError.unauthorized(resp, 'Invalid email or password');
 		if(pwdMatch) {
 			user.password = '';
 			delete user.password;
@@ -64,16 +64,23 @@ class AuthController {
 	}
 	
 	getUsers(req, resp) {
-		
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
+		}
 	}
 	
 	createUser(req, resp) {
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
+		}
 		const user = new UserModel();
 		if(!user.map(req.body)) return;
 	}
 	
 	deleteUser(req, resp) {
-		
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
+		}
 	}
 	
 	async createPassword(resp, password) {
@@ -110,7 +117,7 @@ class AuthController {
 		}
 	}
 
-	async getUser(userEmail) {
+	async getUserFromDb(userEmail) {
 		let connection = this.db.getConnection();
 		let user = null;
 		try {
