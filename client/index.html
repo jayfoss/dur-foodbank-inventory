@@ -33,6 +33,7 @@
 								<input type="text" class="form-control" id="username" placeholder="Enter username" v-model="loginUsername" required>
 							</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 						</b-modal>
 						<div class="data-entry-form">
 							<div class="container-fluid inventory-container mx-0">
@@ -167,6 +168,8 @@
 										</div>
 									</div>
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
 							<div class="form-group">
 								<label for="password">Password</label>
 								<input type="password" class="form-control" id="password" placeholder="Enter password" v-model="loginPassword" required>
@@ -175,6 +178,9 @@
 								<div class="custom-control custom-checkbox">
 									<input type="checkbox" class="custom-control-input" id="login-remember">
 									<label class="custom-control-label" for="login-remember">Remember me</label>
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 								</div>
 							</div>
@@ -223,6 +229,7 @@
 									</div>
 								</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 							</div>
 							<div class="row">
 								<div class="col">
@@ -269,12 +276,17 @@
 											</tbody>
 										</table>
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
 								<div class="inv-v-ctrl-container text-center pt-1">
 									<div class="inv-v-ctrl-head">Bay</div>
 									<div class="inv-v-ctrl-mv">
 										<button @click="sectionSelect('bay', false)">&#129092;</button>
 										<div class="inv-v-zone">{{inventoryBays[selectedBay]}}</div>
 										<button @click="sectionSelect('bay', true)">&#129094;</button>
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 									</div>
 								</div>
@@ -383,6 +395,7 @@
 								<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 							</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 							<div class="row mt-3">
 								<div class="col-sm-6 order-1 order-sm-0">
 									<h2>Results</h2>
@@ -414,6 +427,11 @@
 										<button style="font-weight: bold; background-color: #68B72E;">EXPORT</button>
 									</div>
 								</div>
+=======
+							<div class="button-group col-lg-3">
+								<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
+								<button class="invButton" v-for="q in quarterButtons" @click="trayExpiry(q.y, q.m)">{{q.mt.start + '-' + q.mt.end + ' ' + q.y.start}}</button>
+>>>>>>> parent of 76077f4... Fix merge conflicts
 =======
 							<div class="button-group col-lg-3">
 								<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
@@ -755,6 +773,7 @@
 								<button v-on:click="warehouseFetchBays(zone._id)" v-for="zone in warehouseZones">{{zone._id}}</button>
 							</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 						</div>
 						<br>
 						<div class="row">
@@ -765,6 +784,8 @@
 									<button @click="fetchAllUsers" type="button">Refresh Table</button>
 									<button @click="setUMmodeCreate()" class="submit-button" type="button">ADD USER</button>
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
 							<p v-else class="bg-warning p-2 h5">NO ZONES</p>
 							<p v-if="originalData.zone._id !== ''" class="h5 mt-4 mb-3">SELECTED ZONE: {{originalData.zone._id}}</p>
 							<p v-else class="h5 mt-4 mb-3 bg-warning p-2">SELECTED ZONE: None</p>
@@ -772,6 +793,9 @@
 							<div v-if="originalData.zone._id != ''" class="d-flex flex-column">
 								<div class="form-group">
 									<input class="form-control" type="text" placeholder="New Zone Name" v-model="modifiedData.zone._id">
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 								</div>
 								<div class="inv-v-ctrl-container text-center pt-3">

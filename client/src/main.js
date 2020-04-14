@@ -133,6 +133,7 @@ const shelfieApp = new Vue({
 		
 		/* REPORT PAGE */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		allzones:[],
 		isSelected:[],
 		reporttest:[],
@@ -151,10 +152,15 @@ const shelfieApp = new Vue({
 		isSelected:['red','blue','pink'],
         /* END OF REPORT PAGE */
 >>>>>>> parent of 76077f4... Fix merge conflicts
+=======
+		isSelected:['red','blue','pink'],
+        /* END OF REPORT PAGE */
+>>>>>>> parent of 76077f4... Fix merge conflicts
         
         /* USER MANAGEMENT (UM) */
         UMcurrentSort: 'fName',
         UMcurrentSortDir: 'asc',
+<<<<<<< HEAD
 <<<<<<< HEAD
         UMusers: [],
         UMcurrentUser: null,
@@ -164,11 +170,16 @@ const shelfieApp = new Vue({
 	},
 	methods:{
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
         UMusers: ['error: no users loaded'],
         UMcurrentUser: {firstName: '', lastName:'', username:'', role:'', canViewData:false, canEditData:false, canModifyWarehouse:false, canModifyUsers:false, password:''},
         UMroleSelected: ''
     },
     methods:{
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 		makeToast(title, msg, variant = null) {
 			this.toastCount++
@@ -523,17 +534,23 @@ const shelfieApp = new Vue({
         inventorySubmitTrays: function(){
 			const self = this;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			console.log(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays');
 			axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
 			this.shelfTrays, {withCredentials: true}
 			).then((res) => {
 				self.shelfOk(false);
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
             axios.patch(shelfieURL + '/zones/' + this.inventoryZones[this.selectedZone]._id + '/bays/' + this.inventoryBays[this.selectedBay] + '/shelves/' + this.inventoryShelves[this.selectedShelf]._id + '/trays',
                 this.shelfTrays, {withCredentials: true}
             ).then((res) => {
 				self.makeToast('Success', 'Trays saved', 'success');
 				this.shelfOk(false);
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 			});
         },
@@ -709,6 +726,7 @@ const shelfieApp = new Vue({
                 this.trays = [];
             });
 <<<<<<< HEAD
+<<<<<<< HEAD
 			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
                 //console.log(res.data);	
 				this.reporttest = res.data;
@@ -747,6 +765,8 @@ const shelfieApp = new Vue({
 		},
 		
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
         },
         sort: function(s) {
             if(s === this.currentSort) {
@@ -765,6 +785,9 @@ const shelfieApp = new Vue({
         /* END OF DATA VIEW PAGE */
         
 		/* REPORT PAGE TESTING */
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 		myFilter:function(reportzone) {
 			/*this.isSelected = !this.isSelected;*/
@@ -947,6 +970,7 @@ const shelfieApp = new Vue({
         },
 		fetchAllUsers: function(){
 <<<<<<< HEAD
+<<<<<<< HEAD
 			axios.get(shelfieURL + '/users', {withCredentials: true}).then((res) => {
 				const l = [];
 				for(let i in res.data) {
@@ -967,6 +991,8 @@ const shelfieApp = new Vue({
 	computed:{
 		/* INVENTORY */
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
             // var uTable;
             // var data;
             // var row;
@@ -986,6 +1012,9 @@ const shelfieApp = new Vue({
     },
     computed:{
         /* INVENTORY */
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 		noteModel: {
 			get: function() {
@@ -1038,6 +1067,7 @@ const shelfieApp = new Vue({
 			}
 			return quarters;
 		},
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* END OF INVENTORY */
 		
@@ -1166,6 +1196,8 @@ const shelfieApp = new Vue({
 		/* END OF DATA VIEW PAGE */
 	},
 =======
+=======
+>>>>>>> parent of 76077f4... Fix merge conflicts
         /* END OF INVENTORY */
 
         /* USER MANAGEMENT PAGE */
@@ -1245,6 +1277,9 @@ const shelfieApp = new Vue({
         }
         /* END OF DATA VIEW PAGE */
     },
+<<<<<<< HEAD
+>>>>>>> parent of 76077f4... Fix merge conflicts
+=======
 >>>>>>> parent of 76077f4... Fix merge conflicts
 	watch: {
 		selectedZone: function() {
@@ -1288,6 +1323,7 @@ const shelfieApp = new Vue({
 		});
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 });
 
 window.onload = function() {
@@ -1302,6 +1338,9 @@ window.onload = function() {
 		elem.msRequestFullscreen().catch(()=>{});
 	}
 }
+=======
+});
+>>>>>>> parent of 76077f4... Fix merge conflicts
 =======
 });
 >>>>>>> parent of 76077f4... Fix merge conflicts
