@@ -15,23 +15,23 @@ class ShelfController {
             'userNote': ''
         };
         this.basicShelfData = {
-            '1': {
+            '0': {
+                '0': this.basicTrayData,
                 '1': this.basicTrayData,
                 '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
+                '3': this.basicTrayData
+            },
+            '1': {
+                '0': this.basicTrayData,
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData
             },
             '2': {
+                '0': this.basicTrayData,
                 '1': this.basicTrayData,
                 '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
-            },
-            '3': {
-                '1': this.basicTrayData,
-                '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
+                '3': this.basicTrayData
             },
         };
     }
@@ -70,7 +70,6 @@ class ShelfController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const shelf = new ShelfModel();
-		if(!shelf.map(req.body)) return;
 		await this.insertShelves(req.params.zoneId, req.params.bayId, req.params.numberOfShelves);
 		resp.status(201);
 		resp.send(shelf.fields);
@@ -81,7 +80,6 @@ class ShelfController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const shelf = new ShelfModel();
-		if(!shelf.map(req.body)) return;
 		await this.deleteShelves(req.params.zoneId, req.params.bayId, req.params.numberOfShelves);
 		resp.status(201);
 		resp.send(shelf.fields);

@@ -15,23 +15,23 @@ class BayController {
             'userNote': ''
         };
         this.basicShelfData = {
-            '1': {
+            '0': {
+                '0': this.basicTrayData,
                 '1': this.basicTrayData,
                 '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
+                '3': this.basicTrayData
+            },
+            '1': {
+                '0': this.basicTrayData,
+                '1': this.basicTrayData,
+                '2': this.basicTrayData,
+                '3': this.basicTrayData
             },
             '2': {
+                '0': this.basicTrayData,
                 '1': this.basicTrayData,
                 '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
-            },
-            '3': {
-                '1': this.basicTrayData,
-                '2': this.basicTrayData,
-                '3': this.basicTrayData,
-                '4': this.basicTrayData
+                '3': this.basicTrayData
             },
         };
         this.basicBayData = {
@@ -68,7 +68,6 @@ class BayController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const bay = new BayModel();
-		if(!bay.map(req.body)) return;
 		await this.insertBays(req.params.zoneId, req.params.numberOfBays);
 		resp.status(201);
 		resp.send(bay.fields);
@@ -78,8 +77,7 @@ class BayController {
         if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-		const bay = new BayModel();
-		if(!bay.map(req.body)) return;
+        const bay = new BayModel();
 		await this.deleteBays(req.params.zoneId, req.params.numberOfBays);
 		resp.status(201);
 		resp.send(bay.fields);
