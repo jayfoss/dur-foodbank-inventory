@@ -363,7 +363,7 @@ input[type=checkbox] {
 
 #save-trays {
 	width: 200px;
-	background-color: var(--red);
+	background-color: #68B72E;
 }
 
 .inventory {

@@ -194,7 +194,7 @@
 											<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
 											<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
 											<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
-											<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
+											<button id="save-trays" class="submit-button invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 										</div>
 										<div class="button-group col-lg-3">
 											<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
