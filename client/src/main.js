@@ -155,8 +155,6 @@ const shelfieApp = new Vue({
 		catsInReport:[],
 		reportSelectedSort:'item',
 		reportSelectedSortDirection:'asc',
-		allWeight:0,
-		allCount:0,
 		/* END OF REPORT PAGE */
 		
 		/* USER MANAGEMENT (UM) */
@@ -172,11 +170,7 @@ const shelfieApp = new Vue({
         UMcurrentUser: null,
 		UMcreateMode: false,
 		usersSelectedSort:'first name',
-		usersSelectedSortDirection:'asc',
-		UMcurrentPage: 1,
-		UMskippedRows: 0,
-		UMUsersLength: 0,
-		UMpageSize: 10
+		usersSelectedSortDirection:'asc'
 	},
 	methods:{
 		makeToast(title, msg, variant = null) {
@@ -798,37 +792,27 @@ const shelfieApp = new Vue({
 		updateReportTotals:function(){
 			this.catsInReport = [];
 			this.reportTotals = [];
-			this.allCount = 0;
-			this.allWeight = 0;
 			var roundedWeight = 0;
 			for (i=0; i < (this.reporttest.length); i++){
-				if(this.reporttest[i].category != '')
-				{
-					if (this.isSelected.includes(this.reporttest[i].zone)){
-						if (!this.catsInReport.includes(this.reporttest[i].category)){
-							this.catsInReport.push(this.reporttest[i].category);
-							roundedWeight = this.reporttest[i].weight;
-							this.allWeight += this.reporttest[i].weight;
-							roundedWeight = +roundedWeight.toFixed(2);
-							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
-								reportCat : this.reporttest[i].category,
-								totalWeight : roundedWeight,
-								numberOfTrays : 1
-							}
-							this.allCount += 1;
+				if (this.isSelected.includes(this.reporttest[i].zone)){
+					if (!this.catsInReport.includes(this.reporttest[i].category)){
+						this.catsInReport.push(this.reporttest[i].category);
+						roundedWeight = this.reporttest[i].weight;
+						roundedWeight = +roundedWeight.toFixed(2);
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
+							reportCat : this.reporttest[i].category,
+							totalWeight : roundedWeight,
+							numberOfTrays : 1
 						}
-						else{
-							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
-							roundedWeight = +roundedWeight.toFixed(2);
-							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
-							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
-							this.allCount += 1;
-							this.allWeight += this.reporttest[i].weight;
-						}
+					}
+					else{
+						roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
+						roundedWeight = +roundedWeight.toFixed(2);
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
+						this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 					}
 				}
 			}
-			this.allWeight = +this.allWeight.toFixed(2);
 		},
 		
 		myFilter:function(reportzone) {
@@ -918,16 +902,6 @@ const shelfieApp = new Vue({
 			});
 			return this.UMusers;
 		},
-		UMnextPage: function() {
-			console.log(this.UMcurrentPage);
-			let l = this.fetchAllUsers().length;
-			if((this.UMcurrentPage*this.UMpageSize) < l) this.UMcurrentPage++;
-		},
-		UMprevPage: function() {
-			console.log(this.UMcurrentPage);
-			if(this.UMcurrentPage > 1) this.UMcurrentPage--;
-			console.log(this.UMcurrentPage);
-		}
 		
 		
 	},
@@ -991,21 +965,18 @@ const shelfieApp = new Vue({
 		sortedUsers: function(){
 			//to sort later
 			this.UMUsers = this.fetchAllUsers;
-			this.UMUsersLength = this.UMUsers.length;
-			console.log("LENGTH: " + this.UMUsersLength + this.UMusers.length);
-			this.UMskippedRows = 0;
 			return this.UMusers.sort((a, b) => {
 				let modifier = 1;
 				if(this.usersSelectedSortDirection === 'desc') modifier = -1;
 				if(this.usersSelectedSort === 'first name'){
-					if(a['firstName'].toLowerCase() < b['firstName'].toLowerCase()) return -1 * modifier;
-					if(a['firstName'].toLowerCase() > b['firstName'].toLowerCase()) return 1 * modifier;
+					if(a['firstName'] < b['firstName']) return -1 * modifier;
+					if(a['firstName'] > b['firstName']) return 1 * modifier;
 				} else if (this.usersSelectedSort === 'last name'){
-					if(a['lastName'].toLowerCase() < b['lastName'].toLowerCase()) return -1 * modifier;
-					if(a['lastName'].toLowerCase() > b['lastName'].toLowerCase()) return 1 * modifier;
+					if(a['lastName'] < b['lastName']) return -1 * modifier;
+					if(a['lastName'] > b['lastName']) return 1 * modifier;
 				} else if (this.usersSelectedSort === 'username'){
-					if(a['username'].toLowerCase() < b['username'].toLowerCase()) return -1 * modifier;
-					if(a['username'].toLowerCase() > b['username'].toLowerCase()) return 1 * modifier;
+					if(a['username'] < b['username']) return -1 * modifier;
+					if(a['username'] > b['username']) return 1 * modifier;
 				} else if (this.usersSelectedSort === 'role'){
 					if(a['role'] < b['role']) return -1 * modifier;
 					if(a['role'] > b['role']) return 1 * modifier;
@@ -1023,25 +994,7 @@ const shelfieApp = new Vue({
 					if(a['canModifyUsers'] > b['canModifyUsers']) return 1 * modifier;
 				} 
 				return 0;
-				//.filter((object, index) => {
-				// 	let start = (this.currentPage-1)*this.pageSize;
-				// 	let end = this.currentPage*this.pageSize;
-				// 	let tmpIndex = index - this.skippedRows;
-				//to populate later
-				}).filter((user, index) => {
-					let start = (this.UMcurrentPage-1)*this.UMpageSize;
-					let end = this.UMcurrentPage*this.UMpageSize;
-					let tempIndex = index - this.UMskippedRows;
-					if (tempIndex >= start && tempIndex < end){
-						return true
-					}
-					else{
-						return false
-					}
-					//deal with skipped rows - probs no need
-					//filtering no need...
-
-				})
+			}); //to populate later
 		},
 		// addRows: function(){
 		//     var uTable;

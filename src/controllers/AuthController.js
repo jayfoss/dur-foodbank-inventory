@@ -19,7 +19,7 @@ class AuthController {
 			return appError.unauthorized(resp, 'Invalid email or password');
 		}
 		const pwdMatch = await this.passwordMatches(resp, req.body.password, user.password);
-		if(pwdMatch === null) return appError.unauthorized(resp, 'Invalid email or password');
+		if(pwdMatch === null) return;
 		if(pwdMatch) {
 			user.password = '';
 			delete user.password;

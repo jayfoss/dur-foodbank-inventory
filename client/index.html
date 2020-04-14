@@ -194,7 +194,7 @@
 											<button class="invButton" @click="trayContent('UNSORTED')">UNSORTED</button>
 											<button class="invButton" @click="trayContent('VEGETABLES')">VEGETABLES</button>
 											<button class="invButton" v-for="y in yearButtons" :class="getYearColor(y)" @click="trayExpiry({start: y, end: y})">{{y}}</button>
-											<button id="save-trays" class="submit-button invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
+											<button id="save-trays" class="invButton" @click="inventorySubmitTrays">SAVE TRAYS</button>
 										</div>
 										<div class="button-group col-lg-3">
 											<button class="invButton" v-for="m in monthYearButtons" @click="trayExpiry(m.y, m.m)">{{m.mt + ' ' + m.y.start}}</button>
@@ -240,7 +240,8 @@
 													<th scope="col" rowspan="2" @click="sort('weight')">Weight</th>
 													<th scope="col" class="no-click" colspan="2">Expiry Year</th>
 													<th scope="col" class="no-click" colspan="2">Expiry Month</th>
-													<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated</th>
+													<th scope="col" rowspan="2" @click="sort('lastUpdated')">Last Updated
+													</th>
 													<th scope="col" rowspan="2">Note</th>
 												</tr>
 												<tr>
@@ -345,11 +346,6 @@
 													<td>{{ category.reportCat }}</td>
 													<td>{{ category.numberOfTrays }}</td>
 													<td>{{ category.totalWeight }}</td>
-												</tr>
-												<tr class = "table-info">
-													<td>TOTAL</td>
-													<td>{{ allCount }}</td>
-													<td>{{ allWeight }} </td>
 												</tr>
 											</tbody>
 										</table>
@@ -598,8 +594,8 @@
 						<div class="row">
 							<div class="col" style="scroll-padding-bottom: 10px;">
 								<div class="page-control-buttons d-flex justify-content-center">
-									<button @click="UMprevPage" type="button">Previous</button>
-									<button @click="UMnextPage" type="button">Next</button>
+									<button @click="prevPage" type="button">Previous</button>
+									<button @click="nextPage" type="button">Next</button>
 									<button @click="fetchAllUsers" type="button">Refresh Table</button>
 									<button @click="setUMmodeCreate()" class="submit-button" type="button">ADD USER</button>
 								</div>
