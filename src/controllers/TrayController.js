@@ -111,30 +111,20 @@ class TrayController {
         return tray;
     }
 
-    async getReportData(req, resp){
-        if(!req.jwtDecoded.canViewData) {
-			return appError.forbidden(resp, 'You do not have permission to view data');
-		}
+    async getReportData(){
         let trays = await this.getAllTraysFromDb();
         let filteredTrays = {};
-        let numberOfTrays = trays.length;
-        var totalWeight;
-        console.log(trays);
         trays.forEach((tray) => {
             if(tray.category != ''){
                 if(!filteredTrays[tray.zone]){
                     filteredTrays[tray.zone] = {};
                 }
                 if(!filteredTrays[tray.zone][tray.category]){
-                    filteredTrays[tray.zone][tray.category] = { totalWeight: 0, numberOfTrays: 0 };
+                    filteredTrays[tray.zone][tray.category] = 0;
                 }
-                filteredTrays[tray.zone][tray.category][numberOfTrays] += 1;
-                filteredTrays[tray.zone][tray.category][totalWeight] += tray.weight;
-
+                filteredTrays[tray.zone][tray.category] += 1;
             }
         });
-        resp.status(200);
-		resp.send(filteredTrays);
     }
 
     async getAllTraysFromDb(){
@@ -146,8 +136,6 @@ class TrayController {
                 for(let zoneName in doc){
                     if(zoneName === "_id") continue;
                     for(let bayName in doc[zoneName]){
-                        
-                        if(bayName === "_color") continue;
                         for(let shelfNumber in doc[zoneName][bayName]){
                             for(let rowNumber in doc[zoneName][bayName][shelfNumber]){
                                 for(let columnNumber in doc[zoneName][bayName][shelfNumber][rowNumber]){

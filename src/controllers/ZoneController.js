@@ -31,29 +31,39 @@ class ZoneController {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-        const zone = new ZoneModel();
+		const zone = new ZoneModel();
 		if(!zone.map(req.body)) return;
 		let zoneObj = {};
-		if(req.body._id && req.body.bays && req.body.shelves && req.body.rows && req.body.columns){
+		if(req.body.name && req.body.bays && req.body.shelves && req.body.rows && req.body.columns){
             zoneObj = {};
-            for(let bay = 0; bay < req.body.bays; bay++){
-                let bayStr = String.fromCharCode(65 + bay);
-                zoneObj[bayStr] = {};
+            if(isNaN(req.body.bays)){
+                zoneObj[req.body.bays] = {};
                 for(let shelf = 1; shelf <= req.body.shelves; shelf++){
-                    
-                    zoneObj[bayStr][shelf] = {};
-                    zoneObj[bayStr][shelf]['_shelfOk'] = false;
-                    for(let row = 0; row < req.body.rows; row++){
-                        zoneObj[bayStr][shelf][row] = {};
-                        for(let column = 0; column < req.body.columns; column++){
-                            zoneObj[bayStr][shelf][row][column] = this.emptyTray;
+                    zoneObj[req.body.bays][shelf] = {};
+                    for(let row = 1; row <= req.body.rows; row++){
+                        zoneObj[req.body.bays][shelf][row] = {};
+                        for(let column = 1; column <= req.body.columns; column++){
+                            zoneObj[req.body.bays][shelf][row][column] = this.emptyTray;
                         }
                     }
-                    
+                }
+            } else {
+                for(let bay = 0; bay < req.body.bays; bay++){
+                    let bayStr = String.fromCharCode(65 + bay);
+                    zoneObj[bayStr] = {};
+                    for(let shelf = 1; shelf <= req.body.shelves; shelf++){
+                        zoneObj[bayStr][shelf] = {};
+                        for(let row = 1; row <= req.body.rows; row++){
+                            zoneObj[bayStr][shelf][row] = {};
+                            for(let column = 1; column <= req.body.columns; column++){
+                                zoneObj[bayStr][shelf][row][column] = this.emptyTray;
+                            }
+                        }
+                    }
                 }
             }
-        }
-		await this.insertZone(zone._id, zone._color, zoneObj);
+		}
+		await this.insertZone(zone.name, zoneObj);
 		resp.status(201);
 		resp.send(zone.fields);
 	}
@@ -62,9 +72,9 @@ class ZoneController {
 		if(!req.jwtDecoded.canModifyWarehouse) {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
-        const zone = new ZoneModel();
-        if(!zone.map(req.body)) return;
-		await this.changeZoneName(req.params.zoneId, zone._id);
+		const zone = new ZoneModel();
+		if(!zone.map(req.body)) return;
+		await this.changeZoneName(req.params.zoneId, zone.name);
 		resp.status(200);
 		resp.send(zone.fields);
 	}
@@ -121,8 +131,7 @@ class ZoneController {
         return shelf;
 	}
 
-    async insertZone(zoneName, zoneColor='FFFFFF', settableObject={}) {
-        settableObject['_color'] = zoneColor;
+    async insertZone(zoneName, settableObject={}) {
         let filter = {[zoneName]: { $exists: false }};
         let updateQuery = { $set: { [zoneName]: settableObject } };
         await this.db.updateDatabase('warehouse', filter, updateQuery);

@@ -4,7 +4,6 @@ const argon2 = require('argon2');
 const AppError = require('../errors/AppError');
 const appError = new AppError();
 const UserModel = require('../models/UserModel');
-const ObjectID = require('mongodb').ObjectID;
 
 class AuthController {
 	constructor(db){
@@ -14,7 +13,7 @@ class AuthController {
 	async login(req, resp) {
 		req.accepts('json');
 		resp.set('etag', false);
-		let user = await this.getUserFromDb(req.body.username);
+		let user = await this.getUser(req.body.email);
 		if(!user) {
 			return appError.unauthorized(resp, 'Invalid email or password');
 		}
@@ -24,8 +23,8 @@ class AuthController {
 			user.password = '';
 			delete user.password;
 			const auth = this.createAuth(user);
-			resp.cookie('_id', auth['id'], {httpOnly: true, secure: config.auth.secureCookie});
-			resp.cookie('_p', auth['p'], {httpOnly: false, secure: config.auth.secureCookie});
+			resp.cookie('_id', auth['id'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: true, secure: config.auth.secureCookie});
+			resp.cookie('_p', auth['p'], {expires: new Date(Date.now() + config.auth.maxAge * 1000), httpOnly: false, secure: config.auth.secureCookie});
 			resp.status(201);
 			resp.send(user);
 		}
@@ -48,7 +47,7 @@ class AuthController {
 			canViewData: user.canViewData,
 			canEditData: user.canEditData,
 			canModifyWarehouse: user.canModifyWarehouse,
-			canModifyUsers: user.canModifyUsers
+			canEditUsers: user.canEditUsers
 		};
 		let token = jwt.sign(payload, config.auth.jwtSecret, {
 			expiresIn: config.auth.maxAge
@@ -64,58 +63,24 @@ class AuthController {
 		return a;
 	}
 	
-	async getUsers(req, resp) {
-		if(!req.jwtDecoded.canModifyUsers) {
-			return appError.forbidden(resp, 'You do not have permission to modify users');
-        }
-        const users = await this.getUsersFromDb();
-		for(let i in users) {
-			delete users[i].password;
+	getUsers(req, resp) {
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
 		}
-        resp.status(200);
-        resp.send(users);
 	}
 	
-	async createUser(req, resp) {
-		if(!req.jwtDecoded.canModifyUsers) {
-			return appError.forbidden(resp, 'You do not have permission to modify users');
-        }
+	createUser(req, resp) {
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
+		}
 		const user = new UserModel();
-		if(!user.map(req.body)){
-            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors);
-        };
-		const password = await this.createPassword(resp, req.body.password);
-		user.fields.password = password;
-        const inserted = await this.insertUserIntoDb(user.fields);
-		if(!inserted) {
-			return appError.unprocessableEntity(resp, 'Failed to create user. Username may already exist');
-		}
-        resp.status(201);
-        resp.send(user);
+		if(!user.map(req.body)) return;
 	}
 	
-	async updateUser(req, resp){
-        if(!req.jwtDecoded.canModifyUsers) {
-			return appError.forbidden(resp, 'You do not have permission to modify users');
-        };
-        const user = new UserModel();
-        if(!user.update(req.body)){
-            return appError.badRequest(resp, 'Invalid field in user', user.validator.errors);
-        };
-        await this.updateUserFromDb(req.params.userId, user.fields);
-        resp.status(200);
-        resp.send(user);
-    }
-	
-	async deleteUser(req, resp) {
-		if(!req.jwtDecoded.canModifyUsers) {
-			return appError.forbidden(resp, 'You do not have permission to modify users');
+	deleteUser(req, resp) {
+		if(!req.jwtDecoded.canEditUsers) {
+			return appError.forbidden(resp, 'You do not have permission to edit users');
 		}
-		if(req.params.userId === req.jwtDecoded.id) {
-			return appError.forbidden(resp, 'You cannot delete the user you are logged in as');
-		}
-		this.deleteUserFromDb(req.params.userId);
-		resp.sendStatus(204);
 	}
 	
 	async createPassword(resp, password) {
@@ -136,67 +101,57 @@ class AuthController {
 		}
 	}
 
-	async getUsersFromDb(){
-        let users = [];
-        try{
-            let cursor = await this.db.queryDatabase('users');
-            await cursor.forEach((user) => {
-                users.push(user);
-            });
-        }catch(err){
-            console.log(err);
-        }
-        return users;
-    }
-	
-	async insertUserIntoDb(userObj){
-		const db = await this.db.getDb();
+	async insertUser(userObj){
+		const connection = await this.db.getConnection();
 
 		try {
+			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			let doesUserExist = await collection.findOne({'username' : userObj.username});
-			if(doesUserExist) return false; // THE USER ALREADY EXISTS WITH THAT EMAIL
+			let doesUserExist = await collection.findOne({'email' : userObj['email']});
+			if(doesUserExist) return; // THE USER ALREADY EXISTS WITH THAT EMAIL
 			await collection.insertOne(userObj);
-			return true;
 		} catch (err){
 			console.log(err);
+		} finally {
+			connection.close();
 		}
 	}
 
-	async getUserFromDb(username) {
-		const db = await this.db.getDb();
+	async getUserFromDb(userEmail) {
+		let connection = this.db.getConnection();
 		let user = null;
 		try {
+			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			user = await collection.findOne({'username': username});
+			user = await collection.findOne({'email': userEmail});
 		} catch (err) {
 			console.log(err);
 		}
-		return user;
+		return user
 	}
 
-	async updateUserFromDb(id, updateObj) {
-		delete updateObj._id;
-		delete updateObj.password;
-		const db = await this.db.getDb();
+	async updateUser(userEmail, updateObj) {
+		let connection = this.db.getConnection();
 		try {
+			const db = connection.db('foodbank');
 			const collection = db.collection('users');
-			const user = await collection.findOne({'_id': ObjectID(id)});
-			if(!user) return false;
-			updateObj.password = user.password;
-			await collection.updateOne({'_id': ObjectID(id)}, {$set:updateObj});
+			console.log(updateObj);
+			await collection.updateOne({'email': userEmail}, {$set:updateObj});
 		} catch(err) {
 			console.log(err);
 		}
 	}
 
-	async deleteUserFromDb(id){
-		const db = await this.db.getDb();
-		try {
-			const collection = db.collection('users');
-			collection.deleteOne({'_id': ObjectID(id)});
+	async deleteUser(connection, userEmail){
+		if(!connection) return;
+		try{
+			const db = connection.db("foodbank");
+			const collection = db.collection("users");
+			collection.deleteOne({"email": userEmail});
 		} catch (err){
 			console.log(err);
+		} finally{
+			connection.close();
 		}
 	}
 }

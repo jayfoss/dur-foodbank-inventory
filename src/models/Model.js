@@ -6,7 +6,6 @@ class Model {
 		this.settableFields = [];
 		this.validator = new Validator();
 		this.protectedFields = [];
-		//to add uniqueFields?
 	}
 	
 	/**
@@ -17,12 +16,7 @@ class Model {
 			let settableField = this.settableFields[i];
 			if(whitelist !== null && !whitelist.includes(settableField)) continue;
 			this[settableField] = body[settableField];
-		};
-		for(let i in this.protectedFields){
-			let protectedField = this.protectedFields[i];
-			if(whitelist != null && !whitelist.includes(protectedField)) continue;
-			this[protectedField] = body[protectedField];
-		};
+		}
 		return !this.validator.hasErrors();
 	}
 	

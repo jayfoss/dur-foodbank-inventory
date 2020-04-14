@@ -21,6 +21,7 @@ class ColumnController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
 		await this.insertColumns(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.numberOfColumns);
 		resp.status(201);
 		resp.send(column.fields);
@@ -31,6 +32,7 @@ class ColumnController {
 			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
 		}
 		const column = new ColumnModel();
+		if(!column.map(req.body)) return;
 		await this.deleteColumns(req.params.zoneId, req.params.bayId, req.params.shelfId, req.params.rowId, req.params.numberOfColumns);
 		resp.status(201);
 		resp.send(column.fields);
@@ -139,7 +141,7 @@ class ColumnController {
         let numOfOrigColumns = originalColumns.length;
         if(newColumnNumber >= numOfOrigColumns)
             return;
-        for(let column = numOfOrigColumns-1; column >= newColumnNumber; column--){
+        for(let column = numOfOrigColumns; column > newColumnNumber; column--){
             await this.deleteColumn(zoneName, bayName, shelfNumber, rowNumber, column);
         }
     }
@@ -149,7 +151,7 @@ class ColumnController {
         let numOfOrigColumns = originalColumns.length;
         if(newColumnNumber <= numOfOrigColumns)
             return;
-        for(let column = numOfOrigColumns; column < newColumnNumber; column++){
+        for(let column = numOfOrigColumns + 1; column <= newColumnNumber; column++){
             await this.insertColumn(zoneName, bayName, shelfNumber, rowNumber, column);
         }
     }

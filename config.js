@@ -28,7 +28,7 @@ const production = {
 	auth: {
 		jwtSecret: process.env.JWT_SECRET,
 		secureCookie: true,
-		maxAge: 86400
+		maxAge: 3600
 	},
 	db: {
 		host: process.env.MLAB_HOST,

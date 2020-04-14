@@ -19,7 +19,7 @@ class TrayModel extends Model {
 	}
 	
 	set category(value) {
-		if(!this.validator.isValidLength('category', value, 0, 25)) {
+		if(!this.validator.isValidLengthNN('category', value, 1, 25)) {
 			return false;
 		}
 		this.fields.category = value;
@@ -27,10 +27,13 @@ class TrayModel extends Model {
 	}
 	
 	set weight(value) {
-		if(!this.validator.isInRange('weight', value, 0, 1000)){
+		if(!this.validator.isNumberNN('weight', value)) {
 			return false;
 		}
-		this.fields.weight = value !== null ? parseFloat(value) : null;
+		if(!this.validator.isInRange('weight', value, 0, 5)){
+			return false;
+		}
+		this.fields.weight = parseFloat(value);
 		return this;
 	}
 	
@@ -43,7 +46,7 @@ class TrayModel extends Model {
 	}
 	
 	set userNote(value) {
-		if(!this.validator.isValidLength('userNote', value, 0, 100)){
+		if(!this.validator.isValidLengthNN('userNote', value, 0, 100)){
 			return false;
 		}
 		this.fields.userNote = value;

@@ -34,11 +34,6 @@ class Database {
 		
 		return this.connection;
 	}
-	
-	async getDb() {
-		const connection = await this.getConnection();
-		return connection.db(this.databaseName);
-	}
 
     async queryDatabase(collectionName, query) {
 		const connection = await this.getConnection();

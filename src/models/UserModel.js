@@ -4,28 +4,31 @@ const Validator = require('./Validator');
 class UserModel extends Model {
 	constructor() {
 		super();
-		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canModifyUsers']);
+		this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.fields = this.buildFields([
 			'_id',
 			'username',
 			'password',
 			'firstName',
 			'lastName',
-			'role',
 			'canViewData',
 			'canEditData',
 			'canModifyWarehouse',
-			'canModifyUsers'
+			'canEditUsers'
 		]);
-		this.settableFields = ['username', 'firstName', 'lastName', 'role', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canModifyUsers'];
+		this.settableFields = ['username', 'firstName', 'lastName', 'canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers'];
 		this.validator = new Validator('User');
+		//this.booleanify(['canViewData', 'canEditData', 'canModifyWarehouse', 'canEditUsers']);
 		this.protectedFields = ['password'];
 	}
 	
 	set username(value){
-		if(!this.validator.isValidLengthNN('username', value, 3, 50)){
+		if(!this.validator.isValidLengthNN('username', value, 3, 254)){
 			return false;
 		}
+		// if(value.indexOf('@') < 0){
+		// 	return this.validator.err('User', 'username', {'name':'format', 'type':'username'}, 'User username address must contain an \'@\' symbol.');
+		// }
 		this.fields.username = value;
 		return this;
 	}
@@ -51,14 +54,6 @@ class UserModel extends Model {
 			return false;
 		}
 		this.fields.password = value;
-		return this;
-	}
-
-	set role(value){
-		if(!this.validator.isValidLengthNN('role', value, 1, 20)){
-			return false;
-		}
-		this.fields.role = value;
 		return this;
 	}
 }
