@@ -86,8 +86,8 @@ class ShelfController {
     }
 	
 	async modifyShelf(req, resp) {
-		if(!req.jwtDecoded.canModifyWarehouse) {
-			return appError.forbidden(resp, 'You do not have permission to modify the warehouse');
+		if(!req.jwtDecoded.canEditData) {
+			return appError.forbidden(resp, 'You do not have permission to edit the data');
 		}
 		const shelf = new ShelfModel();
 		if(!shelf.update(req.body)) return;
