@@ -821,7 +821,7 @@ const shelfieApp = new Vue({
 							console.log('the problem might be trying to add null?');
 							this.allWeight += this.reporttest[i].weight;
 							console.log(this.allWeight);
-							roundedWeight = +roundedWeight.toFixed(2);
+							//roundedWeight = +roundedWeight.toFixed(2);
 							console.log('the weight has been updated');
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
 								reportCat : this.reporttest[i].category,
@@ -834,7 +834,7 @@ const shelfieApp = new Vue({
 						else{
 							console.log('update existing');
 							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
-							roundedWeight = +roundedWeight.toFixed(2);
+							//roundedWeight = +roundedWeight.toFixed(2);
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 							this.allCount += 1;
