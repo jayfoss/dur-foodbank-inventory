@@ -804,8 +804,9 @@ const shelfieApp = new Vue({
 			this.allCount = 0;
 			this.allWeight = 0;
 			var roundedWeight = 0;
-			console.log('startting update');
+			console.log('starting update');
 			for (i=0; i < (this.reporttest.length); i++){
+				console.log(this.reporttest[i].category);
 				if(this.reporttest[i].category != '')
 				{
 					if (this.isSelected.includes(this.reporttest[i].zone)){
