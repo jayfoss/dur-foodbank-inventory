@@ -843,6 +843,7 @@ const shelfieApp = new Vue({
 					}
 				}
 			}
+			console.log('if this is the end of, change the final loop');
 			//trying to find a way to round all the weights
 			for (category in this.reportTotals){
 				category.totalWeight = +category.totalWeight.toFixed(2);
