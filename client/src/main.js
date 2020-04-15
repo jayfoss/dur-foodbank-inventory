@@ -807,7 +807,7 @@ const shelfieApp = new Vue({
 			console.log(this.reporttest);
 			for (i=0; i < (this.reporttest.length); i++){
 				console.log(this.reporttest[i].category);
-				if(this.reporttest[i].category != '')
+				if(this.reporttest[i].category != '' && this.reporttest[i].category != null)
 				{
 					console.log('loop');
 					if (this.isSelected.includes(this.reporttest[i].zone)){
