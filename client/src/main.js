@@ -815,8 +815,9 @@ const shelfieApp = new Vue({
 						if (!this.catsInReport.includes(this.reporttest[i].category)){
 							console.log('add new');
 							this.catsInReport.push(this.reporttest[i].category);
-							console.log(this.catsInReport);
+							//changed the order
 							roundedWeight = this.reporttest[i].weight;
+							console.log(this.catsInReport);
 							this.allWeight += this.reporttest[i].weight;
 							roundedWeight = +roundedWeight.toFixed(2);
 							console.log('the weight has been updated');
