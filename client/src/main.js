@@ -789,7 +789,7 @@ const shelfieApp = new Vue({
                 //console.log(res.data);	
 				this.reporttest = res.data;
 				console.log('got trays');
-				console.log(reporttest);
+				console.log(this.reporttest);
 				this.updateReportTotals();
 				
 			}).catch((err) => {
