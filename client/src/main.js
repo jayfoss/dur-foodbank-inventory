@@ -787,6 +787,7 @@ const shelfieApp = new Vue({
 			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
                 //console.log(res.data);	
 				this.reporttest = res.data;
+				console.log('got trays');
 				console.log(reporttest);
 				this.updateReportTotals();
 				
