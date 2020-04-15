@@ -828,6 +828,7 @@ const shelfieApp = new Vue({
 				}
 			}
 			this.allWeight = +this.allWeight.toFixed(2);
+			console.log(this.reportTotals);
 		},
 		
 		myFilter:function(reportzone) {
