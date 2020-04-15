@@ -843,10 +843,10 @@ const shelfieApp = new Vue({
 					}
 				}
 			}
-			console.log('if this is the end of, change the final loop');
+			console.log('if this is the last message, change the final loop');
 			//trying to find a way to round all the weights
-			for (category in this.reportTotals){
-				category.totalWeight = +category.totalWeight.toFixed(2);
+			for (i=0; i<(this.reportTotals.length); i++){
+				this.reportTotals[i].totalWeight = +this.reportTotals[i].totalWeight.toFixed(2);
 			}
 			this.allWeight = +this.allWeight.toFixed(2);
 			console.log('updating report');
