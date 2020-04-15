@@ -804,6 +804,7 @@ const shelfieApp = new Vue({
 			this.allCount = 0;
 			this.allWeight = 0;
 			var roundedWeight = 0;
+			console.log('startting update');
 			for (i=0; i < (this.reporttest.length); i++){
 				if(this.reporttest[i].category != '')
 				{
@@ -832,7 +833,7 @@ const shelfieApp = new Vue({
 				}
 			}
 			this.allWeight = +this.allWeight.toFixed(2);
-			console.log(this.reportTotals);
+			console.log('updating report');
 		},
 		
 		myFilter:function(reportzone) {
