@@ -818,7 +818,9 @@ const shelfieApp = new Vue({
 							//changed the order
 							roundedWeight = this.reporttest[i].weight;
 							console.log(this.catsInReport);
+							console.log('the problem might be trying to add null?');
 							this.allWeight += this.reporttest[i].weight;
+							console.log(this.allWeight);
 							roundedWeight = +roundedWeight.toFixed(2);
 							console.log('the weight has been updated');
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
