@@ -813,26 +813,26 @@ const shelfieApp = new Vue({
 					if (this.isSelected.includes(this.reporttest[i].zone)){
 						console.log('continue loop');
 						if (!this.catsInReport.includes(this.reporttest[i].category)){
-							console.log('add new');
+							console.log(this.reporttest[i].category);
 							this.catsInReport.push(this.reporttest[i].category);
 							//changed the order
 							roundedWeight = this.reporttest[i].weight;
-							console.log(this.catsInReport);
-							console.log('the problem might be trying to add null?');
+							//console.log(this.catsInReport);
+							//console.log('the problem might be trying to add null?');
 							this.allWeight += this.reporttest[i].weight;
-							console.log(this.allWeight);
+							//console.log(this.allWeight);
 							//roundedWeight = +roundedWeight.toFixed(2);
-							console.log('the weight has been updated');
+							//console.log('the weight has been updated');
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
 								reportCat : this.reporttest[i].category,
 								totalWeight : roundedWeight,
 								numberOfTrays : 1
 							}
 							this.allCount += 1;
-							console.log(this.reportTotals);
+							//console.log(this.reportTotals);
 						}
 						else{
-							console.log('update existing');
+							console.log(this.reporttest[i].category);
 							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
 							//roundedWeight = +roundedWeight.toFixed(2);
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
@@ -846,9 +846,9 @@ const shelfieApp = new Vue({
 			console.log('if this is the last message, change the final loop');
 			//trying to find a way to round all the weights
 			console.log(this.reportTotals);
-			/*for (i=0; i<(this.reportTotals.length); i++){
+			for (i=0; i<(this.reportTotals.length); i++){
 				this.reportTotals[i].totalWeight = +this.reportTotals[i].totalWeight.toFixed(2);
-			}*/
+			}
 			this.allWeight = +this.allWeight.toFixed(2);
 			console.log('updating report');
 		},
