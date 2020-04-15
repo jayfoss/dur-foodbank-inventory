@@ -780,7 +780,7 @@ const shelfieApp = new Vue({
 					this.isSelected.push(this.allzones[i]._id);
 				}
 				console.log('got zones');
-				console.log(this.allzones);
+				console.log(this.isSelected);
 				this.updateReportTotals();
             }).catch((err) => {
                 this.allzones = [];
@@ -809,6 +809,7 @@ const shelfieApp = new Vue({
 				console.log(this.reporttest[i].category);
 				if(this.reporttest[i].category != '')
 				{
+					console.log('loop');
 					if (this.isSelected.includes(this.reporttest[i].zone)){
 						if (!this.catsInReport.includes(this.reporttest[i].category)){
 							this.catsInReport.push(this.reporttest[i].category);
