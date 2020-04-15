@@ -824,6 +824,7 @@ const shelfieApp = new Vue({
 								numberOfTrays : 1
 							}
 							this.allCount += 1;
+							console.log(this.reportTotals);
 						}
 						else{
 							console.log('update existing');
