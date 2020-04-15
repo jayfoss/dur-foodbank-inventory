@@ -789,7 +789,6 @@ const shelfieApp = new Vue({
                 //console.log(res.data);	
 				this.reporttest = res.data;
 				console.log('got trays');
-				console.log(this.reporttest);
 				this.updateReportTotals();
 				
 			}).catch((err) => {
@@ -805,6 +804,7 @@ const shelfieApp = new Vue({
 			this.allWeight = 0;
 			var roundedWeight = 0;
 			console.log('starting update');
+			console.log(this.reporttest);
 			for (i=0; i < (this.reporttest.length); i++){
 				console.log(this.reporttest[i].category);
 				if(this.reporttest[i].category != '')
