@@ -806,7 +806,6 @@ const shelfieApp = new Vue({
 						if (!this.catsInReport.includes(this.reporttest[i].category)){
 							this.catsInReport.push(this.reporttest[i].category);
 							roundedWeight = this.reporttest[i].weight;
-							roundedWeight = +roundedWeight.toFixed(2);
 							this.allWeight += this.reporttest[i].weight;
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
 								reportCat : this.reporttest[i].category,
@@ -817,7 +816,6 @@ const shelfieApp = new Vue({
 						}
 						else{
 							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
-							roundedWeight = +roundedWeight.toFixed(2);
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 							this.allCount += 1;
@@ -826,9 +824,9 @@ const shelfieApp = new Vue({
 					}
 				}
 			}
-			/*for (i=0; i<(this.reportTotals.length); i++){
+			for (i=0; i<(this.reportTotals.length); i++){
 				this.reportTotals[i].totalWeight = +this.reportTotals[i].totalWeight.toFixed(2);
-			}*/
+			}
 			this.allWeight = +this.allWeight.toFixed(2);
 		},
 		
