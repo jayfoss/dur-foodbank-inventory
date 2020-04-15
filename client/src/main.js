@@ -779,16 +779,12 @@ const shelfieApp = new Vue({
 				for (i=0;i<this.allzones.length;i++){
 					this.isSelected.push(this.allzones[i]._id);
 				}
-				console.log('got zones');
-				console.log(this.isSelected);
 				this.updateReportTotals();
             }).catch((err) => {
                 this.allzones = [];
             });
-			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
-                //console.log(res.data);	
+			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {	
 				this.reporttest = res.data;
-				console.log('got trays');
 				this.updateReportTotals();
 				
 			}).catch((err) => {
@@ -803,38 +799,23 @@ const shelfieApp = new Vue({
 			this.allCount = 0;
 			this.allWeight = 0;
 			var roundedWeight = 0;
-			console.log('starting update');
-			console.log(this.reporttest);
 			for (i=0; i < (this.reporttest.length); i++){
-				console.log(this.reporttest[i].category);
 				if(this.reporttest[i].category != '' && this.reporttest[i].category != null)
 				{
-					console.log('loop');
 					if (this.isSelected.includes(this.reporttest[i].zone)){
-						console.log('continue loop');
 						if (!this.catsInReport.includes(this.reporttest[i].category)){
-							//console.log(this.reporttest[i].category);
 							this.catsInReport.push(this.reporttest[i].category);
-							//changed the order
 							roundedWeight = this.reporttest[i].weight;
-							//console.log(this.catsInReport);
-							//console.log('the problem might be trying to add null?');
 							this.allWeight += this.reporttest[i].weight;
-							//console.log(this.allWeight);
-							//roundedWeight = +roundedWeight.toFixed(2);
-							//console.log('the weight has been updated');
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)] = {
 								reportCat : this.reporttest[i].category,
 								totalWeight : roundedWeight,
 								numberOfTrays : 1
 							}
 							this.allCount += 1;
-							//console.log(this.reportTotals);
 						}
 						else{
-							//console.log(this.reporttest[i].category);
 							roundedWeight = this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight + this.reporttest[i].weight;
-							//roundedWeight = +roundedWeight.toFixed(2);
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].totalWeight = roundedWeight;
 							this.reportTotals[this.catsInReport.indexOf(this.reporttest[i].category)].numberOfTrays += 1;
 							this.allCount += 1;
@@ -843,14 +824,10 @@ const shelfieApp = new Vue({
 					}
 				}
 			}
-			console.log('if this is the last message, change the final loop');
-			//trying to find a way to round all the weights
-			console.log(this.reportTotals);
 			for (i=0; i<(this.reportTotals.length); i++){
 				this.reportTotals[i].totalWeight = +this.reportTotals[i].totalWeight.toFixed(2);
 			}
 			this.allWeight = +this.allWeight.toFixed(2);
-			console.log('updating report');
 		},
 		
 		myFilter:function(reportzone) {
