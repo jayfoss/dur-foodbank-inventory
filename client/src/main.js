@@ -779,6 +779,7 @@ const shelfieApp = new Vue({
 				for (i=0;i<this.allzones.length;i++){
 					this.isSelected.push(this.allzones[i]._id);
 				}
+				console.log(this.allzones);
 				this.updateReportTotals();
             }).catch((err) => {
                 this.allzones = [];
@@ -786,6 +787,7 @@ const shelfieApp = new Vue({
 			axios.get(shelfieURL + '/trays', {withCredentials: true}).then((res) => {
                 //console.log(res.data);	
 				this.reporttest = res.data;
+				console.log(reporttest);
 				this.updateReportTotals();
 				
 			}).catch((err) => {
