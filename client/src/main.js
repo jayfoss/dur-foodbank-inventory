@@ -779,6 +779,7 @@ const shelfieApp = new Vue({
 				for (i=0;i<this.allzones.length;i++){
 					this.isSelected.push(this.allzones[i]._id);
 				}
+				console.log('got zones');
 				console.log(this.allzones);
 				this.updateReportTotals();
             }).catch((err) => {
